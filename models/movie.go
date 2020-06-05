@@ -54,45 +54,38 @@ type MovieShort struct {
 }
 
 type TMDBMovie struct {
-	gorm.Model
-	Adult        bool
-	MovieID      uint
-	BackdropPath string `json:"backdrop_path"`
+	ID             int64     `gorm:"primary_key"`
+	CreatedAt      time.Time `sql:"index"`
+	UpdatedAt      time.Time
+	DeletedAt      *time.Time `sql:"index"`
+	TMDBMovieOrgID int        `json:"ID"`
+	Adult          bool
+	MovieID        uint
+	BackdropPath   string `json:"backdrop_path"`
 	// BelongsToCollection bool   `json:"belongs_to_collection"`
 	//BelongsToCollection CollectionShort `json:"belongs_to_collection"`
-	Budget uint32
-	Genres              []Genres
+	Budget   uint32
+	Genres   []Genres
 	Homepage string
 	//ID               int
-	ImdbID           string `json:"imdb_id"`
-	OriginalLanguage string `json:"original_language"`
-	OriginalTitle    string `json:"original_title"`
-	Overview         string
-	Popularity       float32
-	PosterPath       string `json:"poster_path"`
-	// ProductionCompanies []struct {
-	// 	ID        int
-	// 	Name      string
-	// 	LogoPath  string `json:"logo_path"`
-	// 	Iso3166_1 string `json:"origin_country"`
-	// } `json:"production_companies"`
-	// ProductionCountries []struct {
-	// 	Iso3166_1 string `json:"iso_3166_1"`
-	// 	Name      string
-	// } `json:"production_countries"`
-	ReleaseDate string `json:"release_date"`
-	Revenue     uint32
-	Runtime     uint32
-	// SpokenLanguages []struct {
-	// 	Iso639_1 string `json:"iso_639_1"`
-	// 	Name     string
-	// } `json:"spoken_languages"`
-	Status      string
-	Tagline     string
-	Title       string
-	Video       bool
-	VoteAverage float32 `json:"vote_average"`
-	VoteCount   uint32  `json:"vote_count"`
+	ImdbID              string `json:"imdb_id"`
+	OriginalLanguage    string `json:"original_language"`
+	OriginalTitle       string `json:"original_title"`
+	Overview            string
+	Popularity          float32
+	PosterPath          string                `json:"poster_path"`
+	ProductionCompanies []ProductionCompanies `json:"production_companies"`
+	ProductionCountries []ProductionCountries `json:"production_countries"`
+	ReleaseDate         string                `json:"release_date"`
+	Revenue             uint32
+	Runtime             uint32
+	SpokenLanguages     []SpokenLanguages `json:"spoken_languages"`
+	Status              string
+	Tagline             string
+	Title               string
+	Video               bool
+	VoteAverage         float32 `json:"vote_average"`
+	VoteCount           uint32  `json:"vote_count"`
 	// AlternativeTitles *MovieAlternativeTitles `json:"alternative_titles,omitempty"`
 	Credits Credits `json:",omitempty"`
 	// Images            *MovieImages            `json:",omitempty"`
@@ -111,26 +104,29 @@ type Credits struct {
 	//ID   int
 	gorm.Model
 	TMDBMovieID uint
-	Cast        []Cast
-	Crew        []Crew
+	Crew        []Crew `gorm:"foreignkey:CreditsID"`
+	Cast        []Cast `gorm:"foreignkey:CreditsID"`
 }
 
 type Cast struct {
-	gorm.Model
-	CastID    int `json:"cast_id"`
+	ID        int64 `gorm:"primary_key"`
 	CreditsID uint
-	Character string
-	CreditID  string `json:"credit_id"`
-	//	ID          int
+	CastID    int `json:"cast_id"`
+	CastOrgID int `json:"ID"`
+
+	CreditID    string `json:"credit_id"`
+	Character   string
 	Name        string
-	Gender      int `json:"gender"`
+	XGender     int `json:"gender"`
 	Order       int
 	ProfilePath string `json:"profile_path"`
 }
 
 type Crew struct {
-	gorm.Model
-	CreditsID  string `json:"credit_id"`
+	ID         int64 `gorm:"primary_key"`
+	CreditsID  uint
+	CrewOrgID  int    `json:"ID"`
+	CreditID   string `json:"credit_id"`
 	Department string
 	Gender     int `json:"gender"`
 	//	ID          int
@@ -143,6 +139,29 @@ type Genres struct {
 	gorm.Model
 	TMDBMovieID uint
 	Name        string
+}
+
+type SpokenLanguages struct {
+	gorm.Model
+	TMDBMovieID uint
+	Iso639_1    string `json:"iso_639_1"`
+	Name        string
+}
+
+type ProductionCompanies struct {
+	gorm.Model
+	TMDBMovieID uint
+	Name        string
+	LogoPath    string `json:"logo_path"`
+	Iso3166_1   string `json:"origin_country"`
+}
+
+type ProductionCountries struct {
+	gorm.Model
+	TMDBMovieID uint
+
+	Iso3166_1 string `json:"iso_3166_1"`
+	Name      string
 }
 
 const (

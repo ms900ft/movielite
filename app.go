@@ -23,20 +23,6 @@ type meta struct {
 	Total int64 `json:"total"`
 }
 
-//
-//Query movie query parameter
-type Query struct {
-	Orderby     string `form:"orderby"`
-	Qtitel      string `form:"title"`
-	Alpha       string `form:"alpha"`
-	Genre       int64  `form:"genre"`
-	Crew        int64  `form:"crew"`
-	Person      int64  `form:"person"`
-	Cast        int64  `form:"cast"`
-	Country     string `form:"country"`
-	LastScanned string `form:"last_scanned"`
-}
-
 //Initialize mal sehen
 func (a *Service) Initialize(user, host, password, port, dbname string) {
 

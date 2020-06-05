@@ -15,10 +15,11 @@ func (a *Service) initializeRoutes() {
 	// a.Router.GET("/file/:id/download", downloadFile)
 	// a.Router.GET("/file/:id/download/:name", downloadFile) //name im pfad
 
-	// a.Router.GET("/movie", getMovies)
+	a.Router.GET("/movie", a.getMovies)
 	a.Router.GET("/movie/:id", a.getMovie)
 	// a.Router.PUT("/movie/:id", updateMovie)
-	// a.Router.DELETE("/movie/:id", deleteMovie)
+	a.Router.POST("/movie", a.createMovie)
+	a.Router.DELETE("/movie/:id", a.deleteMovie)
 	// a.Router.GET("/movieMeta/:metaid", getMovieMeta)
 	// a.Router.PUT("/movie/:id/addMeta/:metaid", addMeta) //update movie
 	// a.Router.PUT("/movie/:id/play", playMovie)

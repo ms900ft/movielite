@@ -9,7 +9,7 @@ import (
 
 type File struct {
 	gorm.Model
-	FullPath string `json:"fullPath" gorm:"Type:text"`
+	FullPath string `json:"fullPath" gorm:"Type:text;UNIQUE"`
 	FileName string `json:"fileName"`
 }
 
