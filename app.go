@@ -12,6 +12,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const (
+	DEFLANG   = "de-DE"
+	WATCHLIST = "watchlist"
+)
+
 //Service mal sehen
 type Service struct {
 	Router *gin.Engine
@@ -50,6 +55,6 @@ func (a *Service) Initialize(user, host, password, port, dbname string) {
 
 //Run mal sehen
 func (a *Service) Run(addr string) error {
-	err := http.ListenAndServe(":8000", a.Router)
+	err := http.ListenAndServe(":8001", a.Router)
 	return err
 }

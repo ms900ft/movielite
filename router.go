@@ -23,13 +23,13 @@ func (a *Service) initializeRoutes() {
 	// a.Router.GET("/movieMeta/:metaid", getMovieMeta)
 	// a.Router.PUT("/movie/:id/addMeta/:metaid", addMeta) //update movie
 	// a.Router.PUT("/movie/:id/play", playMovie)
-	// a.Router.GET("/movie/:id/images", getMovieImages)
+	a.Router.GET("/movie/:id/images", a.getMovieImages)
 
 	// a.Router.GET("/genre", getGenres)
 	// a.Router.GET("/country", getCountries)
 	// a.Router.GET("/targets", getTargets)
 
-	// a.Router.GET("/images/:size/:image", getImage)
+	a.Router.GET("/images/:size/:image", a.getImage)
 	//	staticDir := viper.GetString("Frontend.Path")
 	//movie2Dir := viper.GetString("Frontend.Path2")
 	//	a.Router.Use(favicon.New(staticDir + "/favicon.ico"))

@@ -59,8 +59,10 @@ func (s *Service) getMovies(c *gin.Context) {
 	db := s.DB
 	var movies []models.Movie
 	var count int64
-	if err := db.Set("gorm:auto_preload", true).Offset(q.Offset).Limit(q.Limit).Find(&movies).
-		Count(&count).Error; err != nil {
+	count = 2300
+	if err := db.Set("gorm:auto_preload", true).Model(&models.Movie{}).
+		Order("created_at DESC").Count(&count).Offset(q.Offset).Limit(q.Limit).Find(&movies).
+		Error; err != nil {
 		log.Error(err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
 		return

@@ -65,7 +65,7 @@ type TMDBMovie struct {
 	// BelongsToCollection bool   `json:"belongs_to_collection"`
 	//BelongsToCollection CollectionShort `json:"belongs_to_collection"`
 	Budget   uint32
-	Genres   []Genres
+	Genres   []Genres `json:"genres" gorm:"foreignkey:TMDBMovieID"`
 	Homepage string
 	//ID               int
 	ImdbID              string `json:"imdb_id"`
@@ -136,13 +136,15 @@ type Crew struct {
 }
 
 type Genres struct {
-	gorm.Model
+	ID          int64 `gorm:"primary_key"`
+	GenresOrgID int   `json:"ID" gorm:"index:genreid"`
 	TMDBMovieID uint
 	Name        string
 }
 
 type SpokenLanguages struct {
-	gorm.Model
+	ID          int64 `gorm:"primary_key"`
+	SLOrgID     int   `json:"ID" gorm:"index:spokenlanguageid"`
 	TMDBMovieID uint
 	Iso639_1    string `json:"iso_639_1"`
 	Name        string
@@ -159,9 +161,8 @@ type ProductionCompanies struct {
 type ProductionCountries struct {
 	gorm.Model
 	TMDBMovieID uint
-
-	Iso3166_1 string `json:"iso_3166_1"`
-	Name      string
+	Iso3166_1   string `json:"iso_3166_1"`
+	Name        string
 }
 
 const (
