@@ -16,4 +16,5 @@ require (
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/spf13/viper v1.7.0
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
+	golang.org/x/text v0.3.2
 )

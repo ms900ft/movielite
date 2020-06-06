@@ -137,14 +137,14 @@ type Crew struct {
 
 type Genres struct {
 	ID          int64 `gorm:"primary_key"`
-	GenresOrgID int   `json:"ID" gorm:"index:genreid"`
+	Tmdb_id     int   `json:"ID" gorm:"index:genreid"`
 	TMDBMovieID uint
 	Name        string
 }
 
 type SpokenLanguages struct {
 	ID          int64 `gorm:"primary_key"`
-	SLOrgID     int   `json:"ID" gorm:"index:spokenlanguageid"`
+	Tmdb_id     int   `json:"ID" gorm:"index:spokenlanguageid"`
 	TMDBMovieID uint
 	Iso639_1    string `json:"iso_639_1"`
 	Name        string

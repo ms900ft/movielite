@@ -19,7 +19,10 @@ func (s *Service) getFiles(c *gin.Context) {
 	db := s.DB
 
 	var files []models.File
-	db.Find(&files)
+	if err := db.Find(&files).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
 	c.JSON(http.StatusOK, files)
 
 }
@@ -111,4 +114,20 @@ func (s *Service) deleteFile(c *gin.Context) {
 	db.Delete(&file)
 
 	c.JSON(http.StatusOK, file)
+}
+
+func (s *Service) downloadFile(c *gin.Context) {
+	db := s.DB
+	id := c.Param("id")
+
+	var file models.File
+	if err := db.Where("id = ?", id).First(&file).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		return
+	}
+	c.Header("Content-Description", "File Transfer")
+	c.Header("Content-Transfer-Encoding", "binary")
+	c.Header("Content-Disposition", "attachment; filename="+file.FileName)
+	c.Header("Content-Type", "application/octet-stream")
+	c.File(file.FullPath)
 }

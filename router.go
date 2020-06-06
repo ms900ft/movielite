@@ -12,8 +12,8 @@ func (a *Service) initializeRoutes() {
 	a.Router.PUT("/file/:id", a.updateFile)
 	// a.Router.PUT("/file/:id/move/:dir", moveFile) //update file
 	a.Router.DELETE("/file/:id", a.deleteFile)
-	// a.Router.GET("/file/:id/download", downloadFile)
-	// a.Router.GET("/file/:id/download/:name", downloadFile) //name im pfad
+	a.Router.GET("/file/:id/download", a.downloadFile)
+	a.Router.GET("/file/:id/download/:name", a.downloadFile) //name im pfad
 
 	a.Router.GET("/movie", a.getMovies)
 	a.Router.GET("/movie/:id", a.getMovie)
@@ -25,9 +25,9 @@ func (a *Service) initializeRoutes() {
 	// a.Router.PUT("/movie/:id/play", playMovie)
 	a.Router.GET("/movie/:id/images", a.getMovieImages)
 
-	// a.Router.GET("/genre", getGenres)
-	// a.Router.GET("/country", getCountries)
-	// a.Router.GET("/targets", getTargets)
+	a.Router.GET("/genre", a.getGenres)
+	a.Router.GET("/country", a.getCountries)
+	a.Router.GET("/targets", a.getTargets)
 
 	a.Router.GET("/images/:size/:image", a.getImage)
 	//	staticDir := viper.GetString("Frontend.Path")
