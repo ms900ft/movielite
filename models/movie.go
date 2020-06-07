@@ -22,7 +22,7 @@ type Movie struct {
 	Meta           *TMDBMovie          `json:"meta,omitempty"`
 	Multiplechoice *MovieSearchResults `json:"multiplechoice,omitempty"`
 	File           File
-	IsTv           bool `json:"is_tv"`
+	IsTv           bool `json:"is_tv" gorm:"index"`
 	Rating         int  `json:"rating"`
 
 	LastScanned time.Time
@@ -58,12 +58,12 @@ type MovieShort struct {
 
 type TMDBMovie struct {
 	ID             int64     `gorm:"primary_key"`
-	CreatedAt      time.Time `sql:"index"`
+	CreatedAt      time.Time `gorm:"index"`
 	UpdatedAt      time.Time
-	DeletedAt      *time.Time `sql:"index"`
+	DeletedAt      *time.Time `gorm:"index"`
 	TMDBMovieOrgID int        `json:"ID"`
 	Adult          bool
-	MovieID        uint
+	MovieID        uint   `gorm:"index"`
 	BackdropPath   string `json:"backdrop_path"`
 	// BelongsToCollection bool   `json:"belongs_to_collection"`
 	//BelongsToCollection CollectionShort `json:"belongs_to_collection"`
@@ -106,16 +106,16 @@ type TMDBMovie struct {
 type Credits struct {
 	//ID   int
 	gorm.Model
-	TMDBMovieID uint
+	TMDBMovieID uint   `gorm:"index"`
 	Crew        []Crew `gorm:"foreignkey:CreditsID"`
 	Cast        []Cast `gorm:"foreignkey:CreditsID"`
 }
 
 type Cast struct {
 	ID        int64 `gorm:"primary_key"`
-	CreditsID uint
-	CastID    int `json:"cast_id"`
-	CastOrgID int `json:"ID"`
+	CreditsID uint  `gorm:"index"`
+	CastID    int   `json:"cast_id"`
+	CastOrgID int   `json:"ID" gorm:"index"`
 
 	CreditID    string `json:"credit_id"`
 	Character   string
@@ -126,9 +126,9 @@ type Cast struct {
 }
 
 type Crew struct {
-	ID         int64 `gorm:"primary_key"`
-	CreditsID  uint
-	CrewOrgID  int    `json:"ID"`
+	ID         int64  `gorm:"primary_key"`
+	CreditsID  uint   `gorm:"index"`
+	CrewOrgID  int    `json:"ID" gorm:"index"`
 	CreditID   string `json:"credit_id"`
 	Department string
 	Gender     int `json:"gender"`
@@ -266,4 +266,20 @@ func getTMDBMeta(id int) (TMDBMovie, error) {
 		return msr, err
 	}
 	return msr, err
+}
+
+func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
+
+	var credits string
+	for _, c := range m.Meta.Credits.Cast {
+		credits += c.Name + " "
+	}
+	for _, c := range m.Meta.Credits.Crew {
+		credits += c.Name + " "
+	}
+
+	err = scope.DB().Exec("INSERT INTO moviesearch (ID,Title,Overview,Credits) VALUES($1, $2, $3, $4)",
+		m.ID, m.Title, m.Meta.Overview, credits).Error
+
+	return
 }

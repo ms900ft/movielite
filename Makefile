@@ -6,10 +6,10 @@ test:
 	go test $(test)
 
 run:
-	go run cmd/server/main.go
+	go run --tags "fts5" cmd/server/main.go
 
 build:
-	go build -o ${APP} ./cmd/server
+	go build -o ${APP}  --tags "fts5" ./cmd/server
 
 static:
 	$(MAKE) -C movieui
