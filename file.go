@@ -4,7 +4,6 @@ import (
 	"ms/movielight/models"
 	"net/http"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
@@ -66,7 +65,7 @@ func (s *Service) addFile(c *gin.Context) {
 	if err != nil {
 		log.Error(err)
 	}
-	spew.Dump(movie)
+	//spew.Dump(movie)
 	movie.FileID = file.ID
 	if err := db.Create(&movie).Error; gorm.IsRecordNotFoundError(err) {
 		content := gin.H{"error: ": "create movie" + err.Error()}

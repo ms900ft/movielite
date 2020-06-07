@@ -1,7 +1,11 @@
 package movielight
 
 import (
+	_ "ms/movielight/statik"
+
 	"github.com/gin-gonic/contrib/expvar"
+	"github.com/rakyll/statik/fs"
+	log "github.com/sirupsen/logrus"
 )
 
 func (a *Service) initializeRoutes() {
@@ -17,7 +21,7 @@ func (a *Service) initializeRoutes() {
 
 	a.Router.GET("/movie", a.getMovies)
 	a.Router.GET("/movie/:id", a.getMovie)
-	// a.Router.PUT("/movie/:id", updateMovie)
+	a.Router.PUT("/movie/:id", a.updateMovie)
 	a.Router.POST("/movie", a.createMovie)
 	a.Router.DELETE("/movie/:id", a.deleteMovie)
 	// a.Router.GET("/movieMeta/:metaid", getMovieMeta)
@@ -30,14 +34,14 @@ func (a *Service) initializeRoutes() {
 	a.Router.GET("/targets", a.getTargets)
 
 	a.Router.GET("/images/:size/:image", a.getImage)
-	//	staticDir := viper.GetString("Frontend.Path")
+	//staticDir := viper.GetString("Frontend.Path")
 	//movie2Dir := viper.GetString("Frontend.Path2")
 	//	a.Router.Use(favicon.New(staticDir + "/favicon.ico"))
-	// statikFS, err := fs.New()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatal(err)
+	}
 	// a.Router.Static("/html", staticDir)
-	// a.Router.StaticFS("/movie2", statikFS)
+	a.Router.StaticFS("/movie2", statikFS)
 	a.Router.GET("/debug/vars", expvar.Handler())
 }

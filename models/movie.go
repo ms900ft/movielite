@@ -12,12 +12,15 @@ import (
 )
 
 type Movie struct {
-	gorm.Model
-	FileID         uint               `json:"file_id"`
-	Title          string             `json:"title"`
-	OrgName        string             `json:"org_name"`
-	Meta           TMDBMovie          `json:"meta"`
-	Multiplechoice MovieSearchResults `json:"multiplechoice"`
+	ID             int64     `json:"id" gorm:"primary_key"`
+	CreatedAt      time.Time `sql:"index"`
+	UpdatedAt      time.Time
+	DeletedAt      *time.Time          `sql:"index"`
+	FileID         uint                `json:"file_id"`
+	Title          string              `json:"title"`
+	OrgName        string              `json:"org_name"`
+	Meta           *TMDBMovie          `json:"meta,omitempty"`
+	Multiplechoice *MovieSearchResults `json:"multiplechoice,omitempty"`
 	File           File
 	IsTv           bool `json:"is_tv"`
 	Rating         int  `json:"rating"`
@@ -65,7 +68,7 @@ type TMDBMovie struct {
 	// BelongsToCollection bool   `json:"belongs_to_collection"`
 	//BelongsToCollection CollectionShort `json:"belongs_to_collection"`
 	Budget   uint32
-	Genres   []Genres `json:"genres" gorm:"foreignkey:TMDBMovieID"`
+	Genres   []Genres `json:"Genres" gorm:"foreignkey:TMDBMovieID"`
 	Homepage string
 	//ID               int
 	ImdbID              string `json:"imdb_id"`
@@ -219,11 +222,11 @@ func (m *Movie) GetMeta() (err error) {
 			return err
 		}
 		if res.TotalResults > 0 {
-			m.Multiplechoice = msr
+			m.Multiplechoice = &msr
 		}
 	} else {
 		meta, err := getTMDBMeta(hit)
-		m.Meta = meta
+		m.Meta = &meta
 		//m.Multiplechoice = nil
 		if err != nil {
 			log.Error(err)
