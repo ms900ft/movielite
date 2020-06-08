@@ -99,8 +99,9 @@ func (s *Service) getMovies(c *gin.Context) {
 	switch {
 	case q.Show == "multiple":
 		tx = tx.Joins("JOIN movie_search_results on movie_search_results.movie_id=movies.id")
-	case q.Show == "watchlist":
-		tx = tx.Where("show watchlist to do")
+	case q.Show == "recent":
+		tx = tx.Joins("LEFT JOIN recentlies on recentlies.movie_id = movies.id").
+			Where("recentlies.user_id = ?", s.User.ID)
 	case q.Show == "unrated":
 		tx = tx.Where("rating = ?", 0)
 	case q.Show == "notitle":
@@ -135,7 +136,7 @@ func (s *Service) getMovies(c *gin.Context) {
 	case q.Orderby == "name" || len(q.Alpha) > 0:
 		tx = tx.Order("title ASC")
 	case q.Orderby == "recent":
-		tx = tx.Order("resent to do")
+		tx = tx.Order("recentlies.last_played DESC")
 	case q.Orderby == "last_scanned":
 		tx = tx.Order("last_scanned")
 	case q.Show == "watchlist":
@@ -152,7 +153,7 @@ func (s *Service) getMovies(c *gin.Context) {
 	if err := tx.Find(&movies).
 		Error; err != nil {
 		log.Error(err)
-		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	ml := Movielist{}
@@ -241,7 +242,7 @@ func (s *Service) playMovie(c *gin.Context) {
 		log.Error(err)
 	}
 
-	recently := models.Recently{MovieID: movie.ID, UserID: s.User.ID, CreatedAt: time.Now()}
+	recently := models.Recently{MovieID: movie.ID, UserID: s.User.ID, LastPlayed: time.Now()}
 	if err := db.Save(&recently).Error; err != nil {
 		content := gin.H{"error: ": "create" + err.Error()}
 		log.Error(content)
