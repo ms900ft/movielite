@@ -21,6 +21,7 @@ const (
 type Service struct {
 	Router *gin.Engine
 	DB     *gorm.DB
+	User   *models.User
 	//Config Config
 }
 
@@ -47,7 +48,7 @@ func (a *Service) Initialize(user, host, password, port, dbname string) {
 	a.Router = gin.Default()
 	a.Router.Use(CORSMiddleware())
 	//a.Router.Use(Database())
-	//a.Router.Use(UserMiddleWare)
+	a.Router.Use(a.UserMiddleWare)
 
 	//	a.DB = c.MustGet("DB").(*sql.DB)
 	a.initializeRoutes()

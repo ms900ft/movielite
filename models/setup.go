@@ -15,7 +15,7 @@ func ConnectDataBase() *gorm.DB {
 
 	database.AutoMigrate(&User{}, &File{}, &Movie{}, &MovieSearchResults{}, &MovieShort{},
 		&TMDBMovie{}, &Credits{}, &Cast{}, &Crew{}, &Genres{}, &SpokenLanguages{},
-		&ProductionCompanies{}, &ProductionCountries{})
+		&ProductionCompanies{}, &ProductionCountries{}, &User{}, &Watchlist{}, &Recently{})
 	_, err = database.DB().Exec("CREATE VIRTUAL  TABLE IF NOT EXISTS moviesearch USING fts5(ID, Title, Overview,Credits);")
 	if err != nil {
 		log.Fatal(err)

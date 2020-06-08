@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
+	"github.com/skratchdot/open-golang/open"
 )
 
 type UpdateMovie struct {
@@ -223,4 +224,29 @@ func (s *Service) updateMovie(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, movie)
+}
+
+func (s *Service) playMovie(c *gin.Context) {
+	db := s.DB
+	id := c.Param("id")
+
+	var movie models.Movie
+
+	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&movie).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		return
+	}
+	err := open.Start(movie.File.FullPath)
+	if err != nil {
+		log.Error(err)
+	}
+
+	recently := models.Recently{MovieID: movie.ID, UserID: s.User.ID, CreatedAt: time.Now()}
+	if err := db.Save(&recently).Error; err != nil {
+		content := gin.H{"error: ": "create" + err.Error()}
+		log.Error(content)
+		c.JSON(http.StatusBadRequest, content)
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
 }

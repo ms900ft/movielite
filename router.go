@@ -24,6 +24,14 @@ func (a *Service) initializeRoutes() {
 	a.Router.PUT("/movie/:id", a.updateMovie)
 	a.Router.POST("/movie", a.createMovie)
 	a.Router.DELETE("/movie/:id", a.deleteMovie)
+	a.Router.PUT("/movie/:id/play", a.playMovie)
+
+	a.Router.GET("/user", a.getUsers)
+	a.Router.GET("/user/:id", a.getUser)
+	a.Router.PUT("/user/:id", a.updateUser)
+	a.Router.POST("/user", a.createUser)
+	a.Router.DELETE("/user/:id", a.deleteUser)
+
 	// a.Router.GET("/movieMeta/:metaid", getMovieMeta)
 	// a.Router.PUT("/movie/:id/addMeta/:metaid", addMeta) //update movie
 	// a.Router.PUT("/movie/:id/play", playMovie)

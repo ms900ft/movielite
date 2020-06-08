@@ -3,6 +3,7 @@ package movielight
 import (
 	"fmt"
 	"ms/movielight/models"
+	"net/http"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -30,7 +31,7 @@ func CORSMiddleware() gin.HandlerFunc {
 }
 
 //UserMiddleWare Get username from movieuser cookie and set username in context
-func UserMiddleWare(c *gin.Context) {
+func (s *Service) UserMiddleWare(c *gin.Context) {
 	username, err := c.Cookie("movieuser")
 	if err != nil {
 		log.Debug(err)
@@ -41,10 +42,18 @@ func UserMiddleWare(c *gin.Context) {
 	log.Debugf("Usernamex %s ", username)
 
 	//db := c.MustGet("DB").(*sql.DB)
-	user := models.User{Username: username}
+	db := s.DB
+
+	var user models.User
+	if err := db.Where("username  = ?", username).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	s.User = &user
 	//err = user.get(db)
-	c.Set("username", username)
-	c.Set("user", user)
+	//c.Set("username", username)
+	//c.Set("user", user)
 	if err != nil {
 		log.Error(err)
 	}
