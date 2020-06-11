@@ -33,8 +33,8 @@ func (a *Service) initializeRoutes() {
 	a.Router.DELETE("/user/:id", a.deleteUser)
 
 	// a.Router.GET("/movieMeta/:metaid", getMovieMeta)
-	// a.Router.PUT("/movie/:id/addMeta/:metaid", addMeta) //update movie
-	// a.Router.PUT("/movie/:id/play", playMovie)
+	a.Router.PUT("/movie/:id/addMeta/:metaid", a.addMeta) //update movie
+
 	a.Router.GET("/movie/:id/images", a.getMovieImages)
 
 	a.Router.GET("/genre", a.getGenres)

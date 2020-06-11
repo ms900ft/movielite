@@ -20,12 +20,12 @@ type Movie struct {
 	Title          string              `json:"title"`
 	OrgName        string              `json:"org_name"`
 	Meta           *TMDBMovie          `json:"meta,omitempty"`
-	Multiplechoice *MovieSearchResults `json:"multiplechoice,omitempty"`
+	Multiplechoice *MovieSearchResults `json:"multiplechoice,omitempty" gorm:"foreignkey:MovieID"`
 	File           File
 	IsTv           bool `json:"is_tv" gorm:"index"`
 	Rating         int  `json:"rating"`
-
-	LastScanned time.Time
+	Watchlist      bool `json:"watchlist" gorm:"-"`
+	LastScanned    time.Time
 }
 
 type MovieSearchResults struct {
@@ -33,9 +33,9 @@ type MovieSearchResults struct {
 	//tmdb.MovieSearchResults
 	MovieID      uint
 	Page         int
-	Results      []MovieShort
-	TotalPages   int `json:"total_pages"`
-	TotalResults int `json:"total_results"`
+	Results      []MovieShort `gorm:"foreignkey:MovieSearchResultsID"`
+	TotalPages   int          `json:"total_pages"`
+	TotalResults int          `json:"total_results"`
 }
 
 type MovieShort struct {
@@ -169,7 +169,7 @@ type ProductionCountries struct {
 }
 
 const (
-	DEFLANG   = "de-DE"
+	//DEFLANG   = "de-DE"
 	WATCHLIST = "watchlist"
 )
 
@@ -180,11 +180,12 @@ func (m *Movie) GetMeta() (err error) {
 			err = errors.New("can't get metadata")
 		}
 	}()
+	lang := viper.GetString("language")
 	apikey := viper.GetString("TMDB.ApiKey")
 	conf := tmdb.Config{APIKey: apikey}
 	TMDb := tmdb.Init(conf)
 	var options = make(map[string]string)
-	options["language"] = DEFLANG
+	options["language"] = lang
 	res, err := TMDb.SearchMovie(m.Title, options)
 	if err != nil {
 		log.Error(err)
@@ -237,11 +238,12 @@ func (m *Movie) GetMeta() (err error) {
 
 func getTMDBMeta(id int) (TMDBMovie, error) {
 	apikey := viper.GetString("TMDB.ApiKey")
+	lang := viper.GetString("language")
 	conf := tmdb.Config{APIKey: apikey}
 	TMDb := tmdb.Init(conf)
 	var options = make(map[string]string)
 	options["append_to_response"] = "credits"
-	options["language"] = "de-DE"
+	options["language"] = lang
 	res, err := TMDb.GetMovieInfo(id, options)
 	if err != nil {
 		log.Error(err)
@@ -268,18 +270,30 @@ func getTMDBMeta(id int) (TMDBMovie, error) {
 	return msr, err
 }
 
+func (m *Movie) MetaById(metaid int) error {
+	meta, err := getTMDBMeta(metaid)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	m.Meta = &meta
+	m.Multiplechoice = nil
+	return nil
+}
+
 func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
 
-	var credits string
-	for _, c := range m.Meta.Credits.Cast {
-		credits += c.Name + " "
-	}
-	for _, c := range m.Meta.Credits.Crew {
-		credits += c.Name + " "
-	}
+	if m.Meta != nil {
+		var credits string
+		for _, c := range m.Meta.Credits.Cast {
+			credits += c.Name + " "
+		}
+		for _, c := range m.Meta.Credits.Crew {
+			credits += c.Name + " "
+		}
 
-	err = scope.DB().Exec("INSERT INTO moviesearch (ID,Title,Overview,Credits) VALUES($1, $2, $3, $4)",
-		m.ID, m.Title, m.Meta.Overview, credits).Error
-
+		err = scope.DB().Exec("INSERT INTO moviesearch (ID,Title,Overview,Credits) VALUES($1, $2, $3, $4)",
+			m.ID, m.Title, m.Meta.Overview, credits).Error
+	}
 	return
 }

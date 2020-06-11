@@ -45,7 +45,7 @@ func (s *Service) UserMiddleWare(c *gin.Context) {
 	db := s.DB
 
 	var user models.User
-	if err := db.Where("username  = ?", username).First(&user).Error; err != nil {
+	if err := db.Where("user_name  = ?", username).First(&user).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
 		return
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ms/movielight/models"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -77,7 +78,10 @@ func (s *Service) getMovies(c *gin.Context) {
 	var count int64
 
 	tx := db.Set("gorm:auto_preload", true).Model(&models.Movie{}).
+		Select("movies.id, movies.file_id,movies.title,movies.is_tv,movies.rating, CASE WHEN watchlists.movie_id is not null then true else false  end as watchlist").
 		Joins("JOIN files on files.id=movies.file_id").
+		Joins("Left Join watchlists ON (movies.id = watchlists.movie_id)").
+		//Where("watchlists.user_id = ?", s.User.ID).
 		Where("is_tv = false")
 
 	if len(q.Qtitel) > 0 {
@@ -99,7 +103,7 @@ func (s *Service) getMovies(c *gin.Context) {
 	switch {
 	case q.Show == "multiple":
 		tx = tx.Joins("JOIN movie_search_results on movie_search_results.movie_id=movies.id")
-	case q.Show == "recent":
+	case q.Orderby == "recent":
 		tx = tx.Joins("LEFT JOIN recentlies on recentlies.movie_id = movies.id").
 			Where("recentlies.user_id = ?", s.User.ID)
 	case q.Show == "unrated":
@@ -109,6 +113,8 @@ func (s *Service) getMovies(c *gin.Context) {
 	case q.Show == "nodesc":
 		tx = tx.Joins("LEFT JOIN tmdb_movies on tmdb_movies.movie_id=movies.id").
 			Where("tmdb_movies.movie_id is null")
+	case q.Show == "watchlist":
+		tx = tx.Where("watchlists.movie_id is not null AND watchlists.user_id = ?", s.User.ID)
 
 	}
 	if q.Genre > 0 {
@@ -134,13 +140,13 @@ func (s *Service) getMovies(c *gin.Context) {
 	//order
 	switch {
 	case q.Orderby == "name" || len(q.Alpha) > 0:
-		tx = tx.Order("title ASC")
+		tx = tx.Order("movies.title ASC")
 	case q.Orderby == "recent":
 		tx = tx.Order("recentlies.last_played DESC")
 	case q.Orderby == "last_scanned":
-		tx = tx.Order("last_scanned")
+		tx = tx.Order("movies.last_scanned")
 	case q.Show == "watchlist":
-		tx = tx.Order("watchlist to do")
+		tx = tx.Order("watchlists.created_at DESC")
 	default:
 		tx = tx.Group("movies.id")
 		tx = tx.Order("files.created_at DESC")
@@ -250,4 +256,42 @@ func (s *Service) playMovie(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusNoContent, nil)
+}
+
+func (s *Service) addMeta(c *gin.Context) {
+	db := s.DB
+	id := c.Param("id")
+	metaID, err := strconv.Atoi(c.Param("metaid"))
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+
+	var movie models.Movie
+
+	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&movie).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		return
+	}
+	old := movie
+	err = movie.MetaById(metaID)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error})
+		return
+	}
+	if err := db.Model(&old).Update(movie).Error; err != nil {
+		log.Errorf("files update error: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+		return
+	}
+	if old.Multiplechoice != nil {
+		if err := db.Delete(old.Multiplechoice); err != nil {
+			log.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error})
+			return
+		}
+	}
+	c.JSON(http.StatusOK, movie)
 }

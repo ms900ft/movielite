@@ -30,6 +30,7 @@ func main() {
 	viper.SetConfigType("yaml")
 	viper.SetDefault("MovieServerUrl", "http://localhost:8000")
 	viper.SetDefault("Rescan.Delay", 10)
+	viper.SetDefault("language", "de-DE")
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
 		panic(fmt.Errorf("error config file: %s", err))
