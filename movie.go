@@ -20,10 +20,10 @@ type UpdateMovie struct {
 
 	//Multiplechoice MovieSearchResults `json:"multiplechoice"`
 	//File           File
-	IsTv      bool `json:"is_tv"`
-	Rating    int  `json:"rating"`
-	Watchlist bool `json:"watchlist"`
-
+	IsTv        bool              `json:"is_tv"`
+	Rating      int               `json:"rating"`
+	Watchlist   bool              `json:"watchlist"`
+	Meta        *models.TMDBMovie `json:"meta"`
 	LastScanned time.Time
 }
 type Meta struct {
@@ -109,6 +109,8 @@ func (s *Service) getMovies(c *gin.Context) {
 			Where("recentlies.user_id = ?", s.User.ID)
 	case q.Show == "unrated":
 		tx = tx.Where("rating = ?", 0)
+	case q.Show == "duplicate":
+		tx = tx.Where("(select  count(*)  from movies inr  where inr.title = movies.title)> 1")
 	case q.Show == "notitle":
 		tx = tx.Where("title = ?", "")
 	case q.Show == "nodesc":
@@ -148,6 +150,8 @@ func (s *Service) getMovies(c *gin.Context) {
 		tx = tx.Order("movies.last_scanned")
 	case q.Show == "watchlist":
 		tx = tx.Order("watchlists.created_at DESC")
+	case q.Show == "duplicate":
+		tx = tx.Order("movies.title DESC")
 	default:
 		tx = tx.Group("movies.id")
 		tx = tx.Order("files.created_at DESC")
@@ -212,7 +216,7 @@ func (s *Service) createMovie(c *gin.Context) {
 
 func (s *Service) updateMovie(c *gin.Context) {
 	db := s.DB
-	var input UpdateMovie
+	var input models.Movie
 	if err := c.ShouldBindJSON(&input); err != nil {
 		log.Errorf("movie binding input: %s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -225,7 +229,11 @@ func (s *Service) updateMovie(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
-	if err := db.Model(&movie).Update(input).Error; err != nil {
+	if input.Meta.MovieID != movie.Meta.MovieID {
+		//movie.MetaById(input.Meta.MovieID)
+		input.Title = movie.Meta.Title
+	}
+	if err := db.Model(&movie).Save(input).Error; err != nil {
 		log.Errorf("files update error: %s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
 		return
@@ -295,14 +303,47 @@ func (s *Service) addMeta(c *gin.Context) {
 	}
 	old := movie
 	err = movie.MetaById(metaID)
+	movie.Title = movie.Meta.Title
 	movie.Multiplechoice = nil
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error})
 		return
 	}
+
 	if err := db.Model(&old).Update(movie).Error; err != nil {
-		log.Errorf("files update error: %s", err)
+		log.Errorf("Movie update error: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+		return
+	}
+
+	if err := db.Model(&movie.Meta).Association("ProductionCountries").
+		Replace(movie.Meta.ProductionCountries).Error; err != nil {
+		log.Errorf("ProductionCountries update error: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+		return
+	}
+	if err := db.Model(&movie.Meta).Association("ProductionCompanies").
+		Replace(movie.Meta.ProductionCompanies).Error; err != nil {
+		log.Errorf("ProductionCompanies update error: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+		return
+	}
+	if err := db.Model(&movie.Meta).Association("SpokenLanguages").
+		Replace(movie.Meta.SpokenLanguages).Error; err != nil {
+		log.Errorf("SpokenLanguages update error: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+		return
+	}
+	if err := db.Model(&movie.Meta.Credits).Association("Crew").
+		Replace(movie.Meta.Credits.Crew).Error; err != nil {
+		log.Errorf("Crew update error: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+		return
+	}
+	if err := db.Model(&movie.Meta.Credits).Association("Cast").
+		Replace(movie.Meta.Credits.Cast).Error; err != nil {
+		log.Errorf("Cast update error: %s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
 		return
 	}

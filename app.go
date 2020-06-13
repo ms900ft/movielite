@@ -30,10 +30,10 @@ type meta struct {
 }
 
 //Initialize mal sehen
-func (a *Service) Initialize(user, host, password, port, dbname string) {
+func (a *Service) Initialize(dbname string) {
 
 	var err error
-	a.DB = models.ConnectDataBase() // new
+	a.DB = models.ConnectDataBase(dbname) // new
 	if err != nil {
 		log.Fatal(err)
 	}

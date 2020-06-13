@@ -21,12 +21,12 @@ func main() {
 	a := movielight.Service{}
 	//w := movielight.Walker{}
 	//r := movielight.Resanner{}
-	viper.SetConfigName("movieconfig")
-	viper.AddConfigPath("./cmd/films")
-	viper.AddConfigPath("/Users/ms/moviedb")
+	viper.SetConfigName("movielight")
+	//viper.AddConfigPath("./cmd/films")
+	//viper.AddConfigPath("/Users/ms/moviedb")
 	viper.AddConfigPath(".")
-	viper.AddConfigPath("/etc/moviedbconfig")
-	viper.AddConfigPath("/Users/ms")
+	//viper.AddConfigPath("/etc/moviedbconfig")
+	//viper.AddConfigPath("/Users/ms")
 	viper.SetConfigType("yaml")
 	viper.SetDefault("MovieServerUrl", "http://localhost:8000")
 	viper.SetDefault("Rescan.Delay", 10)
@@ -36,17 +36,9 @@ func main() {
 		panic(fmt.Errorf("error config file: %s", err))
 	}
 
-	host := viper.GetString("Database.Host")
-	port := viper.GetString("Database.Port")
-	user := viper.GetString("Database.User")
 	db := viper.GetString("Database.Dbname")
-	password := viper.GetString("Database.Password")
 
 	a.Initialize(
-		user,
-		host,
-		password,
-		port,
 		db)
 
 	var gracefulStop = make(chan os.Signal)

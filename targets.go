@@ -19,7 +19,7 @@ func (s *Service) getTargets(c *gin.Context) {
 	if err != nil {
 		log.Error(err)
 		content := gin.H{"error": err.Error()}
-		c.JSON(http.StatusNotFound, content)
+		c.JSON(http.StatusInternalServerError, content)
 		return
 	}
 

@@ -57,14 +57,14 @@ type MovieShort struct {
 }
 
 type TMDBMovie struct {
-	ID             int64     `gorm:"primary_key"`
-	CreatedAt      time.Time `gorm:"index"`
-	UpdatedAt      time.Time
-	DeletedAt      *time.Time `gorm:"index"`
-	TMDBMovieOrgID int        `json:"ID"`
-	Adult          bool
-	MovieID        uint   `gorm:"index"`
-	BackdropPath   string `json:"backdrop_path"`
+	//ID           int       `gorm:"AUTO_INCREMENT"`
+	CreatedAt    time.Time `gorm:"index"`
+	UpdatedAt    time.Time
+	DeletedAt    *time.Time `gorm:"index"`
+	TMDBMovieID  int        `json:"ID"`
+	Adult        bool
+	MovieID      uint   `gorm:"primary_key" json:"id"`
+	BackdropPath string `json:"backdrop_path"`
 	// BelongsToCollection bool   `json:"belongs_to_collection"`
 	//BelongsToCollection CollectionShort `json:"belongs_to_collection"`
 	Budget   uint32
@@ -77,12 +77,12 @@ type TMDBMovie struct {
 	Overview            string
 	Popularity          float32
 	PosterPath          string                `json:"poster_path"`
-	ProductionCompanies []ProductionCompanies `json:"production_companies"`
-	ProductionCountries []ProductionCountries `json:"production_countries"`
+	ProductionCompanies []ProductionCompanies `json:"production_companies" gorm:"many2many:movie_production_companies;ForeignKey:MovieId"`
+	ProductionCountries []ProductionCountries `json:"production_countries" gorm:"many2many:movie_production_countries;ForeignKey:MovieId"`
 	ReleaseDate         string                `json:"release_date"`
 	Revenue             uint32
 	Runtime             uint32
-	SpokenLanguages     []SpokenLanguages `json:"spoken_languages"`
+	SpokenLanguages     []SpokenLanguages `json:"spoken_languages" gorm:"many2many:movie_spoken_languages;ForeignKey:MovieId"`
 	Status              string
 	Tagline             string
 	Title               string
@@ -104,18 +104,19 @@ type TMDBMovie struct {
 	// ExternalIDs       *MovieExternalIds       `json:"external_ids,omitempty"`
 }
 type Credits struct {
-	//ID   int
-	gorm.Model
-	TMDBMovieID uint   `gorm:"index"`
-	Crew        []Crew `gorm:"foreignkey:CreditsID"`
-	Cast        []Cast `gorm:"foreignkey:CreditsID"`
+	ID int64 `gorm:"primary_key"`
+
+	TMDBMovieMovieID uint   `gorm:"index"`
+	Crew             []Crew `gorm:"many2many:credits_crews;ForeignKey:TMDBMovieMovieID"`
+	Cast             []Cast `gorm:"many2many:credits_casts;ForeignKey:TMDBMovieMovieID"`
 }
 
 type Cast struct {
-	ID        int64 `gorm:"primary_key"`
-	CreditsID uint  `gorm:"index"`
-	CastID    int   `json:"cast_id"`
-	CastOrgID int   `json:"ID" gorm:"index"`
+	ID int64 `gorm:"primary_key"`
+	//TMDBMovieMovieID uint  `gorm:"index"`
+	//CreditsID        uint  `gorm:"index"`
+	CastID    int `json:"cast_id"`
+	CastOrgID int `json:"ID" gorm:"index"`
 
 	CreditID    string `json:"credit_id"`
 	Character   string
@@ -126,8 +127,9 @@ type Cast struct {
 }
 
 type Crew struct {
-	ID         int64  `gorm:"primary_key"`
-	CreditsID  uint   `gorm:"index"`
+	ID int64 `gorm:"primary_key"`
+	//TMDBMovieMovieID uint   `gorm:"index"`
+	//CreditsID        uint   `gorm:"index"`
 	CrewOrgID  int    `json:"ID" gorm:"index"`
 	CreditID   string `json:"credit_id"`
 	Department string
@@ -146,26 +148,22 @@ type Genres struct {
 }
 
 type SpokenLanguages struct {
-	ID          int64 `gorm:"primary_key"`
-	Tmdb_id     int   `json:"ID" gorm:"index:spokenlanguageid"`
-	TMDBMovieID uint
-	Iso639_1    string `json:"iso_639_1"`
-	Name        string
+	Iso639_1 string `gorm:"primary_key" json:"iso_639_1"`
+	Name     string
 }
 
 type ProductionCompanies struct {
-	gorm.Model
-	TMDBMovieID uint
-	Name        string
-	LogoPath    string `json:"logo_path"`
-	Iso3166_1   string `json:"origin_country"`
+	ID        int64 `gorm:"primary_key" json:"id"`
+	Name      string
+	LogoPath  string `json:"logo_path"`
+	Iso3166_1 string `json:"origin_country"`
 }
 
 type ProductionCountries struct {
-	gorm.Model
-	TMDBMovieID uint
-	Iso3166_1   string `json:"iso_3166_1"`
-	Name        string
+
+	//TMDBMovieMovieID uint
+	Iso3166_1 string `gorm:"primary_key" json:"iso_3166_1"`
+	Name      string
 }
 
 const (
@@ -283,18 +281,13 @@ func (m *Movie) MetaById(metaid int) error {
 
 func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
 
-	if m.Meta != nil {
-		var credits string
-		for _, c := range m.Meta.Credits.Cast {
-			credits += c.Name + " "
-		}
-		for _, c := range m.Meta.Credits.Crew {
-			credits += c.Name + " "
-		}
-
-		err = scope.DB().Exec("INSERT INTO moviesearch (ID,Title,Overview,Credits) VALUES($1, $2, $3, $4)",
-			m.ID, m.Title, m.Meta.Overview, credits).Error
+	err = scope.DB().Exec("INSERT INTO moviesearch (ID,Title,Overview,Credits) VALUES($1, $2, $3, $4)",
+		m.ID, m.Title, m.Meta.Overview, m.GetCredits()).Error
+	if err != nil {
+		log.Error(err)
+		return err
 	}
+
 	var users []User
 	if err := scope.DB().Find(&users).Error; err != nil {
 		log.Error(err)
@@ -308,4 +301,29 @@ func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
 		}
 	}
 	return
+}
+
+func (m *Movie) AfterUpdate(scope *gorm.Scope) (err error) {
+
+	err = scope.DB().Exec("UPDATE moviesearch set Title =$2,Overview =$3,Credits=$4 WHERE ID = $1",
+		m.ID, m.Title, m.Meta.Overview, m.GetCredits()).Error
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	return
+}
+
+func (m *Movie) GetCredits() string {
+	var credits string
+	if m.Meta != nil {
+		for _, c := range m.Meta.Credits.Cast {
+			credits += c.Name + " "
+		}
+		for _, c := range m.Meta.Credits.Crew {
+			credits += c.Name + " "
+		}
+	}
+	return credits
 }
