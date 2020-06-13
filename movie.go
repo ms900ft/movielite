@@ -134,9 +134,10 @@ func (s *Service) getMovies(c *gin.Context) {
 	}
 	if q.Person > 0 {
 		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.movie_id=movies.id").
-			Joins("LEFT JOIN credits ON credits.id = tmdb_movies.id").
-			Joins("LEFT JOIN casts ON casts.credits_id = credits.id").
-			Joins("LEFT JOIN crews ON crews.credits_id = credits.id").
+			Joins("LEFT JOIN credits_casts ON credits_casts.credits_tmdb_movie_movie_id = movies.id").
+			Joins("LEFT JOIN casts ON casts.id = credits_casts.cast_id").
+			Joins("LEFT JOIN credits_crews ON credits_crews.credits_tmdb_movie_movie_id = movies.id").
+			Joins("LEFT JOIN crews ON crews.id = credits_crews.crew_id").
 			Where("casts.cast_org_id = ? ", q.Person).
 			Or("crews.crew_org_id = ?", q.Person)
 
