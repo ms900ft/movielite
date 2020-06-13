@@ -68,7 +68,7 @@ type TMDBMovie struct {
 	// BelongsToCollection bool   `json:"belongs_to_collection"`
 	//BelongsToCollection CollectionShort `json:"belongs_to_collection"`
 	Budget   uint32
-	Genres   []Genres `json:"Genres" gorm:"foreignkey:TMDBMovieID"`
+	Genres   []Genres `json:"Genres" gorm:"many2many:movie_genres;ForeignKey:MovieId"`
 	Homepage string
 	//ID               int
 	ImdbID              string `json:"imdb_id"`
@@ -141,10 +141,10 @@ type Crew struct {
 }
 
 type Genres struct {
-	ID          int64 `gorm:"primary_key"`
-	Tmdb_id     int   `json:"ID" gorm:"index:genreid"`
-	TMDBMovieID uint
-	Name        string
+	ID      int64 `gorm:"primary_key"`
+	Tmdb_id int   `json:"ID" gorm:"index:genreid"`
+	//TMDBMovieID uint
+	Name string
 }
 
 type SpokenLanguages struct {
@@ -304,8 +304,41 @@ func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
 }
 
 func (m *Movie) AfterUpdate(scope *gorm.Scope) (err error) {
+	db := scope.DB()
+	if err := db.Model(&m.Meta).Association("ProductionCountries").
+		Replace(m.Meta.ProductionCountries).Error; err != nil {
+		log.Errorf("ProductionCountries update error: %s", err)
 
-	err = scope.DB().Exec("UPDATE moviesearch set Title =$2,Overview =$3,Credits=$4 WHERE ID = $1",
+		return err
+	}
+	if err := db.Model(&m.Meta).Association("ProductionCompanies").
+		Replace(m.Meta.ProductionCompanies).Error; err != nil {
+		log.Errorf("ProductionCompanies update error: %s", err)
+		return err
+	}
+	if err := db.Model(&m.Meta).Association("Genres").
+		Replace(m.Meta.Genres).Error; err != nil {
+		log.Errorf("Genres update error: %s", err)
+		return err
+	}
+	if err := db.Model(&m.Meta).Association("SpokenLanguages").
+		Replace(m.Meta.SpokenLanguages).Error; err != nil {
+		log.Errorf("SpokenLanguages update error: %s", err)
+		return err
+	}
+	if err := db.Model(&m.Meta.Credits).Association("Crew").
+		Replace(m.Meta.Credits.Crew).Error; err != nil {
+		log.Errorf("Crew update error: %s", err)
+		return err
+	}
+	if err := db.Model(&m.Meta.Credits).Association("Cast").
+		Replace(m.Meta.Credits.Cast).Error; err != nil {
+		log.Errorf("Cast update error: %s", err)
+
+		return err
+	}
+
+	err = db.Exec("UPDATE moviesearch set Title =$2,Overview =$3,Credits=$4 WHERE ID = $1",
 		m.ID, m.Title, m.Meta.Overview, m.GetCredits()).Error
 	if err != nil {
 		log.Error(err)

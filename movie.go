@@ -122,12 +122,14 @@ func (s *Service) getMovies(c *gin.Context) {
 	}
 	if q.Genre > 0 {
 		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.movie_id=movies.id").
-			Joins("JOIN genres ON genres.tmdb_movie_id = tmdb_movies.id").
+			Joins("LEFT JOIN movie_genres ON movie_genres.tmdb_movie_movie_id = movies.id").
+			Joins("LEFT JOIN genres ON movie_genres.genres_id = genres.id").
 			Where("genres.tmdb_id = ?", q.Genre)
 	}
 	if len(q.Country) > 0 {
 		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.movie_id=movies.id").
-			Joins("JOIN production_countries ON production_countries.tmdb_movie_id = tmdb_movies.id").
+			Joins(("LEFT JOIN movie_production_countries ON movie_production_countries.tmdb_movie_movie_id = movies.id")).
+			Joins("LEFT JOIN production_countries ON production_countries_iso3166_1 = production_countries.iso3166_1").
 			Where("production_countries.iso3166_1 = ?", q.Country)
 	}
 	if q.Person > 0 {
@@ -317,36 +319,36 @@ func (s *Service) addMeta(c *gin.Context) {
 		return
 	}
 
-	if err := db.Model(&movie.Meta).Association("ProductionCountries").
-		Replace(movie.Meta.ProductionCountries).Error; err != nil {
-		log.Errorf("ProductionCountries update error: %s", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
-		return
-	}
-	if err := db.Model(&movie.Meta).Association("ProductionCompanies").
-		Replace(movie.Meta.ProductionCompanies).Error; err != nil {
-		log.Errorf("ProductionCompanies update error: %s", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
-		return
-	}
-	if err := db.Model(&movie.Meta).Association("SpokenLanguages").
-		Replace(movie.Meta.SpokenLanguages).Error; err != nil {
-		log.Errorf("SpokenLanguages update error: %s", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
-		return
-	}
-	if err := db.Model(&movie.Meta.Credits).Association("Crew").
-		Replace(movie.Meta.Credits.Crew).Error; err != nil {
-		log.Errorf("Crew update error: %s", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
-		return
-	}
-	if err := db.Model(&movie.Meta.Credits).Association("Cast").
-		Replace(movie.Meta.Credits.Cast).Error; err != nil {
-		log.Errorf("Cast update error: %s", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
-		return
-	}
+	// if err := db.Model(&movie.Meta).Association("ProductionCountries").
+	// 	Replace(movie.Meta.ProductionCountries).Error; err != nil {
+	// 	log.Errorf("ProductionCountries update error: %s", err)
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+	// 	return
+	// }
+	// if err := db.Model(&movie.Meta).Association("ProductionCompanies").
+	// 	Replace(movie.Meta.ProductionCompanies).Error; err != nil {
+	// 	log.Errorf("ProductionCompanies update error: %s", err)
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+	// 	return
+	// }
+	// if err := db.Model(&movie.Meta).Association("SpokenLanguages").
+	// 	Replace(movie.Meta.SpokenLanguages).Error; err != nil {
+	// 	log.Errorf("SpokenLanguages update error: %s", err)
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+	// 	return
+	// }
+	// if err := db.Model(&movie.Meta.Credits).Association("Crew").
+	// 	Replace(movie.Meta.Credits.Crew).Error; err != nil {
+	// 	log.Errorf("Crew update error: %s", err)
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+	// 	return
+	// }
+	// if err := db.Model(&movie.Meta.Credits).Association("Cast").
+	// 	Replace(movie.Meta.Credits.Cast).Error; err != nil {
+	// 	log.Errorf("Cast update error: %s", err)
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+	// 	return
+	// }
 	// if old.Multiplechoice != nil {
 
 	// 	if err := db.Delete(old.Multiplechoice); err != nil {
