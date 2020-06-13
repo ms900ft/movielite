@@ -20,8 +20,9 @@ type UpdateMovie struct {
 
 	//Multiplechoice MovieSearchResults `json:"multiplechoice"`
 	//File           File
-	IsTv   bool `json:"is_tv"`
-	Rating int  `json:"rating"`
+	IsTv      bool `json:"is_tv"`
+	Rating    int  `json:"rating"`
+	Watchlist bool `json:"watchlist"`
 
 	LastScanned time.Time
 }
@@ -229,7 +230,25 @@ func (s *Service) updateMovie(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
 		return
 	}
+	hasWatchlist := true
+	w := models.Watchlist{UserID: s.User.ID, MovieID: movie.ID}
+	if db.Find(&w).First(&w).RecordNotFound() {
+		hasWatchlist = false
+	}
 
+	if input.Watchlist != hasWatchlist {
+		if hasWatchlist {
+			if err := db.Delete(&w).Error; err != nil {
+				log.Errorf("toggle watchlist error: %s", err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+			}
+		} else {
+			if err := db.Create(&w).Error; err != nil {
+				log.Errorf("toggle watchlist error: %s", err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+			}
+		}
+	}
 	c.JSON(http.StatusOK, movie)
 }
 
@@ -276,6 +295,7 @@ func (s *Service) addMeta(c *gin.Context) {
 	}
 	old := movie
 	err = movie.MetaById(metaID)
+	movie.Multiplechoice = nil
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error})
@@ -286,12 +306,14 @@ func (s *Service) addMeta(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
 		return
 	}
-	if old.Multiplechoice != nil {
-		if err := db.Delete(old.Multiplechoice); err != nil {
-			log.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error})
-			return
-		}
-	}
+	// if old.Multiplechoice != nil {
+
+	// 	if err := db.Delete(old.Multiplechoice); err != nil {
+
+	// 		log.Error(err)
+	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error})
+	// 		return
+	// 	}
+	// }
 	c.JSON(http.StatusOK, movie)
 }

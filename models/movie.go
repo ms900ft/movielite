@@ -295,5 +295,17 @@ func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
 		err = scope.DB().Exec("INSERT INTO moviesearch (ID,Title,Overview,Credits) VALUES($1, $2, $3, $4)",
 			m.ID, m.Title, m.Meta.Overview, credits).Error
 	}
+	var users []User
+	if err := scope.DB().Find(&users).Error; err != nil {
+		log.Error(err)
+		return err
+	}
+	for _, user := range users {
+		w := Watchlist{UserID: user.ID, MovieID: m.ID}
+		if err := scope.DB().Create(&w).Error; gorm.IsRecordNotFoundError(err) {
+			log.Error(err)
+			return err
+		}
+	}
 	return
 }
