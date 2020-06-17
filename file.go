@@ -67,6 +67,7 @@ func (s *Service) addFile(c *gin.Context) {
 	}
 	//spew.Dump(movie)
 	movie.FileID = file.ID
+	
 	if err := db.Create(&movie).Error; gorm.IsRecordNotFoundError(err) {
 		content := gin.H{"error: ": "create movie" + err.Error()}
 		log.Error(content)

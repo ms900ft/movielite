@@ -12,28 +12,32 @@ import (
 )
 
 type Movie struct {
-	ID             int64     `json:"id" gorm:"primary_key"`
-	CreatedAt      time.Time `sql:"index"`
-	UpdatedAt      time.Time
-	DeletedAt      *time.Time          `sql:"index"`
-	FileID         uint                `json:"file_id"`
-	Title          string              `json:"title"`
-	OrgName        string              `json:"org_name"`
-	Meta           *TMDBMovie          `json:"meta,omitempty"`
-	Multiplechoice *MovieSearchResults `json:"multiplechoice,omitempty" gorm:"foreignkey:MovieID"`
-	File           File
-	IsTv           bool `json:"is_tv" gorm:"index"`
-	Rating         int  `json:"rating"`
-	Watchlist      bool `json:"watchlist" gorm:"-"`
-	LastScanned    time.Time
+	ID                   int64     `json:"id" gorm:"primary_key"`
+	CreatedAt            time.Time `sql:"index"`
+	UpdatedAt            time.Time
+	DeletedAt            *time.Time `sql:"index"`
+	FileID               uint       `json:"file_id"`
+	TMDBMovieID          uint
+	MovieSearchResultsID uint
+	Title                string              `json:"title"`
+	OrgName              string              `json:"org_name"`
+	Meta                 *TMDBMovie          `json:"meta" gorm:"foreignkey:TMDBMovieID"`
+	Multiplechoice       *MovieSearchResults `json:"multiplechoice" gorm:"foreignkey:MovieSearchResultsID"`
+	File                 File
+	IsTv                 bool `json:"is_tv" gorm:"index"`
+	Rating               int  `json:"rating"`
+	Watchlist            bool `json:"watchlist" gorm:"-"`
+	LastScanned          time.Time
 }
 
 type MovieSearchResults struct {
-	gorm.Model
-	//tmdb.MovieSearchResults
-	MovieID      uint
+	ID        int       `gorm:"AUTO_INCREMENT"`
+	CreatedAt time.Time `gorm:"index"`
+	UpdatedAt time.Time
+	DeletedAt *time.Time `gorm:"index"`
+
 	Page         int
-	Results      []MovieShort `gorm:"foreignkey:MovieSearchResultsID"`
+	Results      []MovieShort `json:"Results" gorm:"many2many:movie_search_results_movie_short"`
 	TotalPages   int          `json:"total_pages"`
 	TotalResults int          `json:"total_results"`
 }
@@ -57,18 +61,18 @@ type MovieShort struct {
 }
 
 type TMDBMovie struct {
-	//ID           int       `gorm:"AUTO_INCREMENT"`
-	CreatedAt    time.Time `gorm:"index"`
-	UpdatedAt    time.Time
-	DeletedAt    *time.Time `gorm:"index"`
-	TMDBMovieID  int        `json:"ID"`
-	Adult        bool
-	MovieID      uint   `gorm:"primary_key" json:"id"`
+	ID        int       `gorm:"AUTO_INCREMENT"`
+	CreatedAt time.Time `gorm:"index"`
+	UpdatedAt time.Time
+	DeletedAt *time.Time `gorm:"index"`
+	//TMDBMovieID int        `json:"ID"`
+	Adult bool
+	//MovieID      int64  `gorm:"primary_key" json:"id"`
 	BackdropPath string `json:"backdrop_path"`
 	// BelongsToCollection bool   `json:"belongs_to_collection"`
 	//BelongsToCollection CollectionShort `json:"belongs_to_collection"`
 	Budget   uint32
-	Genres   []Genres `json:"Genres" gorm:"many2many:movie_genres;ForeignKey:MovieId"`
+	Genres   []Genres `json:"Genres" gorm:"many2many:tmdb_movie_genres"`
 	Homepage string
 	//ID               int
 	ImdbID              string `json:"imdb_id"`
@@ -77,12 +81,12 @@ type TMDBMovie struct {
 	Overview            string
 	Popularity          float32
 	PosterPath          string                `json:"poster_path"`
-	ProductionCompanies []ProductionCompanies `json:"production_companies" gorm:"many2many:movie_production_companies;ForeignKey:MovieId"`
-	ProductionCountries []ProductionCountries `json:"production_countries" gorm:"many2many:movie_production_countries;ForeignKey:MovieId"`
+	ProductionCompanies []ProductionCompanies `json:"production_companies" gorm:"many2many:tmdb_movie_production_companies"`
+	ProductionCountries []ProductionCountries `json:"production_countries" gorm:"many2many:tmdb_movie_production_countries"`
 	ReleaseDate         string                `json:"release_date"`
 	Revenue             uint32
 	Runtime             uint32
-	SpokenLanguages     []SpokenLanguages `json:"spoken_languages" gorm:"many2many:movie_spoken_languages;ForeignKey:MovieId"`
+	SpokenLanguages     []SpokenLanguages `json:"spoken_languages" gorm:"many2many:tmdb_movie_spoken_languages"`
 	Status              string
 	Tagline             string
 	Title               string
@@ -106,17 +110,17 @@ type TMDBMovie struct {
 type Credits struct {
 	ID int64 `gorm:"primary_key"`
 
-	TMDBMovieMovieID uint   `gorm:"index"`
-	Crew             []Crew `gorm:"many2many:credits_crews;ForeignKey:TMDBMovieMovieID"`
-	Cast             []Cast `gorm:"many2many:credits_casts;ForeignKey:TMDBMovieMovieID"`
+	TMDBMovieID uint   `gorm:"index"`
+	Crew        []Crew `gorm:"many2many:credits_crews"`
+	Cast        []Cast `gorm:"many2many:credits_casts"`
 }
 
 type Cast struct {
-	ID int64 `gorm:"primary_key"`
+	//ID int64 `gorm:"primary_key"`
 	//TMDBMovieMovieID uint  `gorm:"index"`
 	//CreditsID        uint  `gorm:"index"`
-	CastID    int `json:"cast_id"`
-	CastOrgID int `json:"ID" gorm:"index"`
+	//CastID    int `json:"cast_id"`
+	ID int `json:"ID" gorm:"index"`
 
 	CreditID    string `json:"credit_id"`
 	Character   string
@@ -127,10 +131,10 @@ type Cast struct {
 }
 
 type Crew struct {
-	ID int64 `gorm:"primary_key"`
+	//ID int64 `gorm:"primary_key"`
 	//TMDBMovieMovieID uint   `gorm:"index"`
 	//CreditsID        uint   `gorm:"index"`
-	CrewOrgID  int    `json:"ID" gorm:"index"`
+	ID         int    `json:"ID" gorm:"index"`
 	CreditID   string `json:"credit_id"`
 	Department string
 	Gender     int `json:"gender"`
@@ -142,9 +146,10 @@ type Crew struct {
 
 type Genres struct {
 	ID      int64 `gorm:"primary_key"`
-	Tmdb_id int   `json:"ID" gorm:"index:genreid"`
-	//TMDBMovieID uint
-	Name string
+	Tmdb_id int   `json:"ID" `
+	//
+	TMDBMovieID uint
+	Name        string
 }
 
 type SpokenLanguages struct {
@@ -222,10 +227,12 @@ func (m *Movie) GetMeta() (err error) {
 		}
 		if res.TotalResults > 0 {
 			m.Multiplechoice = &msr
+			m.Meta = nil
 		}
 	} else {
 		meta, err := getTMDBMeta(hit)
 		m.Meta = &meta
+		m.Multiplechoice = nil
 		//m.Multiplechoice = nil
 		if err != nil {
 			log.Error(err)
@@ -276,15 +283,27 @@ func (m *Movie) MetaById(metaid int) error {
 	}
 	m.Meta = &meta
 	m.Multiplechoice = nil
+	//m.Meta.MovieID = m.ID
 	return nil
 }
 
 func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
-
-	err = scope.DB().Exec("INSERT INTO moviesearch (ID,Title,Overview,Credits) VALUES($1, $2, $3, $4)",
-		m.ID, m.Title, m.Meta.Overview, m.GetCredits()).Error
-	if err != nil {
-		log.Error(err)
+	//spew.Dump(m)
+	// if m.Meta != nil {
+	// 	err = scope.DB().Exec("INSERT INTO moviesearch (ID,Title,Overview,Credits) VALUES($1, $2, $3, $4)",
+	// 		m.ID, m.Title, m.Meta.Overview, m.GetCredits()).Error
+	// 	if err != nil {
+	// 		log.Error(err)
+	// 		return err
+	// 	}
+	// }
+	fulltext := Fulltext{MovieID: m.ID}
+	fulltext.Title = m.Title
+	if m.Meta != nil {
+		fulltext.Overview = m.Meta.Overview
+		fulltext.Credits = m.GetCredits()
+	}
+	if err := scope.DB().Debug().Create(&fulltext).Error; err != nil {
 		return err
 	}
 
@@ -304,59 +323,88 @@ func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
 }
 
 func (m *Movie) AfterUpdate(scope *gorm.Scope) (err error) {
-	db := scope.DB()
-	if err := db.Model(&m.Meta).Association("ProductionCountries").
-		Replace(m.Meta.ProductionCountries).Error; err != nil {
-		log.Errorf("ProductionCountries update error: %s", err)
 
-		return err
+	fulltext := Fulltext{MovieID: m.ID}
+	found := true
+	if err := scope.DB().Where("movie_id = ?", m.ID).First(&fulltext).Error; gorm.IsRecordNotFoundError(err) {
+		found = false
 	}
-	if err := db.Model(&m.Meta).Association("ProductionCompanies").
-		Replace(m.Meta.ProductionCompanies).Error; err != nil {
-		log.Errorf("ProductionCompanies update error: %s", err)
-		return err
+	fulltext.Title = m.Title
+	if m.Meta != nil {
+		fulltext.Overview = m.Meta.Overview
+		fulltext.Credits = m.GetCredits()
 	}
-	if err := db.Model(&m.Meta).Association("Genres").
-		Replace(m.Meta.Genres).Error; err != nil {
-		log.Errorf("Genres update error: %s", err)
-		return err
+	if found {
+		if err := scope.DB().Debug().Model(&fulltext).Update(&fulltext).Error; err != nil {
+			return err
+		}
+	} else {
+		if err := scope.DB().Debug().Create(&fulltext).Error; err != nil {
+			return err
+		}
 	}
-	if err := db.Model(&m.Meta).Association("SpokenLanguages").
-		Replace(m.Meta.SpokenLanguages).Error; err != nil {
-		log.Errorf("SpokenLanguages update error: %s", err)
-		return err
-	}
-	if err := db.Model(&m.Meta.Credits).Association("Crew").
-		Replace(m.Meta.Credits.Crew).Error; err != nil {
-		log.Errorf("Crew update error: %s", err)
-		return err
-	}
-	if err := db.Model(&m.Meta.Credits).Association("Cast").
-		Replace(m.Meta.Credits.Cast).Error; err != nil {
-		log.Errorf("Cast update error: %s", err)
-
-		return err
-	}
-
-	err = db.Exec("UPDATE moviesearch set Title =$2,Overview =$3,Credits=$4 WHERE ID = $1",
-		m.ID, m.Title, m.Meta.Overview, m.GetCredits()).Error
-	if err != nil {
-		log.Error(err)
-		return err
-	}
-
 	return
 }
 
 func (m *Movie) GetCredits() string {
 	var credits string
-	if m.Meta != nil {
-		for _, c := range m.Meta.Credits.Cast {
-			credits += c.Name + " "
-		}
-		for _, c := range m.Meta.Credits.Crew {
-			credits += c.Name + " "
-		}
+	//if m.Meta != nil {
+	for _, c := range m.Meta.Credits.Cast {
+		credits += c.Name + " "
 	}
+	for _, c := range m.Meta.Credits.Crew {
+		credits += c.Name + " "
+	}
+	//	}
 	return credits
+}
+
+func (m *Movie) DeleteMeta(db *gorm.DB, movie *Movie) (err error) {
+
+	if err := db.Debug().Model(movie.Meta).Association("ProductionCountries").
+		Delete(movie.Meta.ProductionCountries).Error; err != nil {
+		log.Errorf("ProductionCountries delete error: %s", err)
+		return err
+	}
+	if err := db.Debug().Model(movie.Meta).Association("ProductionCompanies").
+		Delete(movie.Meta.ProductionCompanies).Error; err != nil {
+		log.Errorf("ProductionCompanies delete error: %s", err)
+		return err
+	}
+	if err := db.Debug().Model(movie.Meta).Association("Genres").
+		Delete(movie.Meta.Genres).Error; err != nil {
+		log.Errorf("Genres update error: %s", err)
+		return err
+	}
+	if err := db.Debug().Model(movie.Meta).Association("SpokenLanguages").
+		Delete(movie.Meta.SpokenLanguages).Error; err != nil {
+		log.Errorf("SpokenLanguages update error: %s", err)
+		return err
+	}
+
+	if err := db.Debug().Model(movie.Meta.Credits).Association("Crew").
+		Delete(movie.Meta.Credits.Crew).Error; err != nil {
+		log.Errorf("Crew update error: %s", err)
+		return err
+	}
+	if err := db.Debug().Model(movie.Meta.Credits).Association("Cast").
+		Delete(movie.Meta.Credits.Cast).Error; err != nil {
+		log.Errorf("Cast update error: %s", err)
+
+		return err
+	}
+	if err := db.Debug().Model(movie.Meta).Association("Credits").
+		Delete(movie.Meta.Credits).Error; err != nil {
+		log.Errorf("Crew update error: %s", err)
+		return err
+	}
+
+	// err = db.Exec("UPDATE moviesearch set Title =$2,Overview =$3,Credits=$4 WHERE ID = $1",
+	// 	m.ID, m.Title, m.Meta.Overview, m.GetCredits()).Error
+	// if err != nil {
+	// 	log.Error(err)
+	// 	return err
+	// }
+
+	return
 }

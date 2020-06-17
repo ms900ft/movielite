@@ -8,7 +8,7 @@ import (
 
 func ConnectDataBase(dbname string) *gorm.DB {
 	database, err := gorm.Open("sqlite3", dbname)
-	database.LogMode(true)
+	//database.LogMode(true)
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
@@ -17,7 +17,7 @@ func ConnectDataBase(dbname string) *gorm.DB {
 		&TMDBMovie{}, &Credits{}, &Cast{}, &Crew{}, &Genres{}, &SpokenLanguages{},
 		&ProductionCompanies{}, &ProductionCountries{}, &User{}, &Watchlist{}, &Recently{},
 	)
-	_, err = database.DB().Exec("CREATE VIRTUAL  TABLE IF NOT EXISTS moviesearch USING fts5(ID, Title, Overview,Credits);")
+	_, err = database.DB().Exec("CREATE VIRTUAL  TABLE IF NOT EXISTS fulltexts USING fts5(movie_id, title, overview,credits);")
 	if err != nil {
 		log.Fatal(err)
 	}
