@@ -145,8 +145,8 @@ type Crew struct {
 }
 
 type Genres struct {
-	ID      int64 `gorm:"primary_key"`
-	Tmdb_id int   `json:"ID" `
+	//ID      int64 `gorm:"primary_key"`
+	TmdbID int `gorm:"primary_key" json:"ID" `
 	//
 	TMDBMovieID uint
 	Name        string
@@ -303,7 +303,7 @@ func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
 		fulltext.Overview = m.Meta.Overview
 		fulltext.Credits = m.GetCredits()
 	}
-	if err := scope.DB().Debug().Create(&fulltext).Error; err != nil {
+	if err := scope.DB().Create(&fulltext).Error; err != nil {
 		return err
 	}
 
@@ -335,11 +335,11 @@ func (m *Movie) AfterUpdate(scope *gorm.Scope) (err error) {
 		fulltext.Credits = m.GetCredits()
 	}
 	if found {
-		if err := scope.DB().Debug().Model(&fulltext).Update(&fulltext).Error; err != nil {
+		if err := scope.DB().Model(&fulltext).Update(&fulltext).Error; err != nil {
 			return err
 		}
 	} else {
-		if err := scope.DB().Debug().Create(&fulltext).Error; err != nil {
+		if err := scope.DB().Create(&fulltext).Error; err != nil {
 			return err
 		}
 	}

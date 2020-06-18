@@ -87,8 +87,8 @@ func (s *Service) getMovies(c *gin.Context) {
 
 	if len(q.Qtitel) > 0 {
 		if fulltext {
-			tx = tx.Joins("JOIN moviesearch on moviesearch.ID = movies.id").
-				Where("moviesearch = ?", fmt.Sprintf("%s*", q.Qtitel))
+			tx = tx.Joins("JOIN fulltexts on fulltexts.movie_id = movies.id").
+				Where("fulltexts = ?", fmt.Sprintf("%s*", q.Qtitel))
 			//	strings.Replace(q.Qtitel, " ", "&", -1)+":*")
 		} else {
 			tx = tx.Where("movies.title LIKE ?", fmt.Sprint("%", q.Qtitel, "%"))
@@ -103,7 +103,7 @@ func (s *Service) getMovies(c *gin.Context) {
 
 	switch {
 	case q.Show == "multiple":
-		tx = tx.Joins("JOIN movie_search_results on movie_search_results.movie_id=movies.id")
+		tx = tx.Where("movies.movie_search_results_id > 0")
 	case q.Orderby == "recent":
 		tx = tx.Joins("LEFT JOIN recentlies on recentlies.movie_id = movies.id").
 			Where("recentlies.user_id = ?", s.User.ID)
@@ -114,32 +114,34 @@ func (s *Service) getMovies(c *gin.Context) {
 	case q.Show == "notitle":
 		tx = tx.Where("title = ?", "")
 	case q.Show == "nodesc":
-		tx = tx.Joins("LEFT JOIN tmdb_movies on tmdb_movies.movie_id=movies.id").
-			Where("tmdb_movies.movie_id is null")
+		tx = tx.Where("movies.tmdb_movie_id == 0")
 	case q.Show == "watchlist":
 		tx = tx.Where("watchlists.movie_id is not null AND watchlists.user_id = ?", s.User.ID)
 
 	}
 	if q.Genre > 0 {
-		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.movie_id=movies.id").
-			Joins("LEFT JOIN movie_genres ON movie_genres.tmdb_movie_movie_id = movies.id").
-			Joins("LEFT JOIN genres ON movie_genres.genres_id = genres.id").
+		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.id=movies.tmdb_movie_id").
+			Joins("LEFT JOIN tmdb_movie_genres ON tmdb_movie_genres.tmdb_movie_id = movies.tmdb_movie_id").
+			Joins("LEFT JOIN genres ON tmdb_movie_genres.genres_tmdb_id = genres.tmdb_id").
 			Where("genres.tmdb_id = ?", q.Genre)
 	}
 	if len(q.Country) > 0 {
-		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.movie_id=movies.id").
-			Joins(("LEFT JOIN movie_production_countries ON movie_production_countries.tmdb_movie_movie_id = movies.id")).
-			Joins("LEFT JOIN production_countries ON production_countries_iso3166_1 = production_countries.iso3166_1").
+		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.id=movies.tmdb_movie_id").
+			Joins(("LEFT JOIN tmdb_movie_production_countries ON tmdb_movie_production_countries.tmdb_movie_id = movies.tmdb_movie_id")).
+			Joins("LEFT JOIN production_countries ON tmdb_movie_production_countries.production_countries_iso3166_1 = production_countries.iso3166_1").
 			Where("production_countries.iso3166_1 = ?", q.Country)
 	}
 	if q.Person > 0 {
-		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.movie_id=movies.id").
-			Joins("LEFT JOIN credits_casts ON credits_casts.credits_tmdb_movie_movie_id = movies.id").
+		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.id=movies.tmdb_movie_id").
+			Joins("LEFT JOIN credits ON credits.tmdb_movie_id = movies.tmdb_movie_id").
+			Joins("LEFT JOIN credits_casts ON credits_casts.credits_id = credits.id").
 			Joins("LEFT JOIN casts ON casts.id = credits_casts.cast_id").
-			Joins("LEFT JOIN credits_crews ON credits_crews.credits_tmdb_movie_movie_id = movies.id").
+			Joins("LEFT JOIN credits_crews ON credits_crews.credits_id = credits.id").
 			Joins("LEFT JOIN crews ON crews.id = credits_crews.crew_id").
-			Where("casts.cast_org_id = ? ", q.Person).
-			Or("crews.crew_org_id = ?", q.Person)
+			//Joins("LEFT JOIN credits_crews ON credits_crews.credits_tmdb_movie_movie_id = movies.id").
+			//Joins("LEFT JOIN crews ON crews.id = credits_crews.crew_id").
+			Where("credits_casts.cast_id = ? ", q.Person).
+			Or("credits_crews.crew_id = ?", q.Person)
 
 	}
 
