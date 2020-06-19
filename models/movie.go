@@ -3,6 +3,11 @@ package models
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -28,6 +33,7 @@ type Movie struct {
 	Rating               int  `json:"rating"`
 	Watchlist            bool `json:"watchlist" gorm:"-"`
 	LastScanned          time.Time
+	Deleted              bool `gorm:"-"`
 }
 
 type MovieSearchResults struct {
@@ -176,6 +182,16 @@ const (
 	WATCHLIST = "watchlist"
 )
 
+const raw = `
+on run argv
+  tell application "Finder"
+    repeat with f in argv
+      move (f as POSIX file) to trash
+    end repeat
+  end tell
+end run
+`
+
 func (m *Movie) GetMeta() (err error) {
 	defer func() {
 		// recover from panic if one occurred. Set err to nil otherwise.
@@ -288,15 +304,9 @@ func (m *Movie) MetaById(metaid int) error {
 }
 
 func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
-	//spew.Dump(m)
-	// if m.Meta != nil {
-	// 	err = scope.DB().Exec("INSERT INTO moviesearch (ID,Title,Overview,Credits) VALUES($1, $2, $3, $4)",
-	// 		m.ID, m.Title, m.Meta.Overview, m.GetCredits()).Error
-	// 	if err != nil {
-	// 		log.Error(err)
-	// 		return err
-	// 	}
-	// }
+	if m.DeletedAt != nil {
+		return
+	}
 	fulltext := Fulltext{MovieID: m.ID}
 	fulltext.Title = m.Title
 	if m.Meta != nil {
@@ -344,6 +354,42 @@ func (m *Movie) AfterUpdate(scope *gorm.Scope) (err error) {
 		}
 	}
 	return
+}
+
+func (m *Movie) AfterDelete(scope *gorm.Scope) (err error) {
+	var users []User
+	if err := scope.DB().Find(&users).Error; err != nil {
+		log.Error(err)
+		return err
+	}
+	for _, user := range users {
+		w := Watchlist{UserID: user.ID, MovieID: m.ID}
+		if err := scope.DB().Delete(&w).Error; err != nil {
+			log.Error(err)
+			return err
+		}
+		r := Recently{UserID: user.ID, MovieID: m.ID}
+		if err := scope.DB().Delete(&r).Error; err != nil {
+			log.Error(err)
+			return err
+		}
+	}
+	f := Fulltext{MovieID: m.ID}
+	if err := scope.DB().Delete(&f).Error; err != nil {
+		log.Error(err)
+		return err
+	}
+	trashcan := viper.GetString("TrashCan")
+	log.Debugf("trash %s", trashcan)
+	if trashcan != "" {
+		log.Debugf("moving %s to trashcan", m.File.FullPath)
+		_, err = Trash(m.File.FullPath, trashcan)
+		if err != nil {
+			log.Error(err)
+			return err
+		}
+	}
+	return err
 }
 
 func (m *Movie) GetCredits() string {
@@ -407,4 +453,47 @@ func (m *Movie) DeleteMeta(db *gorm.DB, movie *Movie) (err error) {
 	// }
 
 	return
+}
+
+func Trash(f string, trash string) (trashcan string, err error) {
+	bin, err := exec.LookPath("osascript")
+	if err != nil {
+		err = fmt.Errorf("not yet supported")
+		return
+	}
+
+	if _, err = os.Stat(trash); err != nil {
+		err = fmt.Errorf("trash not found")
+		return
+	}
+
+	path, err := filepath.Abs(f)
+	if err != nil {
+		return
+	}
+	base := filepath.Base(path)
+	ext := filepath.Ext(base)
+	name := strings.TrimSuffix(base, ext)
+	_ = name
+
+	dest := filepath.Join(trash, base)
+	if _, err = os.Stat(dest); err == nil {
+		err = fmt.Errorf("already exists")
+		return
+	}
+	trashcan = dest
+	log.Debug(path)
+	params := append([]string{"-e", raw}, path)
+	cmd := exec.Command(bin, params...)
+	log.Debugf("%+v", params)
+	if err = cmd.Run(); err != nil {
+		log.Error(err)
+		return
+	}
+
+	if _, err = os.Stat(trashcan); err != nil {
+		trashcan = ""
+	}
+
+	return trashcan, err
 }

@@ -26,7 +26,7 @@ func main() {
 	for {
 		log.Debug("getting next movie to migrate")
 		i++
-		url := fmt.Sprintf("%s/movie?&limit=1&offset=%d", src, *offset)
+		url := fmt.Sprintf("%s/movie?&limit=1&offset=%d&show=all", src, *offset)
 		*offset++
 		log.Debugf("Getting: %s", url)
 		req, err := http.NewRequest("GET", url, nil)

@@ -198,6 +198,10 @@ func (s *Service) createMovie(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if movie.Deleted {
+		t := time.Now()
+		movie.DeletedAt = &t
+	}
 	f := []models.File{}
 	if err := db.Where("full_path = ?", movie.File.FullPath).Find(&f).Error; err != nil {
 		log.Error(err)
