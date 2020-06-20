@@ -22,7 +22,6 @@ func (s *Service) getFiles(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, files)
-
 }
 
 func (s *Service) getFile(c *gin.Context) {
@@ -36,7 +35,6 @@ func (s *Service) getFile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, file)
-
 }
 
 func (s *Service) addFile(c *gin.Context) {

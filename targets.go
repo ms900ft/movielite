@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -15,7 +14,7 @@ type Target struct {
 }
 
 func (s *Service) getTargets(c *gin.Context) {
-	targets, err := getDirectories()
+	targets, err := s.getDirectories()
 	if err != nil {
 		log.Error(err)
 		content := gin.H{"error": err.Error()}
@@ -26,8 +25,8 @@ func (s *Service) getTargets(c *gin.Context) {
 	c.JSON(http.StatusOK, targets)
 }
 
-func getDirectories() ([]Target, error) {
-	target := viper.GetString("TargetDirectory")
+func (s *Service) getDirectories() ([]Target, error) {
+	target := s.Config.TargetDir
 	log.Debugf("target dir %s", target)
 	var dirs = []Target{}
 	//var err = errors.New("")

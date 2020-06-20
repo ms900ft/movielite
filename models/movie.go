@@ -292,7 +292,7 @@ func getTMDBMeta(id int) (TMDBMovie, error) {
 	return msr, err
 }
 
-func (m *Movie) MetaById(metaid int) error {
+func (m *Movie) MetaByID(metaid int) error {
 	meta, err := getTMDBMeta(metaid)
 	if err != nil {
 		log.Error(err)
@@ -334,7 +334,6 @@ func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
 }
 
 func (m *Movie) AfterUpdate(scope *gorm.Scope) (err error) {
-
 	fulltext := Fulltext{MovieID: m.ID}
 	found := true
 	if err := scope.DB().Where("movie_id = ?", m.ID).First(&fulltext).Error; gorm.IsRecordNotFoundError(err) {
@@ -407,7 +406,6 @@ func (m *Movie) GetCredits() string {
 }
 
 func (m *Movie) DeleteMeta(db *gorm.DB, movie *Movie) (err error) {
-
 	if err := db.Debug().Model(movie.Meta).Association("ProductionCountries").
 		Delete(movie.Meta.ProductionCountries).Error; err != nil {
 		log.Errorf("ProductionCountries delete error: %s", err)
@@ -445,15 +443,7 @@ func (m *Movie) DeleteMeta(db *gorm.DB, movie *Movie) (err error) {
 		log.Errorf("Crew update error: %s", err)
 		return err
 	}
-
-	// err = db.Exec("UPDATE moviesearch set Title =$2,Overview =$3,Credits=$4 WHERE ID = $1",
-	// 	m.ID, m.Title, m.Meta.Overview, m.GetCredits()).Error
-	// if err != nil {
-	// 	log.Error(err)
-	// 	return err
-	// }
-
-	return
+	return err
 }
 
 func Trash(f string, trash string) (trashcan string, err error) {

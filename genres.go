@@ -8,8 +8,8 @@ import (
 )
 
 type genres struct {
-	Tmdb_id int    `json:"tmdb_id"`
-	Name    string `json:"name"`
+	TmdbID int    `json:"tmdb_id"`
+	Name   string `json:"name"`
 }
 
 func (s *Service) getGenres(c *gin.Context) {

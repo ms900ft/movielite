@@ -33,7 +33,6 @@ type meta struct {
 
 //Initialize mal sehen
 func (a *Service) Initialize(dbname string) {
-
 	var err error
 	a.DB = models.ConnectDataBase(dbname) // new
 	if err != nil {

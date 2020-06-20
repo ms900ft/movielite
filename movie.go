@@ -344,7 +344,7 @@ func (s *Service) addMeta(c *gin.Context) {
 		return
 	}
 	old := movie
-	err = movie.MetaById(metaID)
+	err = movie.MetaByID(metaID)
 	movie.Title = movie.Meta.Title
 
 	//log.Debug(movie.Title)

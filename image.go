@@ -11,13 +11,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 func (s *Service) getMovieImages(c *gin.Context) {
 	mid, _ := strconv.Atoi(c.Param("id"))
 	//mi := MovieInfo{ID: mid}
-	images, err := getTMDBMovieImages(mid)
+	images, err := s.getTMDBMovieImages(mid)
 	//	var mj JSONB
 	//	b, err = json.Marshal(images)
 	if err != nil {
@@ -27,8 +26,8 @@ func (s *Service) getMovieImages(c *gin.Context) {
 }
 
 func (s *Service) getImage(c *gin.Context) {
-	imageURL := viper.GetString("TMDB.ImageUrl")
-	imageDir := viper.GetString("TMDB.ImageDir")
+	imageURL := s.Config.TMDBImageURL
+	imageDir := s.Config.TMDBImageDir
 	size := c.Param("size")
 	image := c.Param("image")
 	url := fmt.Sprintf("%s/%s/%s", imageURL, size, image)
@@ -82,9 +81,8 @@ func (s *Service) getImage(c *gin.Context) {
 	c.File(imagepath)
 }
 
-func getTMDBMovieImages(id int) (*tmdb.MovieImages, error) {
-	apikey := viper.GetString("TMDB.ApiKey")
-	conf := tmdb.Config{APIKey: apikey}
+func (s *Service) getTMDBMovieImages(id int) (*tmdb.MovieImages, error) {
+	conf := tmdb.Config{APIKey: s.Config.TMDBApiKey}
 	TMDb := tmdb.Init(conf)
 	var options = make(map[string]string)
 

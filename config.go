@@ -8,8 +8,12 @@ import (
 )
 
 type Config struct {
-	Port int
-	Mode string
+	Port         int
+	Mode         string
+	TMDBImageDir string
+	TMDBImageURL string
+	TMDBApiKey   string
+	TargetDir    string
 }
 
 func GetConfig() *Config {
@@ -22,6 +26,7 @@ func GetConfig() *Config {
 	viper.SetDefault("Rescan.Delay", 10)
 	viper.SetDefault("language", "de-DE")
 	viper.SetDefault("Port", 8000)
+	viper.SetDefault("TMDB.ImageURL", "https://image.tmdb.org/t/p")
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
 		panic(fmt.Errorf("error config file: %s", err))
@@ -34,5 +39,9 @@ func GetConfig() *Config {
 	c := Config{}
 	c.Port = viper.GetInt("Port")
 	c.Mode = viper.GetString("Mode")
+	c.TMDBImageURL = viper.GetString("TMDB.ImageUrl")
+	c.TMDBImageDir = viper.GetString("TMDB.ImageDir")
+	c.TMDBApiKey = viper.GetString("TMDB.ApiKey")
+	c.TargetDir = viper.GetString("TargetDirectory")
 	return &c
 }
