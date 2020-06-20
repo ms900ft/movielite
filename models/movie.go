@@ -22,7 +22,7 @@ type Movie struct {
 	UpdatedAt            time.Time
 	DeletedAt            *time.Time `sql:"index"`
 	FileID               uint       `json:"file_id"`
-	TMDBMovieID          uint
+	TMDBMovieID          uint       `sql:"index"`
 	MovieSearchResultsID uint
 	Title                string              `json:"title"`
 	OrgName              string              `json:"org_name"`
@@ -128,7 +128,7 @@ type Cast struct {
 	//CastID    int `json:"cast_id"`
 	ID int `json:"ID" gorm:"index"`
 
-	CreditID    string `json:"credit_id"`
+	CreditID    string `json:"credit_id" gorm:"index"`
 	Character   string
 	Name        string
 	XGender     int `json:"gender"`
@@ -141,7 +141,7 @@ type Crew struct {
 	//TMDBMovieMovieID uint   `gorm:"index"`
 	//CreditsID        uint   `gorm:"index"`
 	ID         int    `json:"ID" gorm:"index"`
-	CreditID   string `json:"credit_id"`
+	CreditID   string `json:"credit_id" gorm:"index"`
 	Department string
 	Gender     int `json:"gender"`
 	//	ID          int
@@ -154,7 +154,7 @@ type Genres struct {
 	//ID      int64 `gorm:"primary_key"`
 	TmdbID int `gorm:"primary_key" json:"ID" `
 	//
-	TMDBMovieID uint
+	TMDBMovieID uint `gorm:"index"`
 	Name        string
 }
 

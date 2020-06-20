@@ -81,9 +81,9 @@ func (s *Service) getMovies(c *gin.Context) {
 	tx := db.Set("gorm:auto_preload", true).Model(&models.Movie{}).
 		Select("movies.id, movies.file_id,movies.tmdb_movie_id,movies.movie_search_results_id, movies.title,movies.is_tv,movies.rating, CASE WHEN watchlists.movie_id is not null then true else false  end as watchlist").
 		Joins("JOIN files on files.id=movies.file_id").
-		Joins("Left Join watchlists ON (movies.id = watchlists.movie_id)").
+		Joins("Left Join watchlists ON (movies.id = watchlists.movie_id)")
 		//Where("watchlists.user_id = ?", s.User.ID).
-		Where("is_tv = false")
+		//Where("is_tv = false")
 
 	if len(q.Qtitel) > 0 {
 		if fulltext {
@@ -132,19 +132,28 @@ func (s *Service) getMovies(c *gin.Context) {
 			Where("production_countries.iso3166_1 = ?", q.Country)
 	}
 	if q.Person > 0 {
-		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.id=movies.tmdb_movie_id").
-			Joins("LEFT JOIN credits ON credits.tmdb_movie_id = movies.tmdb_movie_id").
-			Joins("LEFT JOIN credits_casts ON credits_casts.credits_id = credits.id").
-			Joins("LEFT JOIN casts ON casts.id = credits_casts.cast_id").
-			Joins("LEFT JOIN credits_crews ON credits_crews.credits_id = credits.id").
-			Joins("LEFT JOIN crews ON crews.id = credits_crews.crew_id").
-			//Joins("LEFT JOIN credits_crews ON credits_crews.credits_tmdb_movie_movie_id = movies.id").
-			//Joins("LEFT JOIN crews ON crews.id = credits_crews.crew_id").
-			Where("credits_casts.cast_id = ? ", q.Person).
-			Or("credits_crews.crew_id = ?", q.Person)
+		// tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.id=movies.tmdb_movie_id").
+		// 	Joins("LEFT JOIN credits ON credits.tmdb_movie_id = movies.tmdb_movie_id").
+		// 	Joins("LEFT JOIN credits_casts ON credits_casts.credits_id = credits.id").
+		// 	Joins("LEFT JOIN casts ON casts.id = credits_casts.cast_id").
+		// 	Joins("LEFT JOIN credits_crews ON credits_crews.credits_id = credits.id").
+		// 	//Joins("LEFT JOIN crews ON crews.id = credits_crews.crew_id").
+		// 	Where("credits_casts.cast_id = ? ", q.Person).
+		// 	Or("credits_crews.crew_id = ?", q.Person)
+		tx = tx.Where(` tmdb_movie_id
+     								IN (SELECT id
+                    FROM tmdb_movies where (
+                    id in (select tmdb_movie_id from credits WHERE
+                    id in (select credits_id from credits_casts WHERE
+										cast_id = ?))
+										OR
+										id in (select tmdb_movie_id from credits WHERE
+                    id in (select credits_id from credits_crews WHERE
+										crew_id = ?))
+                    ))`, q.Person, q.Person)
 
 	}
-
+	tx = tx.Where("movies.is_tv = false")
 	//order
 	switch {
 	case q.Orderby == "name" || len(q.Alpha) > 0:
@@ -274,18 +283,6 @@ func (s *Service) updateMovie(c *gin.Context) {
 
 		}
 	}
-	// err := movie.DeleteMeta(db, &old)
-	// if err != nil {
-	// 	log.Error(err)
-	//	}
-	//	}
-	// if movie.Multiplechoice == nil {
-	// 	if err := db.Delete(old.Multiplechoice).
-	// 		Error; err != nil {
-	// 		log.Errorf("remove multiplechoice: %s", err)
-	// 		//return err
-	// 	}
-	// }
 	hasWatchlist := true
 	w := models.Watchlist{UserID: s.User.ID, MovieID: movie.ID}
 	if db.Find(&w).First(&w).RecordNotFound() {

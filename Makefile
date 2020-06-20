@@ -33,10 +33,10 @@ install:
 	go install  ./...
 
 deploy: build
-	 			scp "./${APP}" nudel:/Users/ms/moviedb
+	 			scp "./${APP}" nudel:/Users/ms/tmp
 	 			rm ./${APP}
-				ssh nudel  launchctl unload ~/Library/LaunchAgents/org.local.moviedb.plist
-				ssh nudel  launchctl load ~/Library/LaunchAgents/org.local.moviedb.plist
+				//ssh nudel  launchctl unload ~/Library/LaunchAgents/org.local.moviedb.plist
+				//ssh nudel  launchctl load ~/Library/LaunchAgents/org.local.moviedb.plist
 
 metalint:
 	if command -v gometalinter > /dev/null; then echo ''; else go get -u github.com/alecthomas/gometalinter; fi
