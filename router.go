@@ -14,7 +14,7 @@ func (a *Service) initializeRoutes() {
 	a.Router.POST("/file", a.addFile)
 	a.Router.GET("/file/:id", a.getFile)
 	a.Router.PUT("/file/:id", a.updateFile)
-	// a.Router.PUT("/file/:id/move/:dir", moveFile) //update file
+	a.Router.PUT("/file/:id/move/:dir", a.moveFile) //update file
 	a.Router.DELETE("/file/:id", a.deleteFile)
 	a.Router.GET("/file/:id/download", a.downloadFile)
 	a.Router.GET("/file/:id/download/:name", a.downloadFile) //name im pfad

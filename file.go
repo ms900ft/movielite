@@ -130,3 +130,28 @@ func (s *Service) downloadFile(c *gin.Context) {
 	c.Header("Content-Type", "application/octet-stream")
 	c.File(file.FullPath)
 }
+func (s *Service) moveFile(c *gin.Context) {
+	db := s.DB
+	id := c.Param("id")
+	dir := c.Param("dir")
+	var file models.File
+	if err := db.Where("id = ?", id).First(&file).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		return
+	}
+	newpath, err := file.Move(dir)
+	if err != nil {
+		log.Error("move file:  " + err.Error())
+		content := gin.H{"error": "File not found"}
+		log.Error(content)
+		c.JSON(http.StatusBadRequest, content)
+		return
+	}
+	file.FullPath = newpath
+	if err := db.Model(&file).Updates(file).Error; err != nil {
+		log.Errorf("files update error: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+		return
+	}
+	c.JSON(http.StatusOK, file)
+}

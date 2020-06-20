@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -271,10 +272,10 @@ func getTMDBMeta(id int) (TMDBMovie, error) {
 		return TMDBMovie{}, err
 	}
 	//spew.Dump(res)
-	// err = preFetchImages(res)
-	// if err != nil {
-	// 	log.Error(err)
-	// }
+	err = preFetchImages(res)
+	if err != nil {
+		log.Error(err)
+	}
 	//spew.Dump(res)
 	//jsonRes := []byte("{}") //Default value in case of error
 	js, err := json.Marshal(res)
@@ -496,4 +497,60 @@ func Trash(f string, trash string) (trashcan string, err error) {
 	}
 
 	return trashcan, err
+}
+
+func preFetchImages(movie *tmdb.Movie) error {
+	urls := preFetchURLS(movie)
+	for _, url := range urls {
+		log.Debugf("getting images %s", url)
+		client := &http.Client{}
+		req, err := http.NewRequest("GET", url, nil)
+		//req.Close = true
+		if err != nil {
+			log.Error(err)
+			return err
+		}
+		response, err := client.Do(req)
+
+		if err != nil {
+			log.Debug(fmt.Sprintf("Can't get %s: %s Status %d", url, err, response.StatusCode))
+			return err
+		}
+		defer response.Body.Close()
+	}
+	return nil
+}
+
+func preFetchURLS(movie *tmdb.Movie) []string {
+	urls := []string{}
+	baseurl := "http://localhost:8001"
+	//posterpath
+	if movie.PosterPath != "" {
+		sizes := []string{"w342", "w780", "w185", "w92"}
+		for _, size := range sizes {
+			url := fmt.Sprintf("%s/images/%s%s", baseurl, size, movie.PosterPath)
+			urls = append(urls, url)
+		}
+	}
+	if movie.BackdropPath != "" {
+		url := fmt.Sprintf("%s/images/w300/%s", baseurl, movie.BackdropPath)
+		urls = append(urls, url)
+	}
+	if movie.Credits.Cast != nil {
+		for _, cast := range movie.Credits.Cast {
+			if cast.ProfilePath != "" {
+				url := fmt.Sprintf("%s/images/w45%s", baseurl, cast.ProfilePath)
+				urls = append(urls, url)
+			}
+		}
+	}
+	if movie.Credits.Crew != nil {
+		for _, crew := range movie.Credits.Crew {
+			if crew.ProfilePath != "" {
+				url := fmt.Sprintf("%s/images/w45/%s", baseurl, crew.ProfilePath)
+				urls = append(urls, url)
+			}
+		}
+	}
+	return urls
 }

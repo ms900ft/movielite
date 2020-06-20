@@ -18,24 +18,11 @@ var (
 )
 
 func main() {
-	a := movielight.Service{}
+	c := movielight.GetConfig()
+	a := movielight.Service{Config: c}
 	w := movielight.Walker{}
-	//r := movielight.Resanner{}
-	viper.SetConfigName("movielight")
-	//viper.AddConfigPath("./cmd/films")
-	//viper.AddConfigPath("/Users/ms/moviedb")
-	viper.AddConfigPath(".")
-	//viper.AddConfigPath("/etc/moviedbconfig")
-	//viper.AddConfigPath("/Users/ms")
-	viper.SetConfigType("yaml")
-	viper.SetDefault("MovieServerUrl", "http://localhost:8000")
-	viper.SetDefault("Rescan.Delay", 10)
-	viper.SetDefault("language", "de-DE")
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil {             // Handle errors reading the config file
-		panic(fmt.Errorf("error config file: %s", err))
-	}
 
+	//r := movielight.Resanner{}
 	db := viper.GetString("Database.Dbname")
 
 	a.Initialize(

@@ -1,6 +1,7 @@
 package movielight
 
 import (
+	"fmt"
 	"ms/movielight/models"
 
 	"github.com/jinzhu/gorm"
@@ -22,6 +23,7 @@ type Service struct {
 	Router *gin.Engine
 	DB     *gorm.DB
 	User   *models.User
+	Config *Config
 	//Config Config
 }
 
@@ -38,24 +40,25 @@ func (a *Service) Initialize(dbname string) {
 		log.Fatal(err)
 	}
 
-	mode := gin.Mode()
-	if mode == "release" {
-		log.SetLevel(log.WarnLevel)
+	if a.Config.Mode == "prod" {
+		gin.SetMode(gin.ReleaseMode)
+		log.SetLevel(log.InfoLevel)
 	} else {
+		gin.SetMode(gin.DebugMode)
 		log.SetLevel(log.DebugLevel)
 	}
 
 	a.Router = gin.Default()
 	a.Router.Use(CORSMiddleware())
-	//a.Router.Use(Database())
 	a.Router.Use(a.UserMiddleWare)
+	a.Router.Use(gin.Recovery())
 
-	//	a.DB = c.MustGet("DB").(*sql.DB)
 	a.initializeRoutes()
 }
 
 //Run mal sehen
 func (a *Service) Run(addr string) error {
-	err := http.ListenAndServe(":8001", a.Router)
+	p := fmt.Sprintf(":%d", a.Config.Port)
+	err := http.ListenAndServe(p, a.Router)
 	return err
 }
