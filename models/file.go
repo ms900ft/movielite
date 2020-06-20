@@ -9,8 +9,8 @@ import (
 
 type File struct {
 	gorm.Model
-	FullPath string `json:"fullPath" gorm:"Type:text;UNIQUE,index"`
-	FileName string `json:"fileName"`
+	FullPath string `json:"FullPath" gorm:"Type:text;UNIQUE;index"`
+	FileName string `json:"FileName"`
 	//CreatedAt time.Time
 }
 

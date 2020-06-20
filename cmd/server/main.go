@@ -19,7 +19,7 @@ var (
 
 func main() {
 	a := movielight.Service{}
-	//w := movielight.Walker{}
+	w := movielight.Walker{}
 	//r := movielight.Resanner{}
 	viper.SetConfigName("movielight")
 	//viper.AddConfigPath("./cmd/films")
@@ -56,9 +56,9 @@ func main() {
 		return a.Run(":8080")
 	})
 
-	// g.Go(func() error {
-	// 	return w.Run()
-	// })
+	g.Go(func() error {
+		return w.Run()
+	})
 	// if viper.GetBool("Rescan.Enable") {
 	// 	g.Go(func() error {
 	// 		return r.Run()

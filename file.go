@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -50,7 +49,7 @@ func (s *Service) addFile(c *gin.Context) {
 
 	file := models.File{FullPath: input.FullPath}
 
-	if err := db.Create(&file).Error; gorm.IsRecordNotFoundError(err) {
+	if err := db.Create(&file).Error; err != nil {
 		content := gin.H{"error: ": "create" + err.Error()}
 		log.Error(content)
 		c.JSON(http.StatusBadRequest, content)
@@ -67,8 +66,8 @@ func (s *Service) addFile(c *gin.Context) {
 	}
 	//spew.Dump(movie)
 	movie.FileID = file.ID
-	
-	if err := db.Create(&movie).Error; gorm.IsRecordNotFoundError(err) {
+
+	if err := db.Create(&movie).Error; err != nil {
 		content := gin.H{"error: ": "create movie" + err.Error()}
 		log.Error(content)
 		c.JSON(http.StatusBadRequest, content)

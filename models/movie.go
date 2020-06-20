@@ -381,7 +381,7 @@ func (m *Movie) AfterDelete(scope *gorm.Scope) (err error) {
 	}
 	trashcan := viper.GetString("TrashCan")
 	log.Debugf("trash %s", trashcan)
-	if trashcan != "" {
+	if trashcan != "" && m.File.FullPath != "" {
 		log.Debugf("moving %s to trashcan", m.File.FullPath)
 		_, err = Trash(m.File.FullPath, trashcan)
 		if err != nil {
