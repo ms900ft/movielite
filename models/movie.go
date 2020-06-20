@@ -126,9 +126,9 @@ type Cast struct {
 	//TMDBMovieMovieID uint  `gorm:"index"`
 	//CreditsID        uint  `gorm:"index"`
 	//CastID    int `json:"cast_id"`
-	ID int `json:"ID" gorm:"index"`
+	PersonID int `json:"ID" gorm:"index"`
 
-	CreditID    string `json:"credit_id" gorm:"index"`
+	ID          string `json:"credit_id" gorm:"index"`
 	Character   string
 	Name        string
 	XGender     int `json:"gender"`
@@ -140,8 +140,8 @@ type Crew struct {
 	//ID int64 `gorm:"primary_key"`
 	//TMDBMovieMovieID uint   `gorm:"index"`
 	//CreditsID        uint   `gorm:"index"`
-	ID         int    `json:"ID" gorm:"index"`
-	CreditID   string `json:"credit_id" gorm:"index"`
+	PersonID   int    `json:"ID" gorm:"index"`
+	ID         string `json:"credit_id" gorm:"index"`
 	Department string
 	Gender     int `json:"gender"`
 	//	ID          int

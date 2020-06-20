@@ -144,12 +144,14 @@ func (s *Service) getMovies(c *gin.Context) {
      								IN (SELECT id
                     FROM tmdb_movies where (
                     id in (select tmdb_movie_id from credits WHERE
-                    id in (select credits_id from credits_casts WHERE
-										cast_id = ?))
+										id in (select credits_id from credits_casts WHERE
+										cast_id in (select id from casts where
+										person_id = ?)))
 										OR
 										id in (select tmdb_movie_id from credits WHERE
-                    id in (select credits_id from credits_crews WHERE
-										crew_id = ?))
+										id in (select credits_id from credits_crews WHERE
+										crew_id in (select id from crews where
+										person_id = ?)))
                     ))`, q.Person, q.Person)
 
 	}
