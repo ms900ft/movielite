@@ -87,8 +87,10 @@ func (s *Service) getMovies(c *gin.Context) {
 
 	if len(q.Qtitel) > 0 {
 		if fulltext {
-			tx = tx.Joins("JOIN fulltexts on fulltexts.movie_id = movies.id").
-				Where("fulltexts = ?", fmt.Sprintf("%s*", q.Qtitel))
+			//	tx = tx.Joins("JOIN fulltexts on fulltexts.movie_id = movies.id").
+			//		Where("fulltexts = ?", fmt.Sprintf("%s*", q.Qtitel))
+			tx = tx.Where("movies.id IN (SELECT movie_id FROM fulltexts WHERE fulltexts = ?)",
+				fmt.Sprintf("%s*", q.Qtitel))
 			//	strings.Replace(q.Qtitel, " ", "&", -1)+":*")
 		} else {
 			tx = tx.Where("movies.title LIKE ?", fmt.Sprint("%", q.Qtitel, "%"))
