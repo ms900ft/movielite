@@ -10,14 +10,15 @@ func ConnectDataBase(dbname string) *gorm.DB {
 	database, err := gorm.Open("sqlite3", dbname)
 	//database.LogMode(true)
 	if err != nil {
-		panic("Failed to connect to database!")
+		panic("Failed to connect to database! " + dbname)
 	}
 
 	database.AutoMigrate(&User{}, &File{}, &Movie{}, &MovieSearchResults{}, &MovieShort{},
 		&TMDBMovie{}, &Credits{}, &Cast{}, &Crew{}, &Genres{}, &SpokenLanguages{},
 		&ProductionCompanies{}, &ProductionCountries{}, &User{}, &Watchlist{}, &Recently{},
 	)
-	_, err = database.DB().Exec("CREATE VIRTUAL  TABLE IF NOT EXISTS fulltexts USING fts5(movie_id, title, overview,credits);")
+	_, err = database.DB().Exec(`CREATE VIRTUAL  TABLE IF NOT EXISTS fulltexts
+	USING fts5(movie_id, title, overview,credits);`)
 	if err != nil {
 		log.Fatal(err)
 	}

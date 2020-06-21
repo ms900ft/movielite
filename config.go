@@ -14,6 +14,8 @@ type Config struct {
 	TMDBImageURL string
 	TMDBApiKey   string
 	TargetDir    string
+	SQLDebug     bool
+	DataBase     string
 }
 
 func GetConfig() *Config {
@@ -43,5 +45,7 @@ func GetConfig() *Config {
 	c.TMDBImageDir = viper.GetString("TMDB.ImageDir")
 	c.TMDBApiKey = viper.GetString("TMDB.ApiKey")
 	c.TargetDir = viper.GetString("TargetDirectory")
+	c.DataBase = viper.GetString("DataBase.DBname")
+	c.SQLDebug = viper.GetBool("SQLDebug")
 	return &c
 }

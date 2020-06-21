@@ -9,7 +9,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/spf13/viper"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -22,11 +21,7 @@ func main() {
 	a := movielight.Service{Config: c}
 	w := movielight.Walker{}
 
-	//r := movielight.Resanner{}
-	db := viper.GetString("Database.Dbname")
-
-	a.Initialize(
-		db)
+	a.Initialize()
 
 	var gracefulStop = make(chan os.Signal)
 	signal.Notify(gracefulStop, syscall.SIGTERM)

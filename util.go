@@ -122,10 +122,3 @@ func Trash(f string, trash string) (trashcan string, err error) {
 
 	return trashcan, err
 }
-
-// func toJSON(value []byte) (JSONB, error) {
-// 	jsonRes, _ := json.MarshalIndent(value, "", "  ")
-// 	var mj JSONB
-// 	err := json.Unmarshal(jsonRes, &mj)
-// 	return mj, err
-//}

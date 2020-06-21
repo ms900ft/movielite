@@ -22,7 +22,6 @@ func (s *Service) getUsers(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, users)
-
 }
 
 func (s *Service) getUser(c *gin.Context) {
@@ -34,9 +33,7 @@ func (s *Service) getUser(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
 		return
 	}
-
 	c.JSON(http.StatusOK, user)
-
 }
 
 func (s *Service) createUser(c *gin.Context) {

@@ -1,3 +1,11 @@
 {
-  "go.inferGopath": false
+  "go.inferGopath": false,
+  "sqltools.connections": [
+    {
+      "database": "/Users/ms/tmp/movielight.db",
+      "driver": "SQLite",
+      "name": "movielight",
+      "previewLimit": 50
+    }
+  ]
 }

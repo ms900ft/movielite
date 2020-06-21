@@ -5,7 +5,6 @@ import (
 	"ms/movielight/models"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
 	"net/http"
 
@@ -32,9 +31,9 @@ type meta struct {
 }
 
 //Initialize mal sehen
-func (a *Service) Initialize(dbname string) {
+func (a *Service) Initialize() {
 	var err error
-	a.DB = models.ConnectDataBase(dbname) // new
+	a.DB = models.ConnectDataBase(a.Config.DataBase) // new
 	if err != nil {
 		log.Fatal(err)
 	}

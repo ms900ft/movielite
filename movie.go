@@ -63,7 +63,6 @@ func (s *Service) getMovie(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, movie)
-
 }
 
 func (s *Service) getMovies(c *gin.Context) {
@@ -119,19 +118,22 @@ func (s *Service) getMovies(c *gin.Context) {
 		tx = tx.Where("movies.tmdb_movie_id == 0")
 	case q.Show == "watchlist":
 		tx = tx.Where("watchlists.movie_id is not null AND watchlists.user_id = ?", s.User.ID)
-
 	}
 	if q.Genre > 0 {
-		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.id=movies.tmdb_movie_id").
-			Joins("LEFT JOIN tmdb_movie_genres ON tmdb_movie_genres.tmdb_movie_id = movies.tmdb_movie_id").
-			Joins("LEFT JOIN genres ON tmdb_movie_genres.genres_tmdb_id = genres.tmdb_id").
-			Where("genres.tmdb_id = ?", q.Genre)
+		tx = tx.Where(`tmdb_movie_id in (SELECT id
+                    FROM tmdb_movies where (
+										id in (select tmdb_movie_id
+                    from tmdb_movie_genres
+										where genres_tmdb_id
+                    = ?))) `, q.Genre)
 	}
 	if len(q.Country) > 0 {
-		tx = tx.Joins("JOIN tmdb_movies on tmdb_movies.id=movies.tmdb_movie_id").
-			Joins(("LEFT JOIN tmdb_movie_production_countries ON tmdb_movie_production_countries.tmdb_movie_id = movies.tmdb_movie_id")).
-			Joins("LEFT JOIN production_countries ON tmdb_movie_production_countries.production_countries_iso3166_1 = production_countries.iso3166_1").
-			Where("production_countries.iso3166_1 = ?", q.Country)
+		tx = tx.Where(`tmdb_movie_id in (SELECT id
+                    FROM tmdb_movies where (
+										id in (select tmdb_movie_id
+                    from tmdb_movie_production_countries
+										where production_countries_iso3166_1
+                    = ?))) `, q.Country)
 	}
 	if q.Person > 0 {
 		tx = tx.Where(` tmdb_movie_id
@@ -147,7 +149,6 @@ func (s *Service) getMovies(c *gin.Context) {
 										crew_id in (select id from crews where
 										person_id = ?)))
                     ))`, q.Person, q.Person)
-
 	}
 	tx = tx.Where("movies.is_tv = false")
 	//order
@@ -268,14 +269,12 @@ func (s *Service) updateMovie(c *gin.Context) {
 		if err := db.Model(&old).Association("Multiplechoice").
 			Clear().Error; err != nil {
 			log.Errorf("remove multiplechoice: %s", err)
-
 		}
 	}
 	if movie.Meta == nil {
 		if err := db.Model(&old).Association("Meta").
 			Clear().Error; err != nil {
 			log.Errorf("remove meta: %s", err)
-
 		}
 	}
 	hasWatchlist := true
