@@ -3,6 +3,7 @@ module ms/movielight
 go 1.14
 
 require (
+	github.com/PaesslerAG/gval v1.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.1
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607
@@ -16,6 +17,11 @@ require (
 	github.com/sirupsen/logrus v1.2.0
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/spf13/viper v1.7.0
+	github.com/steinfletcher/apitest v1.4.8
+	github.com/steinfletcher/apitest-jsonpath v1.5.1
+	github.com/stretchr/testify v1.6.1 // indirect
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
 	golang.org/x/text v0.3.2
+	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
+	gotest.tools v2.2.0+incompatible
 )

@@ -248,7 +248,7 @@ func (s *Service) updateMovie(c *gin.Context) {
 	old := movie
 	if input.Title != old.Title {
 		movie.Title = input.Title
-		if err := movie.GetMeta(); err != nil {
+		if err := movie.GetMeta(s.TMDBClient); err != nil {
 			log.Errorf("movie meta update error: %s", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
 		}
@@ -343,7 +343,7 @@ func (s *Service) addMeta(c *gin.Context) {
 		return
 	}
 	old := movie
-	err = movie.MetaByID(metaID)
+	err = movie.MetaByID(s.TMDBClient, metaID)
 	movie.Title = movie.Meta.Title
 
 	//log.Debug(movie.Title)

@@ -35,7 +35,7 @@ func main() {
 	}()
 	//a.Run(":8080")
 	g.Go(func() error {
-		return a.Run(":8080")
+		return a.Run()
 	})
 
 	g.Go(func() error {

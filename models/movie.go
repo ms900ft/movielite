@@ -193,7 +193,7 @@ on run argv
 end run
 `
 
-func (m *Movie) GetMeta() (err error) {
+func (m *Movie) GetMeta(t TMDBClients) (err error) {
 	defer func() {
 		// recover from panic if one occurred. Set err to nil otherwise.
 		if recover() != nil {
@@ -201,12 +201,12 @@ func (m *Movie) GetMeta() (err error) {
 		}
 	}()
 	lang := viper.GetString("language")
-	apikey := viper.GetString("TMDB.ApiKey")
-	conf := tmdb.Config{APIKey: apikey}
-	TMDb := tmdb.Init(conf)
+	//apikey := viper.GetString("TMDB.ApiKey")
+	//conf := tmdb.Config{APIKey: apikey}
+	//TMDb := tmdb.Init(conf)
 	var options = make(map[string]string)
 	options["language"] = lang
-	res, err := TMDb.SearchMovie(m.Title, options)
+	res, err := t.SearchMovie(m.Title, options)
 	if err != nil {
 		log.Error(err)
 	}
@@ -247,7 +247,7 @@ func (m *Movie) GetMeta() (err error) {
 			m.Meta = nil
 		}
 	} else {
-		meta, err := getTMDBMeta(hit)
+		meta, err := getTMDBMeta(t, hit)
 		m.Meta = &meta
 		m.Multiplechoice = nil
 		//m.Multiplechoice = nil
@@ -258,15 +258,15 @@ func (m *Movie) GetMeta() (err error) {
 	return err
 }
 
-func getTMDBMeta(id int) (TMDBMovie, error) {
-	apikey := viper.GetString("TMDB.ApiKey")
+func getTMDBMeta(t TMDBClients, id int) (TMDBMovie, error) {
+	//apikey := viper.GetString("TMDB.ApiKey")
 	lang := viper.GetString("language")
-	conf := tmdb.Config{APIKey: apikey}
-	TMDb := tmdb.Init(conf)
+	//conf := tmdb.Config{APIKey: apikey}
+	//TMDb := tmdb.Init(conf)
 	var options = make(map[string]string)
 	options["append_to_response"] = "credits"
 	options["language"] = lang
-	res, err := TMDb.GetMovieInfo(id, options)
+	res, err := t.GetMovieInfo(id, options)
 	if err != nil {
 		log.Error(err)
 		return TMDBMovie{}, err
@@ -292,8 +292,8 @@ func getTMDBMeta(id int) (TMDBMovie, error) {
 	return msr, err
 }
 
-func (m *Movie) MetaByID(metaid int) error {
-	meta, err := getTMDBMeta(metaid)
+func (m *Movie) MetaByID(t TMDBClients, metaid int) error {
+	meta, err := getTMDBMeta(t, metaid)
 	if err != nil {
 		log.Error(err)
 		return err
@@ -503,7 +503,11 @@ func preFetchImages(movie *tmdb.Movie) error {
 		response, err := client.Do(req)
 
 		if err != nil {
-			log.Debug(fmt.Sprintf("Can't get %s: %s Status %d", url, err, response.StatusCode))
+			log.Error(err)
+			return err
+		}
+		if response.StatusCode != http.StatusOK {
+			log.Errorf(fmt.Sprintf("Can't get %s: %s Status %d", url, err, response.StatusCode))
 			return err
 		}
 		defer response.Body.Close()

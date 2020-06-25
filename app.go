@@ -5,6 +5,7 @@ import (
 	"ms/movielight/models"
 
 	"github.com/jinzhu/gorm"
+	"github.com/ryanbradynd05/go-tmdb"
 
 	"net/http"
 
@@ -19,10 +20,11 @@ const (
 
 //Service mal sehen
 type Service struct {
-	Router *gin.Engine
-	DB     *gorm.DB
-	User   *models.User
-	Config *Config
+	Router     *gin.Engine
+	DB         *gorm.DB
+	User       *models.User
+	Config     *Config
+	TMDBClient models.TMDBClients
 	//Config Config
 }
 
@@ -37,7 +39,10 @@ func (a *Service) Initialize() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	tmdbClient := tmdb.Init(tmdb.Config{APIKey: a.Config.TMDBApiKey})
 
+	//sa.TMDBClient = new(models.TMDBClient)
+	a.TMDBClient = tmdbClient
 	if a.Config.Mode == "prod" {
 		gin.SetMode(gin.ReleaseMode)
 		log.SetLevel(log.InfoLevel)
@@ -48,14 +53,14 @@ func (a *Service) Initialize() {
 
 	a.Router = gin.Default()
 	a.Router.Use(CORSMiddleware())
-	a.Router.Use(a.UserMiddleWare)
+	//	a.Router.Use(a.UserMiddleWare)
 	a.Router.Use(gin.Recovery())
 
 	a.initializeRoutes()
 }
 
 //Run mal sehen
-func (a *Service) Run(addr string) error {
+func (a *Service) Run() error {
 	p := fmt.Sprintf(":%d", a.Config.Port)
 	err := http.ListenAndServe(p, a.Router)
 	return err

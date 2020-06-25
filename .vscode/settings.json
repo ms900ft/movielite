@@ -7,5 +7,6 @@
       "name": "movielight",
       "previewLimit": 50
     }
-  ]
+  ],
+  "go.testFlags": ["-tags", "fts5"]
 }

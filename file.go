@@ -58,10 +58,12 @@ func (s *Service) addFile(c *gin.Context) {
 	//movie.Title = Translatename(f.FileName)
 	movie.Title = Translatename(file.FileName, regex)
 	//movie.WatchList = true
-	err := movie.GetMeta()
+	//if s.Config.Mode != "testing" {
+	err := movie.GetMeta(s.TMDBClient)
 	if err != nil {
 		log.Error(err)
 	}
+	//}
 	//spew.Dump(movie)
 	movie.FileID = file.ID
 
@@ -70,6 +72,7 @@ func (s *Service) addFile(c *gin.Context) {
 		log.Error(content)
 		c.JSON(http.StatusBadRequest, content)
 	}
+	//spew.Dump(movie)
 	c.JSON(http.StatusCreated, file)
 }
 
