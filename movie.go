@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ms/movielight/models"
 	"net/http"
+	"os/exec"
 	"strconv"
 	"time"
 
@@ -311,6 +312,18 @@ func (s *Service) playMovie(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
 		return
 	}
+
+	dir := c.Query("showdir")
+	//open file on localhost
+	if dir != "" {
+		err := exec.Command("open", "-R", movie.File.FullPath).Start()
+		if err != nil {
+			log.Error(err)
+		}
+		c.JSON(http.StatusNoContent, nil)
+		return
+	}
+
 	err := open.Start(movie.File.FullPath)
 	if err != nil {
 		log.Error(err)

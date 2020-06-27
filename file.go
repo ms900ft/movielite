@@ -46,31 +46,9 @@ func (s *Service) addFile(c *gin.Context) {
 	}
 
 	file := models.File{FullPath: input.FullPath}
-
-	if err := db.Create(&file).Error; err != nil {
-		content := gin.H{"error: ": "create" + err.Error()}
-		log.Error(content)
-		c.JSON(http.StatusBadRequest, content)
-	}
-	movie := models.Movie{}
-	//movie.FileID = f.ID
-	regex := map[string]string{}
-	//movie.Title = Translatename(f.FileName)
-	movie.Title = Translatename(file.FileName, regex)
-	//movie.WatchList = true
-	//if s.Config.Mode != "testing" {
-	err := movie.GetMeta(s.TMDBClient)
-	if err != nil {
-		log.Error(err)
-	}
-	//}
-	//spew.Dump(movie)
-	movie.FileID = file.ID
-
-	if err := db.Create(&movie).Error; err != nil {
-		content := gin.H{"error: ": "create movie" + err.Error()}
-		log.Error(content)
-		c.JSON(http.StatusBadRequest, content)
+	if err := file.Create(db, s.TMDBClient); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	//spew.Dump(movie)
 	c.JSON(http.StatusCreated, file)

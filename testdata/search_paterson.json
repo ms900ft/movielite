@@ -1,0 +1,93 @@
+{
+  "page": 1,
+  "total_results": 5,
+  "total_pages": 1,
+  "results": [
+    {
+      "popularity": 19.578,
+      "vote_count": 1021,
+      "video": false,
+      "poster_path": "/qi221TCLLlWMIQpD0pAxuSuQFJL.jpg",
+      "id": 370755,
+      "adult": false,
+      "backdrop_path": "/hrw1DKnV8HItvPjhGe6Wih3SJWJ.jpg",
+      "original_language": "en",
+      "original_title": "Paterson",
+      "genre_ids": [
+        35,
+        18,
+        10749
+      ],
+      "title": "Paterson",
+      "vote_average": 7.1,
+      "overview": "Paterson arbeitet als Busfahrer in einer Kleinstadt, die genauso heißt wie er selbst: Paterson im US-Bundesstaat New Jersey. Jeden Tag geht er dort seiner Routine nach – er fährt dieselbe Route, beobachtet dabei das Geschehen außerhalb seiner Windschutzscheibe und hört Bruchstücke von Gesprächen seiner Passagiere. In seiner Mittagspause setzt er sich in einen Park und schreibt Gedichte in sein kleines Notizbuch. Am Abend geht er mit seinem Hund spazieren, bindet ihn vor einer Bar an und trinkt exakt ein Bier. Anschließend kehrt er nach Hause zurück, zu seiner künstlerisch ambitionierten Frau Laura, die im Gegensatz zu ihm immer wieder neue Projekte startet – vom Muffin-Backen über E-Gitarre-Spielen bis hin zum Umdekorieren des Hauses, in dem überall ihr schwarz-weißes Lieblingsmuster zu finden ist…",
+      "release_date": "2016-11-17"
+    },
+    {
+      "popularity": 0.6,
+      "vote_count": 0,
+      "video": false,
+      "poster_path": null,
+      "id": 386588,
+      "adult": false,
+      "backdrop_path": null,
+      "original_language": "en",
+      "original_title": "Lands Close to Paterson",
+      "genre_ids": [],
+      "title": "Lands Close to Paterson",
+      "vote_average": 0,
+      "overview": "",
+      "release_date": "2013-01-01"
+    },
+    {
+      "popularity": 0.6,
+      "vote_count": 0,
+      "video": false,
+      "poster_path": null,
+      "id": 344222,
+      "adult": false,
+      "backdrop_path": null,
+      "original_language": "en",
+      "original_title": "Choreography: Creating Vincent Paterson's Dance Sequences",
+      "genre_ids": [],
+      "title": "Choreography: Creating Vincent Paterson's Dance Sequences",
+      "vote_average": 0,
+      "overview": "",
+      "release_date": "2000-01-01"
+    },
+    {
+      "popularity": 1.098,
+      "vote_count": 0,
+      "video": false,
+      "poster_path": null,
+      "id": 188490,
+      "adult": false,
+      "backdrop_path": null,
+      "original_language": "en",
+      "original_title": "The Man Behind the Throne",
+      "genre_ids": [],
+      "title": "The Man Behind the Throne",
+      "vote_average": 0,
+      "overview": "",
+      "release_date": "2013-07-20"
+    },
+    {
+      "popularity": 1.547,
+      "vote_count": 4,
+      "video": false,
+      "poster_path": null,
+      "id": 190677,
+      "adult": false,
+      "backdrop_path": null,
+      "original_language": "en",
+      "original_title": "Burning of Durland's Riding Academy",
+      "genre_ids": [
+        99
+      ],
+      "title": "Burning of Durland's Riding Academy",
+      "vote_average": 4.8,
+      "overview": "",
+      "release_date": "1902-02-24"
+    }
+  ]
+}

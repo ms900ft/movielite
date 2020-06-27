@@ -1,0 +1,44 @@
+{
+  "page": 1,
+  "total_results": 2,
+  "total_pages": 1,
+  "results": [
+    {
+      "popularity": 7.172,
+      "vote_count": 51,
+      "video": false,
+      "poster_path": "/7onrliXiHvff1beA3HmxPBa7KNq.jpg",
+      "id": 3476,
+      "adult": false,
+      "backdrop_path": "/jqj5GL6OT1QWM6EASYjm3rbR50W.jpg",
+      "original_language": "fr",
+      "original_title": "L'Important c'est d'aimer",
+      "genre_ids": [
+        18,
+        10749
+      ],
+      "title": "Nachtblende",
+      "vote_average": 7.5,
+      "overview": "Die erfolglose Schauspielerin Nadine hält sich mit dem Dreh von billigen Pornofilmen über Wasser. Sie macht die Bekanntschaft des Fotografen Servais Mont. Dieser hat Schulden bei dem Kredithai Mazelli - um ihn abzubezahlen, macht er angewidert Sexfotos. Servais beschließt, Nadine zu helfen und verschafft ihr über den Schauspieler Zimmer und den Regisseur Messala eine Rolle in der Theateraufführung „Richard III.“. Um die Produktion zu finanzieren, bleibt ihm allerdings nichts anderes übrig, als sich erneut Geld von Mazelli zu leihen. Nadine ist derweil hin- und hergerissen zwischen Servais, in den sie sich verliebt, und ihrem Ehemann Jacques, dem sie sich moralisch verpflichtet fühlt...",
+      "release_date": "1975-02-12"
+    },
+    {
+      "popularity": 7.043,
+      "vote_count": 99,
+      "video": false,
+      "poster_path": "/1jnd7nRLNm9YgQkYvPudhk3WKuK.jpg",
+      "id": 51071,
+      "adult": false,
+      "backdrop_path": null,
+      "original_language": "fr",
+      "original_title": "L'homme qui voulait vivre sa vie",
+      "genre_ids": [
+        53
+      ],
+      "title": "Nachtblende",
+      "vote_average": 6.3,
+      "overview": "Eigentlich gibt es nichts, worüber Paul sich beschweren könnte. Seine schöne Frau und seine süßen Kinder sind sein ganzer Stolz, sein Haus ist wie aus dem Magazin und sein Job in der Kanzlei ist genau sein Ding. Doch die Fassade bekommt Risse, als er vom Verhältnis seiner Frau mit dem Nachbarn, einem Fotografen, erfährt. Als Paul ihn zur Rede stellen will, zerstört ein Moment der Wut sein ganzes Leben. Er tötet seinen Nebenbuhler und nimmt kurzerhand dessen Identität an. Sein neuer Job als Fotograf führt ihn durch ganz Europa und auf der Flucht entdeckt er sein Talent und seine Berufung, das Leben und seine Momente festzuhalten. Doch die Vergangenheit lässt sich nicht so einfach abschütteln...",
+      "release_date": "2010-11-03"
+    }
+  ]
+}

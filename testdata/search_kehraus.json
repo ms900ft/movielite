@@ -1,0 +1,96 @@
+{
+  "page": 1,
+  "total_results": 5,
+  "total_pages": 1,
+  "results": [
+    {
+      "popularity": 2.624,
+      "id": 10850,
+      "video": false,
+      "vote_count": 7,
+      "vote_average": 6.6,
+      "title": "Kehraus",
+      "release_date": "1983-11-11",
+      "original_language": "de",
+      "original_title": "Kehraus",
+      "genre_ids": [
+        35,
+        18
+      ],
+      "backdrop_path": "/miTTso4YO6F3u6TP0npT3o8TJ7T.jpg",
+      "adult": false,
+      "overview": "Polt spielt den naiven Gabelstaplerfahrer Weitel, dem vom gerissenen Vertreter Arno von Mehling  ein ganzer Haufen absurder Versicherungen aufgeschwatzt werden. Als Weitel beinahe zu spät der finanzielle Kollaps schwant, macht er sich am Faschingsdienstag auf, um in den endlosen Korridoren des Versicherungsunternehmens nach von Mehling zu suchen und alles rückgängig zu machen. Dabei findet sich Weitel zwischen spanischen Señoritas und kühnen Piraten wieder. Die Pappnasenfraktion bereitet sich bereits aufgeregt auf den Höhepunkt des Angestelltendaseins vor: der alljährliche Faschingsball \"Traumpolice\".",
+      "poster_path": "/9hDldQFGSbcrPfPbV1wRIbV1XYA.jpg"
+    },
+    {
+      "popularity": 0.6,
+      "vote_count": 0,
+      "video": false,
+      "poster_path": "/wtcL21lmfcjozSOscvGsJbrilJ7.jpg",
+      "id": 530422,
+      "adult": false,
+      "backdrop_path": null,
+      "original_language": "de",
+      "original_title": "Kehraus",
+      "genre_ids": [
+        99
+      ],
+      "title": "Kehraus",
+      "vote_average": 0,
+      "overview": "",
+      "release_date": "1990-11-04"
+    },
+    {
+      "popularity": 0.88,
+      "id": 10507,
+      "video": false,
+      "vote_count": 0,
+      "vote_average": 0,
+      "title": "Kehraus, wieder",
+      "release_date": "2006-11-03",
+      "original_language": "de",
+      "original_title": "Kehraus, wieder",
+      "genre_ids": [
+        99
+      ],
+      "backdrop_path": null,
+      "adult": false,
+      "overview": "",
+      "poster_path": "/djSlObdMgGlEFYN7WludWJitBm1.jpg"
+    },
+    {
+      "popularity": 0.6,
+      "vote_count": 0,
+      "video": false,
+      "poster_path": "/xYSaMfvmFVYMHyX0nALlVn9PW4z.jpg",
+      "id": 530424,
+      "adult": false,
+      "backdrop_path": null,
+      "original_language": "de",
+      "original_title": "Kehrein, kehraus",
+      "genre_ids": [
+        99
+      ],
+      "title": "Kehrein, kehraus",
+      "vote_average": 0,
+      "overview": "",
+      "release_date": "1997-05-07"
+    },
+    {
+      "popularity": 0.6,
+      "id": 313272,
+      "video": false,
+      "vote_count": 0,
+      "vote_average": 0,
+      "title": "Krenek: Kehraus um St. Stephan",
+      "release_date": "2008-01-01",
+      "original_language": "en",
+      "original_title": "Krenek: Kehraus um St. Stephan",
+      "genre_ids": [],
+      "backdrop_path": null,
+      "adult": false,
+      "overview": "",
+      "poster_path": null
+    }
+  ]
+}
