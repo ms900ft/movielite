@@ -80,6 +80,7 @@ func (f *File) Move(dir string) (string, error) {
 			return "", err
 		}
 		// path is a directory
+
 	} else {
 		return "", err
 	}

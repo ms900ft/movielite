@@ -66,7 +66,7 @@ func (s *Service) updateFile(c *gin.Context) {
 	var file models.File
 	if err := db.Where("id = ?", c.Param("id")).First(&file).Error; err != nil {
 		log.Errorf("files not found: %s", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
 		return
 	}
 
@@ -85,7 +85,7 @@ func (s *Service) deleteFile(c *gin.Context) {
 	db := s.DB
 	var file models.File
 	if err := db.Where("id = ?", c.Param("id")).First(&file).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
 		return
 	}
 

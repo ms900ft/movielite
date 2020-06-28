@@ -72,7 +72,12 @@ func TestMain(m *testing.M) {
 	S = setup()
 	S.Initialize()
 	S.TMDBClient = &MockTMDBClient{}
+	file := models.File{FullPath: "/test/kehraus.mp4"}
+	if err := file.Create(S.DB, S.TMDBClient); err != nil {
+		log.Fatal("can't create first movie " + err.Error())
+	}
 	code := m.Run()
+
 	//shutdown()
 	os.Exit(code)
 }
@@ -82,16 +87,26 @@ func setup() Service {
 	c := Config{}
 	c.Mode = "testing"
 	s := Service{Config: &c}
+	s.TMDBClient = &MockTMDBClient{}
 	db := models.ConnectDataBase(":memory:")
 	s.DB = db
 	user := models.User{UserName: "marc"}
 	if err := db.Create(&user).Error; err != nil {
 		log.Fatal(err)
 	}
+
 	return s
 }
-
-func TestCreateGetFile(t *testing.T) {
+func TestCreateFile_WRONG_DATA(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Post("/file").
+			JSON(`{"filename":"kehraus.mp4"}`). // request
+			Expect(t).
+			Status(http.StatusBadRequest).
+			End()
+}
+func TestCreateFile(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
 			Post("/file").
@@ -100,6 +115,88 @@ func TestCreateGetFile(t *testing.T) {
 			Assert(jsonpath.Present(`$.ID`)).
 			Assert(jsonpath.Contains(`$.FileName`, "Paterson.mp4")).
 			Status(http.StatusCreated).
+			End()
+}
+
+func TestGetFile(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Get("/file/1").
+			Expect(t).
+			Assert(jsonpath.Present(`$.ID`)).
+			Assert(jsonpath.Contains(`$.FileName`, "kehraus.mp4")).
+			Status(http.StatusOK).
+			End()
+}
+func TestGetFile_NotFound(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Get("/file/111111").
+			Expect(t).
+			Status(http.StatusNotFound).
+			End()
+}
+
+func TestGetFiles(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Get("/file").
+			Expect(t).
+			Assert(jsonpath.GreaterThan(`$`, 1)).
+			Status(http.StatusOK).
+			End()
+}
+
+func TestUpdateFile(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Put("/file/1").
+			JSON(`{"fullpath":"/test2/kehraus.mp4"}`). // request
+			Expect(t).
+			Assert(jsonpath.Present(`$.ID`)).
+			Assert(jsonpath.Contains(`$.FileName`, "kehraus.mp4")).
+			Assert(jsonpath.Contains(`$.FullPath`, "/test2/kehraus.mp4")).
+			Status(http.StatusOK).
+			End()
+}
+
+func TestUpdateFile_NOT_FOUND(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Put("/file/1111111").
+			JSON(`{"fullpath":"/test2/kehraus.mp4"}`). // request
+			Expect(t).
+			Status(http.StatusNotFound).
+			End()
+}
+
+func TestUpdateFile_WRONG_DATA(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Put("/file/1").
+			JSON(`{"filename":"kehraus.mp4"}`). // request
+			Expect(t).
+			Status(http.StatusBadRequest).
+			End()
+}
+
+func TestDeleteFile(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Delete("/file/1").
+			Expect(t).
+			Assert(jsonpath.Present(`$.ID`)).
+			Assert(jsonpath.Contains(`$.FileName`, "kehraus.mp4")).
+			Status(http.StatusOK).
+			End()
+}
+
+func TestDeleteFile_NOT_FOUND(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Delete("/file/111111").
+			Expect(t).
+			Status(http.StatusNotFound).
 			End()
 }
 
