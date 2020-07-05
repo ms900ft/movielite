@@ -17,8 +17,20 @@ func (s *Service) getFiles(c *gin.Context) {
 	db := s.DB
 
 	var files []models.File
-	if err := db.Find(&files).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	query := c.DefaultQuery("f", "")
+	if query != "" {
+		if err := db.Where("file_name = ?", query).Find(&files).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
+	} else {
+		if err := db.Find(&files).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
+	}
+	if len(files) == 0 {
+		c.JSON(http.StatusNotFound, files)
 		return
 	}
 	c.JSON(http.StatusOK, files)

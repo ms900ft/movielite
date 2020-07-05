@@ -1,75 +1,18 @@
 package movielight
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"ms/movielight/models"
 	"net/http"
 	"os"
 	"testing"
 
-	"github.com/prometheus/common/log"
-	"github.com/ryanbradynd05/go-tmdb"
+	log "github.com/sirupsen/logrus"
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 )
 
-type test struct {
-	input []byte
-	name  string
-	want  want
-}
-
-type want struct {
-	code     int
-	id       int
-	filename string
-}
-type MockTMDBClient struct{}
-
-var S Service
-
-func (m *MockTMDBClient) SearchMovie(s string, opts map[string]string) (*tmdb.MovieSearchResults, error) {
-	log.Error("xxxxxxx search")
-	filename := fmt.Sprintf("testdata/search_%s.json", s)
-	jsonFile, err := os.Open(filename)
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Successfully Opened " + filename)
-	defer jsonFile.Close()
-	byte, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var search tmdb.MovieSearchResults
-	json.Unmarshal(byte, &search)
-	//spew.Dump(search)
-	return &search, nil
-}
-func (m *MockTMDBClient) GetMovieInfo(id int, opts map[string]string) (*tmdb.Movie, error) {
-	log.Error("xxxxxxx search")
-	filename := fmt.Sprintf("testdata/movie_%d.json", id)
-	jsonFile, err := os.Open(filename)
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Successfully Opened " + filename)
-	defer jsonFile.Close()
-	byte, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var movie tmdb.Movie
-	json.Unmarshal(byte, &movie)
-	return &movie, nil
-}
-
 func TestMain(m *testing.M) {
-	S = setup()
+	S = Setup()
 	S.Initialize()
 	S.TMDBClient = &MockTMDBClient{}
 	file := models.File{FullPath: "/test/kehraus.mp4"}
@@ -82,21 +25,6 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func setup() Service {
-
-	c := Config{}
-	c.Mode = "testing"
-	s := Service{Config: &c}
-	s.TMDBClient = &MockTMDBClient{}
-	db := models.ConnectDataBase(":memory:")
-	s.DB = db
-	user := models.User{UserName: "marc"}
-	if err := db.Create(&user).Error; err != nil {
-		log.Fatal(err)
-	}
-
-	return s
-}
 func TestCreateFile_WRONG_DATA(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).

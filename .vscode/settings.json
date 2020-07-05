@@ -8,5 +8,9 @@
       "previewLimit": 50
     }
   ],
-  "go.testFlags": ["-tags", "fts5"]
+  "go.testFlags": [
+    "-tags",
+    "fts5"
+  ],
+  "go-tests-outline.go-test-params": "-tags fts5"
 }
