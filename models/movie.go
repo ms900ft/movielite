@@ -25,14 +25,14 @@ type Movie struct {
 	FileID               uint       `json:"file_id"`
 	TMDBMovieID          uint       `sql:"index"`
 	MovieSearchResultsID uint
-	Title                string              `json:"title"`
+	Title                string              `json:"title" binding:"required"`
 	OrgName              string              `json:"org_name"`
 	Meta                 *TMDBMovie          `json:"meta" gorm:"foreignkey:TMDBMovieID"`
 	Multiplechoice       *MovieSearchResults `json:"multiplechoice" gorm:"foreignkey:MovieSearchResultsID"`
-	File                 File
-	IsTv                 bool `json:"is_tv" gorm:"index"`
-	Rating               int  `json:"rating"`
-	Watchlist            bool `json:"watchlist" gorm:"-"`
+	File                 File                `json:"file" binding:"required"`
+	IsTv                 bool                `json:"is_tv" gorm:"index"`
+	Rating               int                 `json:"rating"`
+	Watchlist            bool                `json:"watchlist" gorm:"-"`
 	LastScanned          time.Time
 	Deleted              bool `gorm:"-"`
 }
@@ -209,6 +209,11 @@ func (m *Movie) GetMeta(t TMDBClients) (err error) {
 	res, err := t.SearchMovie(m.Title, options)
 	if err != nil {
 		log.Error(err)
+	}
+	if res == nil {
+		m.Multiplechoice = nil
+		m.Meta = nil
+		return nil
 	}
 	//spew.Dump(res)
 	hit := 0
@@ -516,8 +521,10 @@ func preFetchImages(movie *tmdb.Movie) error {
 }
 
 func preFetchURLS(movie *tmdb.Movie) []string {
+	port := viper.GetInt("Port")
+
 	urls := []string{}
-	baseurl := "http://localhost:8001"
+	baseurl := fmt.Sprintf("http://localhost:%d", port)
 	//posterpath
 	if movie.PosterPath != "" {
 		sizes := []string{"w342", "w780", "w185", "w92"}

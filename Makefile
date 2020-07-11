@@ -3,7 +3,7 @@ WATCH_FILES= find . -type f -not -path '*/\.*' | grep -i '.*[.]go\|html$$' 2> /d
 
 
 test:
-	go test $(test)
+	go test --tags "fts5" $(test)
 
 run:
 	go run --tags "fts5" cmd/server/main.go
