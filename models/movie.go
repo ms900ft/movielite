@@ -29,7 +29,7 @@ type Movie struct {
 	OrgName              string              `json:"org_name"`
 	Meta                 *TMDBMovie          `json:"meta" gorm:"foreignkey:TMDBMovieID"`
 	Multiplechoice       *MovieSearchResults `json:"multiplechoice" gorm:"foreignkey:MovieSearchResultsID"`
-	File                 File                `json:"file" binding:"required"`
+	File                 File                `json:"File" binding:"required"`
 	IsTv                 bool                `json:"is_tv" gorm:"index"`
 	Rating               int                 `json:"rating"`
 	Watchlist            bool                `json:"watchlist" gorm:"-"`
@@ -384,14 +384,17 @@ func (m *Movie) AfterDelete(scope *gorm.Scope) (err error) {
 		log.Error(err)
 		return err
 	}
-	trashcan := viper.GetString("TrashCan")
-	log.Debugf("trash %s", trashcan)
-	if trashcan != "" && m.File.FullPath != "" {
-		log.Debugf("moving %s to trashcan", m.File.FullPath)
-		_, err = Trash(m.File.FullPath, trashcan)
-		if err != nil {
-			log.Error(err)
-			return err
+	_, e := os.Stat(m.File.FullPath)
+	if !os.IsNotExist(e) {
+		trashcan := viper.GetString("TrashCan")
+		log.Debugf("trash %s", trashcan)
+		if trashcan != "" && m.File.FullPath != "" {
+			log.Debugf("moving %s to trashcan", m.File.FullPath)
+			_, err = Trash(m.File.FullPath, trashcan)
+			if err != nil {
+				log.Error(err)
+				return err
+			}
 		}
 	}
 	return err
