@@ -462,8 +462,8 @@ func Trash(f string, trash string) (trashcan string, err error) {
 	}
 
 	if _, err = os.Stat(trash); err != nil {
-		err = fmt.Errorf("trash not found")
-		return
+		err = fmt.Errorf("trash %s not found", trash)
+		return "", err
 	}
 
 	path, err := filepath.Abs(f)
