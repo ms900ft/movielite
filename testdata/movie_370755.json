@@ -1,0 +1,547 @@
+{
+  "adult": false,
+  "backdrop_path": "/hrw1DKnV8HItvPjhGe6Wih3SJWJ.jpg",
+  "belongs_to_collection": null,
+  "budget": 5000000,
+  "genres": [
+    {
+      "id": 35,
+      "name": "Komödie"
+    },
+    {
+      "id": 18,
+      "name": "Drama"
+    },
+    {
+      "id": 10749,
+      "name": "Liebesfilm"
+    }
+  ],
+  "homepage": "",
+  "id": 370755,
+  "imdb_id": "tt5247022",
+  "original_language": "en",
+  "original_title": "Paterson",
+  "overview": "Paterson arbeitet als Busfahrer in einer Kleinstadt, die genauso heißt wie er selbst: Paterson im US-Bundesstaat New Jersey. Jeden Tag geht er dort seiner Routine nach – er fährt dieselbe Route, beobachtet dabei das Geschehen außerhalb seiner Windschutzscheibe und hört Bruchstücke von Gesprächen seiner Passagiere. In seiner Mittagspause setzt er sich in einen Park und schreibt Gedichte in sein kleines Notizbuch. Am Abend geht er mit seinem Hund spazieren, bindet ihn vor einer Bar an und trinkt exakt ein Bier. Anschließend kehrt er nach Hause zurück, zu seiner künstlerisch ambitionierten Frau Laura, die im Gegensatz zu ihm immer wieder neue Projekte startet – vom Muffin-Backen über E-Gitarre-Spielen bis hin zum Umdekorieren des Hauses, in dem überall ihr schwarz-weißes Lieblingsmuster zu finden ist…",
+  "popularity": 19.578,
+  "poster_path": "/qi221TCLLlWMIQpD0pAxuSuQFJL.jpg",
+  "production_companies": [
+    {
+      "id": 86041,
+      "logo_path": null,
+      "name": "Inkjet Productions",
+      "origin_country": ""
+    },
+    {
+      "id": 20580,
+      "logo_path": "/tkFE81jJIqiFYPP8Tho57MXRQEx.png",
+      "name": "Amazon Studios",
+      "origin_country": "US"
+    },
+    {
+      "id": 23437,
+      "logo_path": null,
+      "name": "K5 Film",
+      "origin_country": "DE"
+    },
+    {
+      "id": 26995,
+      "logo_path": "/acHyNRG9qZKvr4ZlhsKlojhYeey.png",
+      "name": "Animal Kingdom",
+      "origin_country": "US"
+    }
+  ],
+  "production_countries": [
+    {
+      "iso_3166_1": "FR",
+      "name": "France"
+    },
+    {
+      "iso_3166_1": "DE",
+      "name": "Germany"
+    },
+    {
+      "iso_3166_1": "US",
+      "name": "United States of America"
+    }
+  ],
+  "release_date": "2016-11-17",
+  "revenue": 2152738,
+  "runtime": 118,
+  "spoken_languages": [
+    {
+      "iso_639_1": "en",
+      "name": "English"
+    }
+  ],
+  "status": "Released",
+  "tagline": "",
+  "title": "Paterson",
+  "video": false,
+  "vote_average": 7.1,
+  "vote_count": 1021,
+  "credits": {
+    "cast": [
+      {
+        "cast_id": 0,
+        "character": "Paterson",
+        "credit_id": "565dfb509251416db4002fa7",
+        "gender": 2,
+        "id": 1023139,
+        "name": "Adam Driver",
+        "order": 0,
+        "profile_path": "/fsbGQ1eZFgdsG1XnKlhNSvHsiGo.jpg"
+      },
+      {
+        "cast_id": 2,
+        "character": "Laura",
+        "credit_id": "56b2409a925141033e000467",
+        "gender": 1,
+        "id": 229932,
+        "name": "Golshifte Farahani",
+        "order": 1,
+        "profile_path": "/lbsd2lAIQq4egOUXDIfjhte12vv.jpg"
+      },
+      {
+        "cast_id": 19,
+        "character": "Doc",
+        "credit_id": "5787b93bc3a368391d000c1d",
+        "gender": 2,
+        "id": 8689,
+        "name": "Barry Shabaka Henley",
+        "order": 2,
+        "profile_path": "/x21cu3TWFlbEHYBirDRpzAO3Hkl.jpg"
+      },
+      {
+        "cast_id": 25,
+        "character": "Method Man",
+        "credit_id": "5787bbc7c3a368392d000bb3",
+        "gender": 2,
+        "id": 5384,
+        "name": "Method Man",
+        "order": 3,
+        "profile_path": "/mYJFxOcrda410rS5JHPf0nPuimZ.jpg"
+      },
+      {
+        "cast_id": 16,
+        "character": "Marie",
+        "credit_id": "5787b79a92514131c2000a5b",
+        "gender": 1,
+        "id": 1650121,
+        "name": "Chasten Harmon",
+        "order": 4,
+        "profile_path": "/khg2iefLaUwwfuMKN1xAto0PVbY.jpg"
+      },
+      {
+        "cast_id": 17,
+        "character": "Everett",
+        "credit_id": "5787b859c3a3683930000bc5",
+        "gender": 2,
+        "id": 1410478,
+        "name": "William Jackson Harper",
+        "order": 5,
+        "profile_path": "/92gzQUMFZOqJnojxK1lohY1Q9Ap.jpg"
+      },
+      {
+        "cast_id": 28,
+        "character": "Japanese Poet",
+        "credit_id": "5787bdc4c3a3683920000e23",
+        "gender": 2,
+        "id": 68973,
+        "name": "Masatoshi Nagase",
+        "order": 6,
+        "profile_path": "/i4FjAoP2xPtG82lEGnIkL7mFc6g.jpg"
+      },
+      {
+        "cast_id": 29,
+        "character": "Marvin",
+        "credit_id": "5787be65c3a368391d000e29",
+        "gender": 1,
+        "id": 1650158,
+        "name": "Nellie",
+        "order": 7,
+        "profile_path": "/xZ51tobwIxoNqAaldt71l25uqEP.jpg"
+      },
+      {
+        "cast_id": 23,
+        "character": "Donny",
+        "credit_id": "5787bb10c3a3683925000cc8",
+        "gender": 2,
+        "id": 1223718,
+        "name": "Rizwan Manji",
+        "order": 8,
+        "profile_path": "/mBsLE1sDCWZXR9PWV8xptTpxkQc.jpg"
+      },
+      {
+        "cast_id": 21,
+        "character": "Boy on Bus 1",
+        "credit_id": "5787b9cfc3a3683925000c40",
+        "gender": 0,
+        "id": 1650140,
+        "name": "Dominic Liriano",
+        "order": 9,
+        "profile_path": null
+      },
+      {
+        "cast_id": 26,
+        "character": "Boy on Bus 2",
+        "credit_id": "5787bbfa92514131ca000d05",
+        "gender": 2,
+        "id": 1650148,
+        "name": "Jaden Michael",
+        "order": 10,
+        "profile_path": null
+      },
+      {
+        "cast_id": 30,
+        "character": "Sam",
+        "credit_id": "5787bead92514131c0000d37",
+        "gender": 2,
+        "id": 1650159,
+        "name": "Trevor Parham",
+        "order": 11,
+        "profile_path": "/qo2lRCAuPWPL3KMJvhapZ2PfZxf.jpg"
+      },
+      {
+        "cast_id": 31,
+        "character": "Dave",
+        "credit_id": "5787bf9ec3a3683925000e76",
+        "gender": 2,
+        "id": 1650162,
+        "name": "Troy T. Parham",
+        "order": 12,
+        "profile_path": "/knF1sBQNfxZVFOmrySSrGkl4R.jpg"
+      },
+      {
+        "cast_id": 24,
+        "character": "Jimmy",
+        "credit_id": "5787bb74c3a3683932000d64",
+        "gender": 2,
+        "id": 1473140,
+        "name": "Brian McCarthy",
+        "order": 13,
+        "profile_path": "/udVafT4LmV4KsqpjYQRNpnhJ0I9.jpg"
+      },
+      {
+        "cast_id": 18,
+        "character": "Luis",
+        "credit_id": "5787b8dcc3a3683920000c1d",
+        "gender": 2,
+        "id": 946953,
+        "name": "Frank Harts",
+        "order": 14,
+        "profile_path": null
+      },
+      {
+        "cast_id": 14,
+        "character": "Blood in Convertible",
+        "credit_id": "5787b6ec92514131ca000ab0",
+        "gender": 2,
+        "id": 37149,
+        "name": "Luis Da Silva Jr.",
+        "order": 15,
+        "profile_path": "/ajavEvDuNcinuw3BJ80OE0sEU5Q.jpg"
+      },
+      {
+        "cast_id": 13,
+        "character": "Woman in Red",
+        "credit_id": "5787b68492514131ca000a70",
+        "gender": 0,
+        "id": 1650114,
+        "name": "Kacey Cockett",
+        "order": 16,
+        "profile_path": null
+      },
+      {
+        "cast_id": 3,
+        "character": "Female Student",
+        "credit_id": "572fcf0c92514118d300300b",
+        "gender": 1,
+        "id": 929905,
+        "name": "Kara Hayward",
+        "order": 17,
+        "profile_path": "/zcP2OEbHTZkcNlsCCbl1i2e3jvo.jpg"
+      },
+      {
+        "cast_id": 15,
+        "character": "Male Student",
+        "credit_id": "5787b73392514131bd000aea",
+        "gender": 2,
+        "id": 929906,
+        "name": "Jared Gilman",
+        "order": 18,
+        "profile_path": "/wyUao77IKN0YtDHHXLSihOj8l8v.jpg"
+      },
+      {
+        "cast_id": 4,
+        "character": "Young Poet",
+        "credit_id": "572fcf1ac3a3686dd2000080",
+        "gender": 1,
+        "id": 1186840,
+        "name": "Sterling Jerins",
+        "order": 19,
+        "profile_path": "/10kkqqbO8Ct58DqsBPSQIsG9ve4.jpg"
+      },
+      {
+        "cast_id": 22,
+        "character": "Doc's Wife",
+        "credit_id": "5787ba31c3a3683930000cc2",
+        "gender": 1,
+        "id": 1650142,
+        "name": "Johnnie Mae",
+        "order": 20,
+        "profile_path": "/65hFNfB5KUP8zXq2dwrGrpzjUKZ.jpg"
+      },
+      {
+        "cast_id": 11,
+        "character": "Older Woman 1",
+        "credit_id": "5787b2f092514131ca000894",
+        "gender": 0,
+        "id": 1650111,
+        "name": "Helen-Jean Arthur",
+        "order": 21,
+        "profile_path": null
+      },
+      {
+        "cast_id": 20,
+        "character": "Older Woman 2",
+        "credit_id": "5787b98ac3a3683932000c81",
+        "gender": 0,
+        "id": 1650139,
+        "name": "Joan Kendall",
+        "order": 22,
+        "profile_path": null
+      },
+      {
+        "cast_id": 12,
+        "character": "Small Boy 1",
+        "credit_id": "5787b34cc3a36839250008b1",
+        "gender": 2,
+        "id": 1650112,
+        "name": "Owen Asztalos",
+        "order": 23,
+        "profile_path": "/j30Ha6GdDF0c6TyLYTj7ZRTyE36.jpg"
+      },
+      {
+        "cast_id": 34,
+        "character": "Small Boy 2",
+        "credit_id": "5787c26692514131d2000eff",
+        "gender": 2,
+        "id": 1650216,
+        "name": "Jorge Vega",
+        "order": 24,
+        "profile_path": "/nsMceF9tiZvbriJGhbJlPPrgtH1.jpg"
+      },
+      {
+        "cast_id": 27,
+        "character": "Small Girl",
+        "credit_id": "5787bcc8c3a3683925000d57",
+        "gender": 1,
+        "id": 1650157,
+        "name": "Sophia Muller",
+        "order": 25,
+        "profile_path": "/9hiLMUWFXgMuHPUK62VuhZe4cWD.jpg"
+      }
+    ],
+    "crew": [
+      {
+        "credit_id": "5e78fa5a357c00001352b9e8",
+        "department": "Production",
+        "gender": 1,
+        "id": 2242,
+        "job": "Casting",
+        "name": "Ellen Lewis",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5787c4e992514131cc000f5e",
+        "department": "Production",
+        "gender": 2,
+        "id": 16296,
+        "job": "Executive Producer",
+        "name": "Ronald M. Bozman",
+        "profile_path": null
+      },
+      {
+        "credit_id": "565dfb5fc3a3687cff002ffc",
+        "department": "Directing",
+        "gender": 2,
+        "id": 4429,
+        "job": "Director",
+        "name": "Jim Jarmusch",
+        "profile_path": "/bKtWli68IA7mFygxaobAAQcu5Z9.jpg"
+      },
+      {
+        "credit_id": "5b378250c3a36853200346a3",
+        "department": "Sound",
+        "gender": 2,
+        "id": 4429,
+        "job": "Original Music Composer",
+        "name": "Jim Jarmusch",
+        "profile_path": "/bKtWli68IA7mFygxaobAAQcu5Z9.jpg"
+      },
+      {
+        "credit_id": "5736046f9251410b2a00047c",
+        "department": "Writing",
+        "gender": 2,
+        "id": 4429,
+        "job": "Writer",
+        "name": "Jim Jarmusch",
+        "profile_path": "/bKtWli68IA7mFygxaobAAQcu5Z9.jpg"
+      },
+      {
+        "credit_id": "57360497c3a3687e17000497",
+        "department": "Camera",
+        "gender": 2,
+        "id": 4434,
+        "job": "Director of Photography",
+        "name": "Frederick Elmes",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5736051cc3a3687e24000470",
+        "department": "Art",
+        "gender": 2,
+        "id": 5670,
+        "job": "Production Design",
+        "name": "Mark Friedberg",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5b3781e90e0a263ffc0391d2",
+        "department": "Sound",
+        "gender": 2,
+        "id": 15432,
+        "job": "Sound Designer",
+        "name": "Robert Hein",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5787c4f392514131bd00100d",
+        "department": "Production",
+        "gender": 2,
+        "id": 27715,
+        "job": "Executive Producer",
+        "name": "Jean Labadie",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5787c4d492514131ca000fc7",
+        "department": "Production",
+        "gender": 2,
+        "id": 43387,
+        "job": "Producer",
+        "name": "Joshua Astrachan",
+        "profile_path": null
+      },
+      {
+        "credit_id": "57360489c3a3687e1d0004de",
+        "department": "Editing",
+        "gender": 0,
+        "id": 53713,
+        "job": "Editor",
+        "name": "Affonso Gonçalves",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5736047cc3a3687e24000455",
+        "department": "Costume & Make-Up",
+        "gender": 1,
+        "id": 56417,
+        "job": "Costume Design",
+        "name": "Catherine George",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5c3d4154c3a368638a3e0560",
+        "department": "Art",
+        "gender": 1,
+        "id": 970199,
+        "job": "Art Direction",
+        "name": "Kim Jennings",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5787c4e1c3a36839200010a7",
+        "department": "Production",
+        "gender": 0,
+        "id": 1319851,
+        "job": "Executive Producer",
+        "name": "Daniel Baur",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5787c508c3a3683925001044",
+        "department": "Production",
+        "gender": 0,
+        "id": 1319852,
+        "job": "Executive Producer",
+        "name": "Oliver Simon",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5c3d4172c3a36821623dd311",
+        "department": "Sound",
+        "gender": 2,
+        "id": 1337458,
+        "job": "Sound Mixer",
+        "name": "Drew Kunin",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5787c4ff92514131d2000fd4",
+        "department": "Production",
+        "gender": 0,
+        "id": 1516841,
+        "job": "Producer",
+        "name": "Carter Logan",
+        "profile_path": "/v9OtCDgSrmreDpYYYHHyYrxD4Kt.jpg"
+      },
+      {
+        "credit_id": "5b378257c3a368532203c7f0",
+        "department": "Sound",
+        "gender": 0,
+        "id": 1516841,
+        "job": "Original Music Composer",
+        "name": "Carter Logan",
+        "profile_path": "/v9OtCDgSrmreDpYYYHHyYrxD4Kt.jpg"
+      },
+      {
+        "credit_id": "573605119251410b2400045c",
+        "department": "Production",
+        "gender": 1,
+        "id": 1544546,
+        "job": "Casting",
+        "name": "Meghan Rafferty",
+        "profile_path": "/wcF048lDVdqeDEFG1fdyzMGJBRf.jpg"
+      },
+      {
+        "credit_id": "5c3d40f90e0a2643d38e53e7",
+        "department": "Crew",
+        "gender": 0,
+        "id": 2217792,
+        "job": "Poem",
+        "name": "Ron Padgett",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5c3d410ec3a36824ea3be6a9",
+        "department": "Crew",
+        "gender": 0,
+        "id": 2217793,
+        "job": "Poem",
+        "name": "William Carlos Williams",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5c3d41350e0a2638678e479c",
+        "department": "Sound",
+        "gender": 0,
+        "id": 2217794,
+        "job": "Original Music Composer",
+        "name": "Sqürl",
+        "profile_path": null
+      }
+    ]
+  }
+}

@@ -25,14 +25,14 @@ type Movie struct {
 	FileID               uint       `json:"file_id"`
 	TMDBMovieID          uint       `sql:"index"`
 	MovieSearchResultsID uint
-	Title                string              `json:"title"`
+	Title                string              `json:"title" binding:"required"`
 	OrgName              string              `json:"org_name"`
 	Meta                 *TMDBMovie          `json:"meta" gorm:"foreignkey:TMDBMovieID"`
 	Multiplechoice       *MovieSearchResults `json:"multiplechoice" gorm:"foreignkey:MovieSearchResultsID"`
-	File                 File
-	IsTv                 bool `json:"is_tv" gorm:"index"`
-	Rating               int  `json:"rating"`
-	Watchlist            bool `json:"watchlist" gorm:"-"`
+	File                 File                `json:"File" binding:"required"`
+	IsTv                 bool                `json:"is_tv" gorm:"index"`
+	Rating               int                 `json:"rating"`
+	Watchlist            bool                `json:"watchlist" gorm:"-"`
 	LastScanned          time.Time
 	Deleted              bool `gorm:"-"`
 }
@@ -210,6 +210,11 @@ func (m *Movie) GetMeta(t TMDBClients) (err error) {
 	if err != nil {
 		log.Error(err)
 	}
+	if res == nil {
+		m.Multiplechoice = nil
+		m.Meta = nil
+		return nil
+	}
 	//spew.Dump(res)
 	hit := 0
 	hits := 0
@@ -379,14 +384,17 @@ func (m *Movie) AfterDelete(scope *gorm.Scope) (err error) {
 		log.Error(err)
 		return err
 	}
-	trashcan := viper.GetString("TrashCan")
-	log.Debugf("trash %s", trashcan)
-	if trashcan != "" && m.File.FullPath != "" {
-		log.Debugf("moving %s to trashcan", m.File.FullPath)
-		_, err = Trash(m.File.FullPath, trashcan)
-		if err != nil {
-			log.Error(err)
-			return err
+	_, e := os.Stat(m.File.FullPath)
+	if !os.IsNotExist(e) {
+		trashcan := viper.GetString("TrashCan")
+		log.Debugf("trash %s", trashcan)
+		if trashcan != "" && m.File.FullPath != "" {
+			log.Debugf("moving %s to trashcan", m.File.FullPath)
+			_, err = Trash(m.File.FullPath, trashcan)
+			if err != nil {
+				log.Error(err)
+				return err
+			}
 		}
 	}
 	return err
@@ -454,8 +462,8 @@ func Trash(f string, trash string) (trashcan string, err error) {
 	}
 
 	if _, err = os.Stat(trash); err != nil {
-		err = fmt.Errorf("trash not found")
-		return
+		err = fmt.Errorf("trash %s not found", trash)
+		return "", err
 	}
 
 	path, err := filepath.Abs(f)
@@ -516,8 +524,10 @@ func preFetchImages(movie *tmdb.Movie) error {
 }
 
 func preFetchURLS(movie *tmdb.Movie) []string {
+	port := viper.GetInt("Port")
+
 	urls := []string{}
-	baseurl := "http://localhost:8001"
+	baseurl := fmt.Sprintf("http://localhost:%d", port)
 	//posterpath
 	if movie.PosterPath != "" {
 		sizes := []string{"w342", "w780", "w185", "w92"}

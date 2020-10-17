@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ms/movielight/models"
 	"net/http"
+	"os/exec"
 	"strconv"
 	"time"
 
@@ -15,7 +16,7 @@ import (
 
 type UpdateMovie struct {
 	ID      int64  `json:"id"`
-	Title   string `json:"title"`
+	Title   string `json:"title" binding:"required"`
 	OrgName string `json:"org_name"`
 
 	//Multiplechoice MovieSearchResults `json:"multiplechoice"`
@@ -231,6 +232,8 @@ func (s *Service) createMovie(c *gin.Context) {
 
 func (s *Service) updateMovie(c *gin.Context) {
 	db := s.DB
+	id := c.Param("id")
+
 	var input models.Movie
 	if err := c.ShouldBindJSON(&input); err != nil {
 		log.Errorf("movie binding input: %s", err)
@@ -239,7 +242,7 @@ func (s *Service) updateMovie(c *gin.Context) {
 	}
 
 	var movie models.Movie
-	if err := db.Set("gorm:auto_preload", true).Where("id = ?", input.ID).First(&movie).
+	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&movie).
 		Error; err != nil {
 		log.Errorf("movie not found: %s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
@@ -311,6 +314,18 @@ func (s *Service) playMovie(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
 		return
 	}
+
+	dir := c.Query("showdir")
+	//open file on localhost
+	if dir != "" {
+		err := exec.Command("open", "-R", movie.File.FullPath).Start()
+		if err != nil {
+			log.Error(err)
+		}
+		c.JSON(http.StatusNoContent, nil)
+		return
+	}
+
 	err := open.Start(movie.File.FullPath)
 	if err != nil {
 		log.Error(err)

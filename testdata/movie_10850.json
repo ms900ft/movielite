@@ -1,0 +1,360 @@
+{
+  "adult": false,
+  "backdrop_path": "/miTTso4YO6F3u6TP0npT3o8TJ7T.jpg",
+  "belongs_to_collection": null,
+  "budget": 0,
+  "genres": [
+    {
+      "id": 35,
+      "name": "Komödie"
+    },
+    {
+      "id": 18,
+      "name": "Drama"
+    }
+  ],
+  "homepage": "",
+  "id": 10850,
+  "imdb_id": "tt0085781",
+  "original_language": "de",
+  "original_title": "Kehraus",
+  "overview": "Polt spielt den naiven Gabelstaplerfahrer Weitel, dem vom gerissenen Vertreter Arno von Mehling  ein ganzer Haufen absurder Versicherungen aufgeschwatzt werden. Als Weitel beinahe zu spät der finanzielle Kollaps schwant, macht er sich am Faschingsdienstag auf, um in den endlosen Korridoren des Versicherungsunternehmens nach von Mehling zu suchen und alles rückgängig zu machen. Dabei findet sich Weitel zwischen spanischen Señoritas und kühnen Piraten wieder. Die Pappnasenfraktion bereitet sich bereits aufgeregt auf den Höhepunkt des Angestelltendaseins vor: der alljährliche Faschingsball \"Traumpolice\".",
+  "popularity": 2.624,
+  "poster_path": "/9hDldQFGSbcrPfPbV1wRIbV1XYA.jpg",
+  "production_companies": [],
+  "production_countries": [
+    {
+      "iso_3166_1": "DE",
+      "name": "Germany"
+    }
+  ],
+  "release_date": "1983-11-11",
+  "revenue": 0,
+  "runtime": 82,
+  "spoken_languages": [
+    {
+      "iso_639_1": "de",
+      "name": "Deutsch"
+    }
+  ],
+  "status": "Released",
+  "tagline": "",
+  "title": "Kehraus",
+  "video": false,
+  "vote_average": 6.6,
+  "vote_count": 7,
+  "credits": {
+    "cast": [
+      {
+        "cast_id": 11,
+        "character": "Ferdinand Weitel",
+        "credit_id": "52fe43c29251416c7501d17b",
+        "gender": 2,
+        "id": 52381,
+        "name": "Gerhard Polt",
+        "order": 0,
+        "profile_path": "/nECX0C0ViGcPU7Rh2WvWueY9zC7.jpg"
+      },
+      {
+        "cast_id": 12,
+        "character": "Annerose Waguscheit",
+        "credit_id": "52fe43c29251416c7501d17f",
+        "gender": 1,
+        "id": 39746,
+        "name": "Gisela Schneeberger",
+        "order": 1,
+        "profile_path": "/7ffDtWeeglFgDi0yS19beu83Itj.jpg"
+      },
+      {
+        "cast_id": 15,
+        "character": "Arno von Mehling",
+        "credit_id": "52fe43c29251416c7501d18f",
+        "gender": 2,
+        "id": 39487,
+        "name": "Nikolaus Paryla",
+        "order": 2,
+        "profile_path": "/mKVAPCyWO7T2p7t87JgjND3CITt.jpg"
+      },
+      {
+        "cast_id": 16,
+        "character": "Dr. Berzelmeier",
+        "credit_id": "52fe43c29251416c7501d193",
+        "gender": 2,
+        "id": 52655,
+        "name": "Dieter Hildebrandt",
+        "order": 3,
+        "profile_path": null
+      },
+      {
+        "cast_id": 17,
+        "character": "Professor Heinzel",
+        "credit_id": "52fe43c39251416c7501d197",
+        "gender": 2,
+        "id": 39280,
+        "name": "Jochen Busse",
+        "order": 4,
+        "profile_path": "/1oCy5wBFDQLTCYvZeSEDmORHxif.jpg"
+      },
+      {
+        "cast_id": 18,
+        "character": "Winfried Deutelmoser",
+        "credit_id": "52fe43c39251416c7501d19b",
+        "gender": 2,
+        "id": 38834,
+        "name": "Karl Obermayr",
+        "order": 5,
+        "profile_path": "/bfrgExEcKti0ITNHMOm6jRrsSxs.jpg"
+      },
+      {
+        "cast_id": 19,
+        "character": "Frl. Miriam",
+        "credit_id": "52fe43c39251416c7501d19f",
+        "gender": 1,
+        "id": 26958,
+        "name": "Veronika Faber",
+        "order": 6,
+        "profile_path": "/umqNJ7ztlah0ENkMGNEpStMLPiC.jpg"
+      },
+      {
+        "cast_id": 20,
+        "character": "Dr. von Rüden",
+        "credit_id": "52fe43c39251416c7501d1a3",
+        "gender": 2,
+        "id": 67189,
+        "name": "Hans-Günter Martens",
+        "order": 7,
+        "profile_path": null
+      },
+      {
+        "cast_id": 21,
+        "character": "Bemmerl",
+        "credit_id": "52fe43c39251416c7501d1a7",
+        "gender": 0,
+        "id": 46225,
+        "name": "Hans Stadtmüller",
+        "order": 8,
+        "profile_path": null
+      },
+      {
+        "cast_id": 22,
+        "character": "Wondrazil",
+        "credit_id": "52fe43c39251416c7501d1ab",
+        "gender": 2,
+        "id": 38936,
+        "name": "Bruno Jonas",
+        "order": 9,
+        "profile_path": null
+      },
+      {
+        "cast_id": 23,
+        "character": "Heinz Böhm",
+        "credit_id": "52fe43c39251416c7501d1af",
+        "gender": 0,
+        "id": 67191,
+        "name": "Wolfgang Gropper",
+        "order": 10,
+        "profile_path": null
+      },
+      {
+        "cast_id": 24,
+        "character": "Markus Wandrey",
+        "credit_id": "52fe43c39251416c7501d1b3",
+        "gender": 2,
+        "id": 67190,
+        "name": "Peter Welz",
+        "order": 11,
+        "profile_path": null
+      },
+      {
+        "cast_id": 25,
+        "character": "Klofrau",
+        "credit_id": "52fe43c39251416c7501d1b7",
+        "gender": 1,
+        "id": 26952,
+        "name": "Maria Singer",
+        "order": 12,
+        "profile_path": null
+      },
+      {
+        "cast_id": 26,
+        "character": "Frl. Matussek",
+        "credit_id": "52fe43c39251416c7501d1bb",
+        "gender": 1,
+        "id": 67193,
+        "name": "Hansi Jochmann",
+        "order": 13,
+        "profile_path": null
+      },
+      {
+        "cast_id": 27,
+        "character": "Gerda Jessike",
+        "credit_id": "52fe43c39251416c7501d1bf",
+        "gender": 1,
+        "id": 67192,
+        "name": "Helena Rosenkranz",
+        "order": 14,
+        "profile_path": null
+      },
+      {
+        "cast_id": 28,
+        "character": "Garderobiere",
+        "credit_id": "52fe43c39251416c7501d1c3",
+        "gender": 0,
+        "id": 67194,
+        "name": "Ursula Soremba",
+        "order": 15,
+        "profile_path": null
+      },
+      {
+        "cast_id": 29,
+        "character": "Garderobiere",
+        "credit_id": "52fe43c39251416c7501d1c7",
+        "gender": 0,
+        "id": 67195,
+        "name": "Monika John",
+        "order": 16,
+        "profile_path": null
+      },
+      {
+        "cast_id": 30,
+        "character": "Schwanthaler",
+        "credit_id": "52fe43c39251416c7501d1cb",
+        "gender": 0,
+        "id": 67196,
+        "name": "Konrad van Beust",
+        "order": 17,
+        "profile_path": null
+      },
+      {
+        "cast_id": 31,
+        "character": "",
+        "credit_id": "52fe43c39251416c7501d1cf",
+        "gender": 0,
+        "id": 67197,
+        "name": "Egon Keresztes",
+        "order": 18,
+        "profile_path": null
+      },
+      {
+        "cast_id": 32,
+        "character": "",
+        "credit_id": "52fe43c39251416c7501d1d3",
+        "gender": 0,
+        "id": 67198,
+        "name": "Horst Peukert",
+        "order": 19,
+        "profile_path": null
+      }
+    ],
+    "crew": [
+      {
+        "credit_id": "52fe43c29251416c7501d14d",
+        "department": "Editing",
+        "gender": 0,
+        "id": 2737,
+        "job": "Editor",
+        "name": "Thea Eymèsz",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe43c29251416c7501d147",
+        "department": "Production",
+        "gender": 0,
+        "id": 21886,
+        "job": "Producer",
+        "name": "Hans Weth",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe43c29251416c7501d171",
+        "department": "Art",
+        "gender": 0,
+        "id": 39571,
+        "job": "Production Design",
+        "name": "Claus Kottmann",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe43c29251416c7501d141",
+        "department": "Directing",
+        "gender": 2,
+        "id": 52388,
+        "job": "Director",
+        "name": "Hanns Christian Müller",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe43c29251416c7501d153",
+        "department": "Sound",
+        "gender": 2,
+        "id": 52388,
+        "job": "Original Music Composer",
+        "name": "Hanns Christian Müller",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe43c29251416c7501d177",
+        "department": "Writing",
+        "gender": 2,
+        "id": 52388,
+        "job": "Author",
+        "name": "Hanns Christian Müller",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe43c29251416c7501d15f",
+        "department": "Camera",
+        "gender": 0,
+        "id": 67184,
+        "job": "Director of Photography",
+        "name": "James Jacobs",
+        "profile_path": null
+      },
+      {
+        "credit_id": "56fc278b92514102e1002152",
+        "department": "Crew",
+        "gender": 2,
+        "id": 67185,
+        "job": "Property Master",
+        "name": "Franz Bauer",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe43c29251416c7501d165",
+        "department": "Art",
+        "gender": 2,
+        "id": 67186,
+        "job": "Production Design",
+        "name": "Winfried Hennig",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe43c29251416c7501d16b",
+        "department": "Writing",
+        "gender": 2,
+        "id": 67183,
+        "job": "Author",
+        "name": "Carlo Fedier",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe43c29251416c7501d185",
+        "department": "Costume & Make-Up",
+        "gender": 0,
+        "id": 67188,
+        "job": "Costume Design",
+        "name": "Elisabeth Irmer",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe43c29251416c7501d18b",
+        "department": "Costume & Make-Up",
+        "gender": 0,
+        "id": 67187,
+        "job": "Costume Design",
+        "name": "Gudrun Schretzmeier",
+        "profile_path": null
+      }
+    ]
+  }
+}

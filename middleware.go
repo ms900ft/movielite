@@ -3,7 +3,6 @@ package movielight
 import (
 	"fmt"
 	"ms/movielight/models"
-	"net/http"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -46,7 +45,7 @@ func (s *Service) UserMiddleWare(c *gin.Context) {
 
 	var user models.User
 	if err := db.Where("user_name  = ?", username).First(&user).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		//c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
 		return
 	}
 

@@ -1,0 +1,504 @@
+{
+  "adult": false,
+  "backdrop_path": "/jqj5GL6OT1QWM6EASYjm3rbR50W.jpg",
+  "belongs_to_collection": null,
+  "budget": 0,
+  "genres": [
+    {
+      "id": 18,
+      "name": "Drama"
+    },
+    {
+      "id": 10749,
+      "name": "Liebesfilm"
+    }
+  ],
+  "homepage": "",
+  "id": 3476,
+  "imdb_id": "tt0073155",
+  "original_language": "fr",
+  "original_title": "L'Important c'est d'aimer",
+  "overview": "Die erfolglose Schauspielerin Nadine hält sich mit dem Dreh von billigen Pornofilmen über Wasser. Sie macht die Bekanntschaft des Fotografen Servais Mont. Dieser hat Schulden bei dem Kredithai Mazelli - um ihn abzubezahlen, macht er angewidert Sexfotos. Servais beschließt, Nadine zu helfen und verschafft ihr über den Schauspieler Zimmer und den Regisseur Messala eine Rolle in der Theateraufführung „Richard III.“. Um die Produktion zu finanzieren, bleibt ihm allerdings nichts anderes übrig, als sich erneut Geld von Mazelli zu leihen. Nadine ist derweil hin- und hergerissen zwischen Servais, in den sie sich verliebt, und ihrem Ehemann Jacques, dem sie sich moralisch verpflichtet fühlt...",
+  "popularity": 7.172,
+  "poster_path": "/7onrliXiHvff1beA3HmxPBa7KNq.jpg",
+  "production_companies": [
+    {
+      "id": 1416,
+      "logo_path": null,
+      "name": "Albina Productions S.a.r.l.",
+      "origin_country": ""
+    },
+    {
+      "id": 1417,
+      "logo_path": null,
+      "name": "TIT Filmproduktion",
+      "origin_country": ""
+    }
+  ],
+  "production_countries": [
+    {
+      "iso_3166_1": "FR",
+      "name": "France"
+    },
+    {
+      "iso_3166_1": "DE",
+      "name": "Germany"
+    },
+    {
+      "iso_3166_1": "IT",
+      "name": "Italy"
+    }
+  ],
+  "release_date": "1975-02-12",
+  "revenue": 0,
+  "runtime": 109,
+  "spoken_languages": [
+    {
+      "iso_639_1": "fr",
+      "name": "Français"
+    }
+  ],
+  "status": "Released",
+  "tagline": "Was gäbe ich darum, so wie du zu sein",
+  "title": "Nachtblende",
+  "video": false,
+  "vote_average": 7.5,
+  "vote_count": 51,
+  "credits": {
+    "cast": [
+      {
+        "cast_id": 15,
+        "character": "Nadine Chevalier",
+        "credit_id": "52fe4395c3a36847f805f5ed",
+        "gender": 1,
+        "id": 6250,
+        "name": "Romy Schneider",
+        "order": 0,
+        "profile_path": "/lAH90VMs5iU7kGJR3LSkre2Jxhe.jpg"
+      },
+      {
+        "cast_id": 16,
+        "character": "Servais Mont",
+        "credit_id": "52fe4395c3a36847f805f5f1",
+        "gender": 2,
+        "id": 21181,
+        "name": "Fabio Testi",
+        "order": 1,
+        "profile_path": "/rSPYBXxsF1xvm5dGd3RKZixy4Jp.jpg"
+      },
+      {
+        "cast_id": 25,
+        "character": "Jacques Chevalier",
+        "credit_id": "52fe4395c3a36847f805f615",
+        "gender": 2,
+        "id": 32089,
+        "name": "Jacques Dutronc",
+        "order": 2,
+        "profile_path": "/AaiZPtmsdgbDkmyv3f2BCwT4eNg.jpg"
+      },
+      {
+        "cast_id": 17,
+        "character": "Mazelli",
+        "credit_id": "52fe4395c3a36847f805f5f5",
+        "gender": 2,
+        "id": 20113,
+        "name": "Claude Dauphin",
+        "order": 3,
+        "profile_path": "/9ZLkXGPsvnLTv3Frbz1kSbatKox.jpg"
+      },
+      {
+        "cast_id": 18,
+        "character": "Servais' Father",
+        "credit_id": "52fe4395c3a36847f805f5f9",
+        "gender": 2,
+        "id": 32090,
+        "name": "Roger Blin",
+        "order": 4,
+        "profile_path": "/6C8jvXlBpgzbIHpflhGCw4XIFKt.jpg"
+      },
+      {
+        "cast_id": 26,
+        "character": "Luce",
+        "credit_id": "52fe4395c3a36847f805f619",
+        "gender": 1,
+        "id": 24690,
+        "name": "Nicoletta Machiavelli",
+        "order": 5,
+        "profile_path": "/wjKZZvyoH3VHzVFEdPlUnIAmJiD.jpg"
+      },
+      {
+        "cast_id": 23,
+        "character": "Karl-Heinz Zimmer",
+        "credit_id": "52fe4395c3a36847f805f60d",
+        "gender": 2,
+        "id": 14277,
+        "name": "Klaus Kinski",
+        "order": 6,
+        "profile_path": "/twuyGlZJzJXFcbhVS2jlQOsTVFK.jpg"
+      },
+      {
+        "cast_id": 19,
+        "character": "Madame Mazelli",
+        "credit_id": "52fe4395c3a36847f805f5fd",
+        "gender": 1,
+        "id": 32091,
+        "name": "Gabrielle Doulcet",
+        "order": 7,
+        "profile_path": "/e9yLzzY5hce0gh50gs5bQckIelH.jpg"
+      },
+      {
+        "cast_id": 20,
+        "character": "Raymond Lapade",
+        "credit_id": "52fe4395c3a36847f805f601",
+        "gender": 2,
+        "id": 32092,
+        "name": "Michel Robin",
+        "order": 8,
+        "profile_path": "/pFqoYdd3YkRP3iuMlBQmfkay1nX.jpg"
+      },
+      {
+        "cast_id": 21,
+        "character": "Laurent Messala",
+        "credit_id": "52fe4395c3a36847f805f605",
+        "gender": 2,
+        "id": 32093,
+        "name": "Guy Mairesse",
+        "order": 9,
+        "profile_path": "/jFrZ1uO6bDKh3TAWJn0dhGHzKbt.jpg"
+      },
+      {
+        "cast_id": 22,
+        "character": "Myriam",
+        "credit_id": "52fe4395c3a36847f805f609",
+        "gender": 1,
+        "id": 32094,
+        "name": "Katia Tchenko",
+        "order": 10,
+        "profile_path": "/1eiuMdhN0DI3qEb3JiErEHgVxF0.jpg"
+      },
+      {
+        "cast_id": 24,
+        "character": "The Assistant Director",
+        "credit_id": "52fe4395c3a36847f805f611",
+        "gender": 2,
+        "id": 24303,
+        "name": "Paul Bisciglia",
+        "order": 11,
+        "profile_path": "/rRpleKwfHaT1plFAPkZ9B9rlIt9.jpg"
+      },
+      {
+        "cast_id": 50,
+        "character": "The First Man in the Brewery",
+        "credit_id": "5ca01d9c0e0a26598ef9c791",
+        "gender": 2,
+        "id": 39333,
+        "name": "Sylvain Lévignac",
+        "order": 12,
+        "profile_path": null
+      },
+      {
+        "cast_id": 42,
+        "character": "The Woman with the Dildo",
+        "credit_id": "5b7d0ffcc3a3685903008b1f",
+        "gender": 1,
+        "id": 27896,
+        "name": "Olga Valéry",
+        "order": 13,
+        "profile_path": "/bzVBNH0XOgDrZrRL12qJCmissxu.jpg"
+      },
+      {
+        "cast_id": 41,
+        "character": "Robert Beninge",
+        "credit_id": "5b7d0fef92514141640093f9",
+        "gender": 2,
+        "id": 72090,
+        "name": "Jacques Boudet",
+        "order": 14,
+        "profile_path": "/7VCe37uzQDl4T6GmHL5eaTL4dxZ.jpg"
+      },
+      {
+        "cast_id": 51,
+        "character": "The Doctor in the Hospital / An Actor in the Theatre",
+        "credit_id": "5ca01e060e0a265983f9becf",
+        "gender": 0,
+        "id": 2277767,
+        "name": "Robert Dadiès",
+        "order": 15,
+        "profile_path": null
+      },
+      {
+        "cast_id": 40,
+        "character": "An Actor in the Theatre",
+        "credit_id": "5b7d0fd99251414153006eee",
+        "gender": 0,
+        "id": 1659267,
+        "name": "Georges-Fréderic Dehlen",
+        "order": 16,
+        "profile_path": null
+      },
+      {
+        "cast_id": 52,
+        "character": "Victor",
+        "credit_id": "5ca01e549251411a2506421f",
+        "gender": 2,
+        "id": 545587,
+        "name": "Jack Jourdain",
+        "order": 17,
+        "profile_path": null
+      },
+      {
+        "cast_id": 39,
+        "character": "Manuel Rosenthal",
+        "credit_id": "5b7d0fcb925141415c0089c1",
+        "gender": 2,
+        "id": 591213,
+        "name": "Claude Legros",
+        "order": 18,
+        "profile_path": "/kwM2yQroxNKL7eFWEj6gReS0Thq.jpg"
+      },
+      {
+        "cast_id": 37,
+        "character": "Messala's Girl",
+        "credit_id": "5b7d0fa9925141414f008e28",
+        "gender": 0,
+        "id": 2112783,
+        "name": "Kira Potonie",
+        "order": 19,
+        "profile_path": null
+      },
+      {
+        "cast_id": 36,
+        "character": "The Electrician",
+        "credit_id": "5b7d0f9a925141416c007f9b",
+        "gender": 0,
+        "id": 225653,
+        "name": "Michel Such",
+        "order": 20,
+        "profile_path": "/9eyMfDSSvVVlHdHAPnV7hwePS1u.jpg"
+      },
+      {
+        "cast_id": 35,
+        "character": "Verdurin",
+        "credit_id": "5b7d0f8dc3a36858fa0078de",
+        "gender": 0,
+        "id": 1524409,
+        "name": "Jacques Van Dooren",
+        "order": 21,
+        "profile_path": null
+      },
+      {
+        "cast_id": 34,
+        "character": "The Female Director",
+        "credit_id": "5b7d0f790e0a263bca0095d8",
+        "gender": 1,
+        "id": 1408113,
+        "name": "Nadia Vasil",
+        "order": 22,
+        "profile_path": null
+      },
+      {
+        "cast_id": 33,
+        "character": "The Vietnamese Girl",
+        "credit_id": "5b7d0f6c925141414f008dee",
+        "gender": 0,
+        "id": 2112781,
+        "name": "Sin May Zao",
+        "order": 23,
+        "profile_path": null
+      },
+      {
+        "cast_id": 53,
+        "character": "Léonard",
+        "credit_id": "5ca01f0a0e0a265983f9bff6",
+        "gender": 0,
+        "id": 21173,
+        "name": "Gérard Zimmermann",
+        "order": 24,
+        "profile_path": null
+      },
+      {
+        "cast_id": 32,
+        "character": "The Girl at the Orgy (uncredited)",
+        "credit_id": "5b7d0f5c0e0a263bcd009134",
+        "gender": 1,
+        "id": 104217,
+        "name": "Claudine Beccarie",
+        "order": 25,
+        "profile_path": "/rUIFhxby4XvGP6pKZKKhj3jcnGJ.jpg"
+      }
+    ],
+    "crew": [
+      {
+        "credit_id": "52fe4395c3a36847f805f5c5",
+        "department": "Sound",
+        "gender": 2,
+        "id": 3535,
+        "job": "Original Music Composer",
+        "name": "Georges Delerue",
+        "profile_path": "/xKRsHzgZicN1KCUmnl4M09TVCxE.jpg"
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f5d7",
+        "department": "Art",
+        "gender": 2,
+        "id": 3586,
+        "job": "Production Design",
+        "name": "Jean-Pierre Kohut-Svelko",
+        "profile_path": "/hPPrqSPxWD00UyDCQ7KTShq6bWJ.jpg"
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f5dd",
+        "department": "Costume & Make-Up",
+        "gender": 1,
+        "id": 19058,
+        "job": "Costume Design",
+        "name": "Catherine Leterrier",
+        "profile_path": "/1nM1bN597iNtzh9XgiJ8d5uaS4M.jpg"
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f5cb",
+        "department": "Camera",
+        "gender": 2,
+        "id": 22456,
+        "job": "Director of Photography",
+        "name": "Ricardo Aronovich",
+        "profile_path": "/o2QWEP5qukfzaQER9PfR2KQv0HW.jpg"
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f61f",
+        "department": "Costume & Make-Up",
+        "gender": 0,
+        "id": 21551,
+        "job": "Hairstylist",
+        "name": "Jean-Pierre Guérin",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5ca01be2c3a368735b82c04d",
+        "department": "Sound",
+        "gender": 2,
+        "id": 26356,
+        "job": "Sound Mixer",
+        "name": "Jean Nény",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f5e9",
+        "department": "Costume & Make-Up",
+        "gender": 0,
+        "id": 32017,
+        "job": "Makeup Artist",
+        "name": "Didier Lavergne",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5ca01b38c3a368734482d0f2",
+        "department": "Writing",
+        "gender": 2,
+        "id": 32082,
+        "job": "Screenplay",
+        "name": "Andrzej Żuławski",
+        "profile_path": "/3mZEly1H2hoFNMxJDa9hh5ER0oA.jpg"
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f5a1",
+        "department": "Directing",
+        "gender": 2,
+        "id": 32082,
+        "job": "Director",
+        "name": "Andrzej Żuławski",
+        "profile_path": "/3mZEly1H2hoFNMxJDa9hh5ER0oA.jpg"
+      },
+      {
+        "credit_id": "5ca01b4c9251411a25063e93",
+        "department": "Writing",
+        "gender": 0,
+        "id": 32083,
+        "job": "Screenplay",
+        "name": "Christopher Frank",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f5a7",
+        "department": "Writing",
+        "gender": 0,
+        "id": 32083,
+        "job": "Novel",
+        "name": "Christopher Frank",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f5b9",
+        "department": "Production",
+        "gender": 0,
+        "id": 32084,
+        "job": "Producer",
+        "name": "Albina du Boisrouvray",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f5bf",
+        "department": "Production",
+        "gender": 0,
+        "id": 32085,
+        "job": "Executive Producer",
+        "name": "Léo L. Fuchs",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f5d1",
+        "department": "Editing",
+        "gender": 0,
+        "id": 32086,
+        "job": "Editor",
+        "name": "Christiane Lack",
+        "profile_path": null
+      },
+      {
+        "credit_id": "52fe4395c3a36847f805f5e3",
+        "department": "Costume & Make-Up",
+        "gender": 0,
+        "id": 32087,
+        "job": "Makeup Artist",
+        "name": "Massimo De Rossi",
+        "profile_path": "/qLWsRll1YYZahmthBh4REMyO2VR.jpg"
+      },
+      {
+        "credit_id": "5ca01bd2c3a368734482d1d0",
+        "department": "Sound",
+        "gender": 0,
+        "id": 69216,
+        "job": "Sound Editor",
+        "name": "Maurice Laumain",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5ca01b8f0e0a265986f9d75e",
+        "department": "Production",
+        "gender": 2,
+        "id": 326033,
+        "job": "Production Manager",
+        "name": "Georges Casati",
+        "profile_path": "/skHGxXOtlTYVn7nIismqNrfEl0y.jpg"
+      },
+      {
+        "credit_id": "5ca01ba7925141557803d2bc",
+        "department": "Directing",
+        "gender": 0,
+        "id": 1600674,
+        "job": "First Assistant Director",
+        "name": "Laurent Ferrier",
+        "profile_path": null
+      },
+      {
+        "credit_id": "5ca01bbfc3a368735582a0b2",
+        "department": "Sound",
+        "gender": 0,
+        "id": 2277763,
+        "job": "Sound Recordist",
+        "name": "Jacques Gérardot",
+        "profile_path": null
+      }
+    ]
+  }
+}
