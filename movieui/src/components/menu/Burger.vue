@@ -1,0 +1,169 @@
+
+<template>
+  <v-dialog v-if="dialog" v-model="dialog" persistent max-width="290">
+    <v-card>
+      <v-card-title class="headline">
+        Really delete:
+        <span class="movietitle">{{movie.title}}</span>
+      </v-card-title>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" flat @click="dialog = false">Cancel</v-btn>
+        <v-btn color="primary" falt @click="deleteMovie(getMovieItem)">Delete</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <div v-else>
+    <dir-list v-if="showdirlist" :show="showdirlist" :movie="movie" @close="showdirlist = false"></dir-list>
+    <v-menu offset-y max-height="300">
+      <template v-slot:activator="{ on }">
+        <div class="hamburger" v-on="on">
+          <v-icon>menu</v-icon>
+        </div>
+      </template>
+      <v-list>
+        <v-list-tile v-for="(item, index) in getItems" :key="index">
+          <v-list-tile-title
+            @click="item.action(getMovieItem)"
+            style="cursor: pointer"
+          >{{ item.name() }}</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
+  </div>
+</template>
+
+<script>
+import movieApi from '@/services/MovieApi'
+import DirList from '@/components/menu/DirList'
+import EventBus from '@/store/eventBus.js'
+export default {
+  name: 'Burger',
+  components: { DirList },
+  props: ['movie'],
+  data () {
+    return {
+      dialog: false,
+      showdirlist: false
+    }
+  },
+  mounted () {
+    // this.getDirList();
+  },
+  computed: {
+    getMovieItem () {
+      return this.movie
+    },
+    getItems () {
+      let _this = this
+      return [
+        {
+          name: function () {
+            return 'Is TV Show'
+          },
+          action: function (item) {
+            console.log('child')
+            _this.isTvShow(item)
+          }
+        },
+        {
+          name: function () {
+            return 'Delete Movie'
+          },
+          action: function (item) {
+            console.log('delete')
+            _this.dialog = true
+          }
+        },
+        {
+          name: function () {
+            if (_this.movie.watchlist) {
+              return 'Remove from watchlist'
+            }
+            return 'Add to watchlist'
+          },
+          action: function (item) {
+            console.log('watchlsit')
+            _this.toggleWatchlist(item)
+          }
+        },
+        {
+          name: function () {
+            return 'Move Movie'
+          },
+          action: function (item) {
+            console.log('move')
+            _this.showdirlist = true
+          }
+        },
+        {
+          name: function () {
+            return 'Show file'
+          },
+          action: function (item) {
+            console.log('show')
+            _this.showlocal()
+          }
+        },
+        {
+          name: function () {
+            return 'Rescan'
+          },
+          action: function (item) {
+            console.log('Rescan')
+            _this.reScan(item)
+          }
+        }
+      ]
+    }
+  },
+  methods: {
+    getLink (item) {
+      return '/?genre=' + item.tmdb_id
+    },
+    openMenu () {},
+    isTvShow (item) {
+      console.log('------------------------------------')
+      console.log(item)
+      console.log('------------------------------------')
+      item.is_tv = true
+      EventBus.$emit('ISTVSHOW', item)
+    },
+    toggleWatchlist (item) {
+      item.watchlist = !item.watchlist
+      EventBus.$emit('TOGGLEWATCHLIST', item)
+    },
+    deleteMovie (item) {
+      this.dialog = false
+      // this.delete(item);
+      EventBus.$emit('DELETEMOVIE', item)
+    },
+    reScan (item) {
+      EventBus.$emit('RESCAN', item)
+    },
+    showlocal () {
+      movieApi
+        .playLocal(this.movie, { showdir: 1 })
+        .then(response => {})
+        .catch(error => {
+          console.log(error)
+        })
+    }
+  }
+}
+</script>
+
+<style lang="stylus" scoped>
+.hamburger {
+  float: right;
+  cursor: pointer;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+li:hover {
+  cursor: pointer;
+}
+</style>

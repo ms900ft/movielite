@@ -1,0 +1,52 @@
+<template>
+  <v-app class="main">
+    <app-navigation></app-navigation>
+    <v-content class="content">
+      <router-view></router-view>
+    </v-content>
+  </v-app>
+</template>
+
+<script>
+import AppNavigation from "@/components/AppNavigation";
+
+export default {
+  name: "App",
+  components: {
+    AppNavigation,
+  },
+
+  data() {
+    return {
+      searchstring: "",
+      searchstring2: "",
+      searchboxVisible: false,
+    };
+  },
+  // props: ["searchboxVisible"],
+  methods: {
+    searchMovie() {
+      this.$router.push("/search/" + this.searchString);
+      this.searchString = "";
+    },
+  },
+  computed: {
+    dataAvailable() {
+      return this.searchString !== null && this.searchString !== "";
+    },
+  },
+};
+</script>
+
+<style lang="stylus" scoped>
+.content {
+  max-width: 1200px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.main {
+  // background : #9e9e9e;
+}
+</style>
