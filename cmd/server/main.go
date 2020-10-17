@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"log"
-	"ms/movielight"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"golang.org/x/sync/errgroup"
+
+	"ms/movielight"
 )
 
 var (
