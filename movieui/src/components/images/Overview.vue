@@ -7,13 +7,10 @@
         :src="image(movie)"
 
         class="image"
-        v-bind:style="{maxWidth:maxWidth(), height:height  }"
+        v-bind:style="{Width:maxWidth(), height:height  }"
         :class="{'selected': showByIndex === index}"
         @click="openImageModal(movie)"
       />
-      <div v-show="showButton(index) && size <3" class="burger">
-        <burger-menu :movie="movie"></burger-menu>
-      </div>
       <div v-show="showButton(index) && size <3" class="burger">
         <burger-menu :movie="movie"></burger-menu>
       </div>
@@ -27,7 +24,7 @@
         />
         <download v-else :movie="movie" overlay="true" :size="size" />
       </div>
-      <div v-show="(showButton(index) && size <3) || imageWithTitle(movie) || mobile"
+      <div v-show="imageWithTitle(movie) || mobile ||showByIndex === index"
       class="imagetitle"
       :class="{'selected': showByIndex === index}" >{{movie.title}}</div>
     </div>
@@ -63,7 +60,8 @@ export default {
         height: '100%',
         'margin-left': 'auto',
         'margin-right': 'auto',
-        'background': background
+        'background': background,
+        'width': '180px'
       }
     }
   },
@@ -77,22 +75,7 @@ export default {
   methods: {
     image (item) {
       var pic
-      if (this.mobile === true) {
-        if (item.meta && item.meta.backdrop_path) {
-          pic = this.$baseURL + '/images/w300' + item.meta.backdrop_path
-          this.height = 'auto'
-        } else if (item.meta && item.meta.poster_path) {
-          pic = this.$baseURL + '/images/w342' + item.meta.poster_path
-          this.height = '484px'
-        } else {
-          pic = this.$baseURL + '/movie2/nocover.jpg'
-          this.height = '484px'
-        }
-        return pic
-        //   ? (pic = this.$baseURL + '/images/w500' + item.meta.backdrop_path)
-        //   : (pic = this.$baseURL + '/movie2/nocover.jpg')
-        // return pic
-      }
+
       item.meta && item.meta.poster_path
         ? (pic = this.$baseURL + '/images/w342' + item.meta.poster_path)
         : (pic = this.$baseURL + '/movie2/nocover.jpg')
@@ -192,10 +175,10 @@ transition: 1.5s ease;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  object-fit: contain;
-  max-width: 100%;
+  /* object-fit: contain; */
+  width: 180px;
   max-height: 240px;
-  width: auto;
+  /* width: auto; */
   height: auto;
   transform: scale(1.08, 1);
 }
@@ -230,6 +213,6 @@ transition: 1.5s ease;
 .imagecontainer {
   position: relative;
   overflow: hidden;
-
+  width: 180px;
 }
 </style>

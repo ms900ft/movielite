@@ -12,5 +12,32 @@
     "-tags",
     "fts5"
   ],
-  "go-tests-outline.go-test-params": "-tags fts5"
+  "go-tests-outline.go-test-params": "-tags fts5",
+  "vetur.format.defaultFormatterOptions": {
+    "prettier": {
+      "singleQuote": true
+    }
+  },
+
+
+  "eslint.validate": [{
+      "language": "vue",
+      "autoFix": true
+    },
+    {
+      "language": "javascript",
+      "autoFix": true
+    },
+    {
+      "language": "javascriptreact",
+      "autoFix": true
+    }
+  ],
+  "eslint.autoFixOnSave": true,
+  "editor.formatOnSave": false,
+  "vetur.validation.template": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+"jshint.options": {"esversion": 6},
 }

@@ -8,39 +8,39 @@
 </template>
 
 <script>
-import AppNavigation from "@/components/AppNavigation";
+import AppNavigation from '@/components/AppNavigation'
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
-    AppNavigation,
+    AppNavigation
   },
 
-  data() {
+  data () {
     return {
-      searchstring: "",
-      searchstring2: "",
-      searchboxVisible: false,
-    };
+      searchstring: '',
+      searchstring2: '',
+      searchboxVisible: false
+    }
   },
   // props: ["searchboxVisible"],
   methods: {
-    searchMovie() {
-      this.$router.push("/search/" + this.searchString);
-      this.searchString = "";
-    },
+    searchMovie () {
+      this.$router.push('/search/' + this.searchString)
+      this.searchString = ''
+    }
   },
   computed: {
-    dataAvailable() {
-      return this.searchString !== null && this.searchString !== "";
-    },
-  },
-};
+    dataAvailable () {
+      return this.searchString !== null && this.searchString !== ''
+    }
+  }
+}
 </script>
 
 <style lang="stylus" scoped>
 .content {
-  max-width: 1200px;
+
   width: 100%;
   margin-left: auto;
   margin-right: auto;
