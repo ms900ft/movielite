@@ -36,9 +36,9 @@
       v-model="imageModalVisible"
     />
 
-    <v-layout wrap row style="margin: auto 20px;">
+    <v-layout wrap row style="margin: auto 40px;">
       <v-flex
-style="flex: 0; margin:auto "
+style="flex: 0; "
         v-for="(item, index) in wholeResponse"
         :key="index"
 
