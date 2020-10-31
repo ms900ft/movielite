@@ -24,7 +24,7 @@ export default {
 
   data () {
     return {
-      Users: [{ name: 'Marc' }, { name: 'Kaja' }],
+      Users: [{ name: 'Marc' }, { name: 'Kaja' }, { name: 'covid-19kino' }],
       User: 'Users'
     }
   },

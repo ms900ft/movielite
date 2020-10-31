@@ -9,20 +9,19 @@
         class="image"
         v-bind:style="{Width:maxWidth(), height:height  }"
         :class="{'selected': showByIndex === index}"
-        @click="openImageModal(movie)"
+        @click="openModal(movie)"
       />
-      <div v-show="showButton(index) && size <3" class="burger">
+      <div v-show="showButton(index) " class="burger">
         <burger-menu :movie="movie"></burger-menu>
       </div>
       <div class="middle" v-show="showButton(index)">
         <play
           v-if="isLocal() || localHelper"
           :movie="movie"
-          :size="size"
           overlay="true"
           :helper="localHelper"
         />
-        <download v-else :movie="movie" overlay="true" :size="size" />
+        <download v-else :movie="movie" overlay="true"  />
       </div>
       <div v-show="imageWithTitle(movie) || mobile ||showByIndex === index"
       class="imagetitle"
@@ -47,7 +46,7 @@ export default {
     if (this.$isMobile === true) {
       float = 'auto'
       background = 'radial-gradient(transparent 30%, black 50%)'
-    } else if (this.size > 2) {
+    } else {
       float = 'left'
     }
     return {
@@ -65,7 +64,7 @@ export default {
       }
     }
   },
-  props: ['movie', 'size', 'index', 'localHelper'],
+  props: ['movie', 'index', 'localHelper'],
   mounted () {},
   computed: {
     mobile () {
@@ -81,12 +80,8 @@ export default {
         : (pic = this.$baseURL + '/movie2/nocover.jpg')
       return pic
     },
-    openImageModal (item) {
-      if (this.size < 4 || this.$vuetify.breakpoint.name === 'xs') {
-        this.$emit('openModal', this.item)
-      } else {
-        this.$emit('imageModal', this.item)
-      }
+    openModal (item) {
+      this.$emit('openModal', this.item)
     },
     imageWithTitle (item) {
       if (!item.meta) {
@@ -112,9 +107,6 @@ export default {
         return true
       }
       return false
-    },
-    sizex () {
-      return this.size
     },
     maxWidth () {
       if (this.mobile === true) {

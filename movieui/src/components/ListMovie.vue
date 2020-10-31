@@ -49,7 +49,6 @@ style="flex: 0; "
             v-on:openModal="openModal(item)"
             v-on:imageModal="openImageModal(item)"
             :movie="item"
-            :size="size"
             :index="index"
             :localHelper="playHelper"
           ></image-overview>
@@ -72,9 +71,9 @@ import localApi from '@/services/LocalApi'
 import movieModal from '@/components/MovieModal'
 import choiceModal from '@/components/ChoiceModal'
 import imageModal from '@/components/ImageModal'
-import BurgerMenu from '@/components/menu/Burger'
+// import BurgerMenu from '@/components/menu/Burger'
 import ImageOverview from '@/components/images/Overview'
-import VueCookies from 'vue-cookies'
+// import VueCookies from 'vue-cookies'
 import InfiniteLoading from 'vue-infinite-loading'
 import EventBus from '@/store/eventBus.js'
 
@@ -83,7 +82,6 @@ export default {
     movieModal,
     imageModal,
     choiceModal,
-    BurgerMenu,
     InfiniteLoading,
     ImageOverview
   },
@@ -99,8 +97,6 @@ export default {
       modalData: '',
       showByIndex: null,
       // searchstring: this.$store.state.searchString,
-      size: 6,
-      dynamicFlex: 'xs6',
       truncateDesc: 250,
       playHelper: false
     }
@@ -118,7 +114,6 @@ export default {
   mounted () {
     this.page = 1
     this.getMovies()
-    this.setSize()
     console.log(this.$vuetify.breakpoint)
 
     EventBus.$on('DELETEMOVIE', (item) => {
@@ -173,38 +168,13 @@ export default {
       }
       return ret
     },
-    setSize () {
-      console.log(this.$vuetify.breakpoint.name)
 
-      if (this.$vuetify.breakpoint.name === 'xs') {
-        this.dynamicFlex = 'xs12'
-        this.size = '12'
-        return
-      }
-      if (VueCookies.get('size')) {
-        this.dynamicFlex = 'xs' + VueCookies.get('size')
-        this.size = VueCookies.get('size')
-      } else {
-        this.dynamicFlex = 'xs6'
-        this.size = '6'
-      }
-    },
     descLength () {
       let ret = 0
       if (this.$vuetify.breakpoint.name === 'xs') {
         return ret
       }
-      switch (this.size) {
-        case '6':
-          ret = 250
-          break
-        case '12':
-          ret = -1
-          break
-        case '4':
-          ret = 100
-          break
-      }
+
       return ret
     },
     changeList (item) {
@@ -304,12 +274,8 @@ export default {
       this.modalVisible = false
     },
     openImageModal (item) {
-      if (this.size < 4 || this.$vuetify.breakpoint.name === 'xs') {
-        this.openModal(item)
-      } else {
-        this.imageModalVisible = true
-        this.modalData = item
-      }
+      this.imageModalVisible = true
+      this.modalData = item
     },
     changed (value) {
       console.log('Value ' + value)

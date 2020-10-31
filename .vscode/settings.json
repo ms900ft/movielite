@@ -39,5 +39,5 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-"jshint.options": {"esversion": 6},
+"jshint.options": {"esversion": 10},
 }

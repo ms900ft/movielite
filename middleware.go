@@ -2,12 +2,12 @@ package movielight
 
 import (
 	"fmt"
-	"ms/movielight/models"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/gin-gonic/gin"
+	"ms/movielight/models"
 )
 
 //CORSMiddleware for gin

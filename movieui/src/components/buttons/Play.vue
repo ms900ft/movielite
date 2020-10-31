@@ -15,7 +15,7 @@ import localApi from '@/services/LocalApi'
 export default {
   name: 'Play',
   components: {},
-  props: ['movie', 'size', 'helper', 'overlay'],
+  props: ['movie', 'helper', 'overlay'],
   data () {
     return {
       items: [],
@@ -44,13 +44,8 @@ export default {
             console.log(error)
           })
       }
-    },
-    small () {
-      if (this.size < 3) {
-        return true
-      }
-      return false
     }
+
   }
 }
 </script>
