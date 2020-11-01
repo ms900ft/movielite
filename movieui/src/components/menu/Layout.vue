@@ -18,35 +18,35 @@
 </template>
 
 <script>
-import VueCookies from "vue-cookies";
+import VueCookies from 'vue-cookies'
 export default {
-  name: "Layout",
+  name: 'Layout',
   components: {},
 
-  data() {
+  data () {
     return {
       Sizes: [
-        { name: "12" },
-        { name: "6" },
-        { name: "4" },
-        { name: "3" },
-        { name: "2" },
+        { name: '12' },
+        { name: '6' },
+        { name: '4' },
+        { name: '3' },
+        { name: '2' }
       ],
-      Size: "6",
-    };
+      Size: '6'
+    }
   },
-  mounted() {
-    this.Size = VueCookies.get("size");
+  mounted () {
+    this.Size = VueCookies.get('size')
   },
   computed: {},
   methods: {
-    changeSize(item) {
-      this.Size = item.name;
-      VueCookies.set("size", this.Size, "365d");
-      this.$router.go(this.$router.currentRoute);
-    },
-  },
-};
+    changeSize (item) {
+      this.Size = item.name
+      VueCookies.set('size', this.Size, '365d', null, null, null, 'Lax')
+      this.$router.go(this.$router.currentRoute)
+    }
+  }
+}
 </script>
 
 <style scoped>

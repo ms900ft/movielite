@@ -21,35 +21,35 @@
 </template>
 
 <script>
-import VueCookies from "vue-cookies";
+import VueCookies from 'vue-cookies'
 export default {
-  name: "DrawerLayout",
+  name: 'DrawerLayout',
   components: {},
 
-  data() {
+  data () {
     return {
       Sizes: [
-        { name: "6 Columns", size: "2" },
-        { name: "4 Columns", size: "3" },
-        { name: "3 Columns", size: "4" },
-        { name: "2 Columns", size: "6" },
-        { name: "1 Column", size: "12" },
+        { name: '6 Columns', size: '2' },
+        { name: '4 Columns', size: '3' },
+        { name: '3 Columns', size: '4' },
+        { name: '2 Columns', size: '6' },
+        { name: '1 Column', size: '12' }
       ],
-      Size: "6",
-    };
+      Size: '6'
+    }
   },
-  mounted() {
-    this.Size = VueCookies.get("size");
+  mounted () {
+    this.Size = VueCookies.get('size')
   },
   computed: {},
   methods: {
-    changeSize(item) {
-      this.Size = item.size;
-      VueCookies.set("size", this.Size, "365d");
-      this.$router.go(this.$router.currentRoute);
-    },
-  },
-};
+    changeSize (item) {
+      this.Size = item.size
+      VueCookies.set('size', this.Size, '365d', null, null, null, 'Lax')
+      this.$router.go(this.$router.currentRoute)
+    }
+  }
+}
 </script>
 
 <style scoped>

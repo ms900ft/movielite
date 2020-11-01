@@ -1,13 +1,11 @@
 {
   "go.inferGopath": false,
-  "sqltools.connections": [
-    {
-      "database": "/Users/ms/tmp/movielight.db",
-      "driver": "SQLite",
-      "name": "movielight",
-      "previewLimit": 50
-    }
-  ],
+  "sqltools.connections": [{
+    "database": "/Users/ms/tmp/movielight.db",
+    "driver": "SQLite",
+    "name": "movielight",
+    "previewLimit": 50
+  }],
   "go.testFlags": [
     "-tags",
     "fts5"
@@ -39,5 +37,9 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-"jshint.options": {"esversion": 10},
+  "jshint.options": {
+    "esversion": 10,
+    "asi": true
+  },
+
 }
