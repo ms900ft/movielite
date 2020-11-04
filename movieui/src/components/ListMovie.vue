@@ -48,6 +48,7 @@ style="flex: 0; "
           <image-overview
             v-on:openModal="openModal(item)"
             v-on:imageModal="openImageModal(item)"
+            v-on:openChoiceModal="openChoiceModal(item)"
             :movie="item"
             :index="index"
             :localHelper="playHelper"
@@ -268,9 +269,6 @@ export default {
       this.choiceModalVisible = true
     },
     closeModal () {
-      console.log('------------------------------------')
-      console.log('xxxxxx')
-      console.log('------------------------------------')
       this.modalVisible = false
     },
     openImageModal (item) {

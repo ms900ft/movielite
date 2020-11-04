@@ -246,10 +246,6 @@ export default {
         })
     },
     close () {
-      console.log('------------------------------------')
-      console.log('cccccc')
-      console.log('------------------------------------')
-
       this.$emit('close', false)
       // this.show = false
     },

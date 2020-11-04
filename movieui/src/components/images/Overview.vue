@@ -1,17 +1,18 @@
 <template>
-  <div v-bind:style="styleObject" @mouseover="showByIndex = index" @mouseout="showByIndex = null">
+  <div
+    v-bind:style="styleObject"
+    @mouseover="showByIndex = index"
+    @mouseout="showByIndex = null"
+  >
     <div class="imagecontainer">
-
       <img
-
         :src="image(movie)"
-
         class="image"
-        v-bind:style="{Width:maxWidth(), height:height  }"
-        :class="{'selected': showByIndex === index}"
+        v-bind:style="{ Width: maxWidth(), height: height }"
+        :class="{ selected: showByIndex === index }"
         @click="openModal(movie)"
       />
-      <div v-show="showButton(index) " class="burger">
+      <div v-show="showButton(index)" class="burger">
         <burger-menu :movie="movie"></burger-menu>
       </div>
       <div class="middle" v-show="showButton(index)">
@@ -21,11 +22,22 @@
           overlay="true"
           :helper="localHelper"
         />
-        <download v-else :movie="movie" overlay="true"  />
+        <download v-else :movie="movie" overlay="true" />
       </div>
-      <div v-show="imageWithTitle(movie) || mobile ||showByIndex === index"
-      class="imagetitle"
-      :class="{'selected': showByIndex === index}" >{{movie.title}}</div>
+      <div v-if="multipleChoice(movie)" class="multibutton">
+        <v-btn color="#0d47a1" dark @click="openChoiceModal(movie)">
+          Find
+          <v-icon right dark>search</v-icon>
+        </v-btn>
+      </div>
+
+      <div
+        v-show="imageWithTitle(movie) || mobile || showByIndex === index"
+        class="imagetitle"
+        :class="{ selected: showByIndex === index }"
+      >
+        {{ movie.title }}
+      </div>
     </div>
   </div>
 </template>
@@ -59,8 +71,8 @@ export default {
         height: '100%',
         'margin-left': 'auto',
         'margin-right': 'auto',
-        'background': background,
-        'width': '180px'
+        background: background,
+        width: '180px'
       }
     }
   },
@@ -113,6 +125,15 @@ export default {
         return '100%'
       }
       return '180px'
+    },
+    multipleChoice (item) {
+      if (item.multiplechoice != null && item.meta == null) {
+        return true
+      }
+      return false
+    },
+    openChoiceModal (item) {
+      this.$emit('openChoiceModal', item)
     }
   }
 }
@@ -144,19 +165,16 @@ export default {
   opacity: 1;
   background-color: #0d47a1;
   padding-left: 10px;
-transition: 1.5s ease;
+  transition: 1.5s ease;
 
   padding-top: 30px;
   width: 100%;
   max-height: 50%;
   padding: 10px;
   position: absolute;
-
 }
 .imagetitle.selected {
-
   opacity: 0.9;
-
 }
 .image {
   opacity: 1;
@@ -178,7 +196,6 @@ transition: 1.5s ease;
 .image.selected {
   opacity: 0.6;
   transform: scale(1.2, 1.2);
-
 }
 
 .middle {
@@ -198,6 +215,16 @@ transition: 1.5s ease;
   position: absolute;
   top: 10px;
   right: 10px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+.multibutton {
+  /* transition: 0.5s ease;
+  opacity: 1; */
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   text-align: center;
