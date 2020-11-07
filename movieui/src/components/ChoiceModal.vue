@@ -146,12 +146,6 @@ export default {
   color: #337ab7;
 }
 
-.is-collapsed {
-  div:nth-child(n + 5) {
-    display: none;
-  }
-}
-
 .v-dialog {
   position: absolute;
   top: 20px;
