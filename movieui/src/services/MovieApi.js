@@ -1,4 +1,5 @@
 import axios from 'axios'
+import _ from 'lodash'
 // axios.defaults.withCredentials = true
 export default {
 
@@ -14,7 +15,7 @@ export default {
 
     const queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&')
     const response = await axios.get('movie?' + queryString)
-    console.log(response)
+    // console.log(response)
     return response.data
   },
 
