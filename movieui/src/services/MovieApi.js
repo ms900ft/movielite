@@ -55,20 +55,20 @@ export default {
   playLocal (item, args = {}) {
     const queryString = Object.keys(args).map(key => key + '=' + args[key]).join('&')
     return axios.put('movie/' + item.id + '/play?' + queryString, {})
-      .then(respone => {
-        return respone
+      .then(response => {
+        return response
       })
   },
   updateMovie (item) {
     return axios.put('movie/' + item.id, item)
-      .then(respone => {
-        return respone
+      .then(response => {
+        return response
       })
   },
   deleteMovie (item) {
     return axios.delete('movie/' + item.id, item)
-      .then(respone => {
-        return respone
+      .then(response => {
+        return response
       })
   }
 
