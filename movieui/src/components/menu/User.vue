@@ -22,7 +22,7 @@ export default {
 
   data () {
     return {
-      Users: [{ name: 'Marc' }, { name: 'Kaja' }, { name: 'covid-19kino' }],
+      Users: [],
       User: 'Users'
     }
   },
@@ -40,7 +40,7 @@ export default {
   computed: {},
   methods: {
     changeUser (item) {
-      this.User = item.name
+      this.User = item.UserName
       VueCookies.set('movieuser', this.User, '365d', null, null, null, 'Lax')
       this.$router.go(this.$router.currentRoute)
     }
