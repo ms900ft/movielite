@@ -45,7 +45,6 @@ export default {
     changeUser (item) {
       this.User = item.UserName
       VueCookies.set('movieuser', this.User, '365d')
-      // this.$cookies.set("use_path_argument","value",null, null, null, null, "Lax");
       this.$router.go(this.$router.currentRoute)
     }
   }
