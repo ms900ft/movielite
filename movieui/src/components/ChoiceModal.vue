@@ -1,10 +1,14 @@
 <template>
-  <v-dialog v-model="show"  width="90%" class="v-dialog">
+  <v-dialog v-model="show" width="90%" class="v-dialog">
     <v-layout v-if="show" wrap row style="background-color: white">
-      <v-flex xs12 v-for="(item, index) in data.multiplechoice.Results" :key="index">
-        <v-card style="overflow: hidden;">
+      <v-flex
+        xs12
+        v-for="(item, index) in data.multiplechoice.Results"
+        :key="index"
+      >
+        <v-card style="overflow: hidden">
           <div class="close">
-            <v-icon size="30" @click="show=false">close</v-icon>
+            <v-icon size="30" @click="show = false">close</v-icon>
           </div>
           <div class="row">
             <div>
@@ -16,19 +20,20 @@
               />
             </div>
             <div class="column, title" style="width: 100%">
-              <p style="margin:10px">{{item.Title}}</p>
-              <p style="margin:10px">{{release(item)}}</p>
+              <p style="margin: 10px">{{ title(item) }} {{ release(item) }}</p>
+              <p style="margin: 10px" class="moviedesc">{{ item.overview }}</p>
+
               <div class="row">
                 <div class="column">
-                  <v-btn outline dark @click="saveTMDBID( item)">
+                  <v-btn outline dark @click="saveTMDBID(item)">
                     Add Metadata
                     <v-icon right dark>add_circle_outline</v-icon>
                   </v-btn>
-                  <v-btn outline dark @click="openTmdb( item)">
+                  <v-btn outline dark @click="openTmdb(item)">
                     View in TMDB
                     <v-icon right dark>movie</v-icon>
                   </v-btn>
-                  <v-btn outline dark @click="playMovie( movie)">
+                  <v-btn outline dark @click="playMovie(movie)">
                     Paly
                     <v-icon right dark>play_circle_outline</v-icon>
                   </v-btn>
@@ -46,9 +51,7 @@
 import movieApi from '@/services/MovieApi'
 // import Play from '@/components/buttons/Play'
 export default {
-  components: {
-
-  },
+  components: {},
   data () {
     return {
       movie: this.data
@@ -77,15 +80,15 @@ export default {
       var pic
       item.poster_path
         ? (pic = this.$baseURL + '/images/w500' + item.poster_path)
-        : (pic = this.$baseURL + '/html/images/na.gif')
+        : (pic = this.$baseURL + '/movie2/nocover.jpg')
       return pic
     },
     imdburl () {
       return 'http://www.imdb.com/title/' + this.movie.meta.imdb_id
     },
-    title () {
-      let txt = this.movie.title
-      txt = txt.replace(/\(/g, '<br>(')
+    title (item) {
+      let txt = item.title
+      // txt = txt.replace(/\(/g, '<br>(')
       return txt
     },
     release (item) {
@@ -104,7 +107,7 @@ export default {
       this.data.watchlist = true
       movieApi
         .addMeta(this.data, id)
-        .then(response => {
+        .then((response) => {
           this.loading = false
           if (response.meta.ID > 0) {
             this.movie = response
@@ -113,7 +116,7 @@ export default {
           }
         })
 
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
@@ -121,8 +124,8 @@ export default {
     playMovie (movie) {
       movieApi
         .playLocal(movie)
-        .then(response => {})
-        .catch(error => {
+        .then((response) => {})
+        .catch((error) => {
           console.log(error)
         })
     }
@@ -161,7 +164,6 @@ export default {
   display: flex;
   flex-direction: row;
   margin-left: 10px;
-
 }
 
 .rowsmall {
