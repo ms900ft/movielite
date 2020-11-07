@@ -6,7 +6,7 @@
       </template>
       <v-list>
         <v-list-tile v-for="(item, index) in Users" :key="index" @click="changeUser(item)">
-          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+          <v-list-tile-title>{{ item.UserName }}</v-list-tile-title>
         </v-list-tile>
       </v-list>
     </v-menu>
@@ -15,6 +15,7 @@
 
 <script>
 import VueCookies from 'vue-cookies'
+import movieApi from '@/services/MovieApi'
 export default {
   name: 'MenuUser',
   components: {},
@@ -27,6 +28,14 @@ export default {
   },
   mounted () {
     this.User = VueCookies.get('movieuser')
+    movieApi
+      .fetchUsers()
+      .then(response => {
+        this.Users = response.data
+      })
+      .catch(error => {
+        console.log(error)
+      })
   },
   computed: {},
   methods: {

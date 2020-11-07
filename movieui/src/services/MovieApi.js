@@ -48,6 +48,10 @@ export default {
     const response = await axios.get('targets')
     return response
   },
+  async fetchUsers () {
+    const response = await axios.get('user')
+    return response
+  },
   playLocal (item, args = {}) {
     const queryString = Object.keys(args).map(key => key + '=' + args[key]).join('&')
     return axios.put('movie/' + item.id + '/play?' + queryString, {})

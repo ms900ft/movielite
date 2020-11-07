@@ -10,7 +10,7 @@
     <v-list>
       <v-list-tile v-for="(item, index) in Users" :key="index" @click="changeUser(item)">
         <v-list-tile-action></v-list-tile-action>
-        <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+        <v-list-tile-title>{{ item.UserName }}</v-list-tile-title>
       </v-list-tile>
     </v-list>
   </v-list-group>
@@ -18,18 +18,27 @@
 
 <script>
 import VueCookies from 'vue-cookies'
+import movieApi from '@/services/MovieApi'
 export default {
   name: 'DrawerUser',
   components: {},
 
   data () {
     return {
-      Users: [{ name: 'Marc' }, { name: 'Kaja' }, { name: 'covid-19kino' }],
+      Users: [],
       User: 'Users'
     }
   },
   mounted () {
     this.User = VueCookies.get('movieuser')
+    movieApi
+      .fetchUsers()
+      .then(response => {
+        this.Users = response.data
+      })
+      .catch(error => {
+        console.log(error)
+      })
   },
   computed: {},
   methods: {
