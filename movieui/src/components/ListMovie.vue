@@ -5,7 +5,7 @@
         indeterminate
         :size="150"
         :width="8"
-        color="green"
+        color="#0d47a1"
       ></v-progress-circular>
     </div>
   </v-container>
@@ -60,7 +60,16 @@ style="flex: 0; "
       <infinite-loading @infinite="infiniteHandler">
         <div slot="no-more"></div>
         <div slot="no-results"></div>
-        <template slot="spinner"></template>
+        <span slot="spinner">
+     <div class="text-xs-center">
+      <v-progress-circular
+        indeterminate
+
+        color="#0d47a1"
+      ></v-progress-circular>
+    </div>
+  </span>
+        <!-- <template slot="spinner"></template> -->
       </infinite-loading>
     </v-layout>
   </v-container>
