@@ -12,6 +12,9 @@
         :class="{ selected: showByIndex === index }"
         @click="openModal(movie)"
       />
+      <div class="togglewatchlist">
+      <watchlist :movie="movie"></watchlist>
+      </div>
       <div v-show="showButton(index)" class="burger">
         <burger-menu :movie="movie"></burger-menu>
       </div>
@@ -46,11 +49,12 @@
 import Play from '@/components/buttons/Play'
 
 import Download from '@/components/buttons/Download'
+import Watchlist from '@/components/buttons/Watchlist'
 import BurgerMenu from '@/components/menu/Burger'
 
 export default {
   name: 'ImageOverview',
-  components: { Play, Download, BurgerMenu },
+  components: { Play, Download, BurgerMenu, Watchlist },
 
   data () {
     let float = ''
@@ -228,6 +232,11 @@ export default {
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   text-align: center;
+}
+.togglewatchlist{
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
 .imagecontainer {
   position: relative;
