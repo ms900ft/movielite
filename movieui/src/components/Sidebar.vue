@@ -22,7 +22,6 @@
         <drawer-genres></drawer-genres>
         <drawer-countries></drawer-countries>
         <drawer-work></drawer-work>
-        <drawer-layout></drawer-layout>
         <drawer-user></drawer-user>
       </v-list>
     </v-navigation-drawer>
@@ -33,7 +32,6 @@
 import DrawerGenres from '@/components/drawer/Genres'
 import DrawerCountries from '@/components/drawer/Countries'
 import DrawerWork from '@/components/drawer/Work'
-import DrawerLayout from '@/components/drawer/Layout'
 import DrawerUser from '@/components/drawer/User'
 
 export default {
@@ -41,7 +39,6 @@ export default {
     DrawerGenres,
     DrawerCountries,
     DrawerWork,
-    DrawerLayout,
     DrawerUser
   },
   computed: {
