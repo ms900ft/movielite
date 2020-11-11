@@ -2,7 +2,6 @@ package movielight
 
 import (
 	"fmt"
-	"ms/movielight/models"
 	"net/http"
 	"os/exec"
 	"strconv"
@@ -12,6 +11,8 @@ import (
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 	"github.com/skratchdot/open-golang/open"
+
+	"ms/movielight/models"
 )
 
 type UpdateMovie struct {
@@ -79,23 +80,27 @@ func (s *Service) getMovies(c *gin.Context) {
 	var count int64
 
 	tx := db.Set("gorm:auto_preload", true).Model(&models.Movie{}).
-		Select("movies.id, movies.file_id,movies.tmdb_movie_id,movies.movie_search_results_id, movies.title,movies.is_tv,movies.rating, CASE WHEN watchlists.movie_id is not null then true else false  end as watchlist").
-		Joins("JOIN files on files.id=movies.file_id").
+		Select("movies.id, movies.file_id,movies.tmdb_movie_id,movies.movie_search_results_id, movies.title,movies.is_tv,movies.rating, CASE WHEN watchlists.movie_id is not null then true else false  end as watchlist")
+	if len(q.Qtitel) > 0 && fulltext {
+		//	tx = tx.Joins("JOIN fulltexts on fulltexts.movie_id = movies.id").
+		//		Where("fulltexts = ?", fmt.Sprintf("%s*", q.Qtitel))
+		//	tx = tx.Where("movies.id IN (SELECT movie_id FROM fulltexts WHERE fulltexts MATCH ? order by bm25(fulltexts, 10.0, 5.0) )",
+		//
+		//		fmt.Sprintf("%s*", q.Qtitel))
+		tx = tx.Joins("JOIN fulltexts on fulltexts.movie_id =movies.id ")
+		tx = tx.Where("fulltexts = ?", fmt.Sprintf("%s*", q.Qtitel))
+		//	strings.Replace(q.Qtitel, " ", "&", -1)+":*")
+	}
+
+	tx = tx.Joins("JOIN files on files.id=movies.file_id").
 		Joins("Left Join watchlists ON (movies.id = watchlists.movie_id AND watchlists.user_id = ?)", s.User.ID).
 		//Where("watchlists.user_id = ?", s.User.ID).
 		Where("is_tv = false")
 
-	if len(q.Qtitel) > 0 {
-		if fulltext {
-			//	tx = tx.Joins("JOIN fulltexts on fulltexts.movie_id = movies.id").
-			//		Where("fulltexts = ?", fmt.Sprintf("%s*", q.Qtitel))
-			tx = tx.Where("movies.id IN (SELECT movie_id FROM fulltexts WHERE fulltexts = ?)",
-				fmt.Sprintf("%s*", q.Qtitel))
-			//	strings.Replace(q.Qtitel, " ", "&", -1)+":*")
-		} else {
-			tx = tx.Where("movies.title LIKE ?", fmt.Sprint("%", q.Qtitel, "%"))
-		}
+	if len(q.Qtitel) > 0 && !fulltext {
+		tx = tx.Where("movies.title LIKE ?", fmt.Sprint("%", q.Qtitel, "%"))
 	}
+
 	//xxx not working, test join with other parameter
 	if q.LastScanned != "" {
 		tx = tx.Where("last_scanned < ?", q.LastScanned).
@@ -155,7 +160,11 @@ func (s *Service) getMovies(c *gin.Context) {
 	//order
 	switch {
 	case q.Orderby == "name" || len(q.Alpha) > 0:
-		tx = tx.Order("movies.title ASC")
+		if fulltext && len(q.Qtitel) > 0 {
+			tx = tx.Order("bm25(fulltexts, 10.0, 5.0)")
+		} else {
+			tx = tx.Order("movies.title ASC")
+		}
 	case q.Orderby == "recent":
 		tx = tx.Order("recentlies.last_played DESC")
 	case q.Orderby == "last_scanned":
@@ -173,7 +182,7 @@ func (s *Service) getMovies(c *gin.Context) {
 		Offset(q.Offset).
 		Limit(q.Limit)
 
-	if err := tx.Find(&movies).
+	if err := tx.Debug().Find(&movies).
 		Error; err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
