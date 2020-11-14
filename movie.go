@@ -369,17 +369,30 @@ func (s *Service) addMeta(c *gin.Context) {
 		return
 	}
 	old := movie
+	if metaID == 0 {
+		movie.Meta = nil
+		movie.TMDBMovieID = 0
+		if err := db.Debug().Model(&old).Update(movie).Error; err != nil {
+			log.Errorf("Movie update error: %s", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+			return
+		}
+		if err := db.Debug().Model(&old).Association("Meta").
+			Clear().Error; err != nil {
+			log.Errorf("remove meta error: %s", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
+			return
+		}
+		c.JSON(http.StatusOK, movie)
+		return
+	}
+
 	err = movie.MetaByID(s.TMDBClient, metaID)
 	movie.Title = movie.Meta.Title
 
-	//log.Debug(movie.Title)
-	//log.Debug(movie.Meta.Title)
-	//movie.Multiplechoice = nil
-	//old.Meta = models.TMDBMovie{}
-	//old.Meta.MovieID = movie.ID
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 	//	if err := db.Debug().Model(&old).Association("TMDBMovie").Append(movie.Meta).Error; err != nil {

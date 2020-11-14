@@ -2,15 +2,14 @@ package movielight
 
 import (
 	"fmt"
-	"ms/movielight/models"
-
-	"github.com/jinzhu/gorm"
-	"github.com/ryanbradynd05/go-tmdb"
-
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
+
+	"ms/movielight/models"
 )
 
 const (
@@ -62,6 +61,7 @@ func (a *Service) Initialize() {
 //Run mal sehen
 func (a *Service) Run() error {
 	p := fmt.Sprintf(":%d", a.Config.Port)
+	log.Debug("running on port: " + p)
 	err := http.ListenAndServe(p, a.Router)
 	return err
 }

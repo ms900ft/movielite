@@ -348,10 +348,10 @@ func (m *Movie) AfterUpdate(scope *gorm.Scope) (err error) {
 		found = false
 	}
 	fulltext.Title = m.Title
-	if m.Title != m.Meta.OriginalTitle {
-		fulltext.Title = fulltext.Title + " " + m.Meta.OriginalTitle
-	}
 	if m.Meta != nil {
+		if m.Title != m.Meta.OriginalTitle {
+			fulltext.Title = fulltext.Title + " " + m.Meta.OriginalTitle
+		}
 		fulltext.Overview = m.Meta.Overview
 		fulltext.Credits = m.GetCredits()
 	}

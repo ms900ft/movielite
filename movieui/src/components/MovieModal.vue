@@ -148,6 +148,7 @@ export default {
         this.movie.meta.ID = value
       }
     }
+
   },
   methods: {
     image () {
@@ -224,10 +225,14 @@ export default {
         .addMeta(movie, id)
         .then(response => {
           this.loading = false
-          if (response.meta.ID > 0) {
-            movie = response
-            this.$emit('changeMovie', movie)
-          }
+          // if (response.meta.ID > 0) {
+          movie = response
+          console.log('id------------------------------------')
+          console.log(movie)
+          console.log('------------------------------------')
+
+          this.$emit('changeMovie', movie)
+          // }
         })
         .catch(error => {
           console.log(error)
@@ -238,7 +243,10 @@ export default {
         .updateMovie(movie)
         .then(response => {
           this.loading = false
-          // this.movie = response.data
+          movie = response.data
+          console.log('update------------------------------------')
+          console.log(movie)
+          console.log('------------------------------------')
           this.$emit('changeMovie', movie)
           // }
         })
