@@ -1,7 +1,14 @@
 <template>
   <div class="column crewlist">
+     <personModal
+      v-show="fullimage"
+      @close="fullimage = false"
+      :data="person"
+      v-model="fullimage"
+    />
+
     <v-list>
-      <v-flex v-for="(item, index) in orderedPersons" :key="index" @click="open(item)">
+      <v-flex v-for="(item, index) in orderedPersons" :key="index" >
         <div class="row" style="margin-bottom: 10px">
           <div class="rowsmall">
             <img
@@ -9,9 +16,18 @@
               width="45px"
               height="68px"
               style="margin-right: 10px;"
+              @click="showfullimage(item)"
             />
           </div>
-          <div class="rowsmall cast" style="flex: 30%; margin: auto; display: block">
+          <div class="rowsmall">
+            <!-- <img
+              v-if="showfullimage(index)"
+              :src="castimage(item.profile_path,300)"
+
+              class="fullimage"
+            /> -->
+          </div>
+          <div @click="open(item)" class="rowsmall cast" style="flex: 30%; margin: auto; display: block">
             <p style="margin: 0;">{{item.Name}}</p>
             <p style="color: black; margin:0; font-size: small">{{desc(item)}}</p>
           </div>
@@ -22,15 +38,19 @@
 </template>
 
 <script>
+import personModal from '@/components/PersonModal'
+
 export default {
   name: 'PersonList',
-  components: {},
+  components: { personModal },
 
   data () {
     return {
-      items: []
+      items: [],
       // collapsed: true
       // showdir: true
+      fullimage: false,
+      person: {}
     }
   },
   props: ['persons', 'type'],
@@ -70,10 +90,13 @@ export default {
     } },
 
   methods: {
-    castimage (path) {
+    castimage (path, size) {
       var pic
+      if (!size) {
+        size = 45
+      }
       path
-        ? (pic = this.$baseURL + '/images/w45' + path)
+        ? (pic = this.$baseURL + '/images/w' + size + path)
         : (pic = this.$baseURL + '/movie2/na.gif')
       return pic
     },
@@ -88,6 +111,12 @@ export default {
       } else {
         return item.Character
       }
+    },
+    showfullimage (item) {
+      if (item.profile_path !== '') {
+        this.fullimage = !this.fullimage
+        this.person = item
+      }
     }
 
   }
@@ -95,4 +124,16 @@ export default {
 </script>
 
 <style scoped>
+.fullimage {
+  overflow: visible;
+  position: absolute;
+  z-index: 100;
+  float: left;
+  max-width: 100%;
+  max-height: 100vh;
+  overflow-y: auto;
+  /* buttom: 20% */
+
+   margin-bottom: 300px;
+}
 </style>

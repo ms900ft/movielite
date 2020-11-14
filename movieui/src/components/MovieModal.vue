@@ -116,7 +116,7 @@ export default {
     return {
       // data: {},
       // movie: this.data,
-      // movie: this.data,
+      // item: this.movie,
       fullimage: false
       // TMDBID: this.data.meta.ID
     }
@@ -213,21 +213,22 @@ export default {
       return ''
     },
     saveTitle (title) {
-      var movie = this.movie
-      movie.title = title
-      this.updateMovie(movie)
+      this.movie.title = title
+      var item = this.movie
+      this.updateMovie(item)
     },
+
     saveTMDBID (id) {
+      let movie = this.movie
       movieApi
-        .addMeta(this.movie, id)
+        .addMeta(movie, id)
         .then(response => {
           this.loading = false
           if (response.meta.ID > 0) {
-            this.movie = response
-            this.$emit('changeMovie', this.movie)
+            movie = response
+            this.$emit('changeMovie', movie)
           }
         })
-
         .catch(error => {
           console.log(error)
         })

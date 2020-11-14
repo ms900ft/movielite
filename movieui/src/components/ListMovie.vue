@@ -193,6 +193,7 @@ export default {
         .indexOf(item.id)
 
       this.wholeResponse.splice(index, 1, item)
+      this.modalData = item
     },
     singleMovie (id) {
       this.$router.push('/movie/' + id)
