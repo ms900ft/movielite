@@ -80,7 +80,9 @@ func (s *Service) getMovies(c *gin.Context) {
 	var count int64
 
 	tx := db.Set("gorm:auto_preload", true).Model(&models.Movie{}).
-		Select("movies.id, movies.file_id,movies.tmdb_movie_id,movies.movie_search_results_id, movies.title,movies.is_tv,movies.rating, CASE WHEN watchlists.movie_id is not null then true else false  end as watchlist")
+		Select(`movies.id, movies.file_id,movies.tmdb_movie_id,movies.movie_search_results_id,
+		movies.title,movies.is_tv,movies.rating,
+		CASE WHEN watchlists.movie_id is not null then true else false  end as watchlist`)
 	if len(q.Qtitel) > 0 && fulltext {
 		//	tx = tx.Joins("JOIN fulltexts on fulltexts.movie_id = movies.id").
 		//		Where("fulltexts = ?", fmt.Sprintf("%s*", q.Qtitel))
