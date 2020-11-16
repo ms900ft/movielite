@@ -314,9 +314,10 @@ func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
 		return
 	}
 	fulltext := Fulltext{MovieID: m.ID}
-	fulltext.Title = m.Title + m.Meta.OriginalTitle
-	if m.Title != m.Meta.OriginalTitle {
-		fulltext.Title = fulltext.Title + " " + m.Meta.OriginalTitle
+	if m.Meta != nil {
+		if m.Title != m.Meta.OriginalTitle {
+			fulltext.Title = fulltext.Title + " " + m.Meta.OriginalTitle
+		}
 	}
 	if m.Meta != nil {
 		fulltext.Overview = m.Meta.Overview
