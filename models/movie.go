@@ -550,16 +550,22 @@ func preFetchURLS(movie *tmdb.Movie) []string {
 	if movie.Credits.Cast != nil {
 		for _, cast := range movie.Credits.Cast {
 			if cast.ProfilePath != "" {
-				url := fmt.Sprintf("%s/images/w45%s", baseurl, cast.ProfilePath)
-				urls = append(urls, url)
+				sizes := []string{"w45", "w500"}
+				for _, size := range sizes {
+					url := fmt.Sprintf("%s/images/%s%s", baseurl, size, cast.ProfilePath)
+					urls = append(urls, url)
+				}
 			}
 		}
 	}
 	if movie.Credits.Crew != nil {
 		for _, crew := range movie.Credits.Crew {
 			if crew.ProfilePath != "" {
-				url := fmt.Sprintf("%s/images/w45/%s", baseurl, crew.ProfilePath)
-				urls = append(urls, url)
+				sizes := []string{"w45", "w500"}
+				for _, size := range sizes {
+					url := fmt.Sprintf("%s/images/%s%s", baseurl, size, crew.ProfilePath)
+					urls = append(urls, url)
+				}
 			}
 		}
 	}
