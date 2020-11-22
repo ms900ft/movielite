@@ -35,6 +35,9 @@ type meta struct {
 func (a *Service) Initialize() {
 	var err error
 	a.DB = models.ConnectDataBase(a.Config.DataBase) // new
+	if a.Config.SQLDebug {
+		a.DB.LogMode(true)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
