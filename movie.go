@@ -184,7 +184,7 @@ func (s *Service) getMovies(c *gin.Context) {
 		Offset(q.Offset).
 		Limit(q.Limit)
 
-	if err := tx.Debug().Find(&movies).
+	if err := tx.Find(&movies).
 		Error; err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -372,12 +372,12 @@ func (s *Service) addMeta(c *gin.Context) {
 	if metaID == 0 {
 		movie.Meta = nil
 		movie.TMDBMovieID = 0
-		if err := db.Debug().Model(&old).Update(movie).Error; err != nil {
+		if err := db.Model(&old).Update(movie).Error; err != nil {
 			log.Errorf("Movie update error: %s", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
 			return
 		}
-		if err := db.Debug().Model(&old).Association("Meta").
+		if err := db.Model(&old).Association("Meta").
 			Clear().Error; err != nil {
 			log.Errorf("remove meta error: %s", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
@@ -396,12 +396,12 @@ func (s *Service) addMeta(c *gin.Context) {
 		return
 	}
 	//	if err := db.Debug().Model(&old).Association("TMDBMovie").Append(movie.Meta).Error; err != nil {
-	if err := db.Debug().Model(&old).Update(movie).Error; err != nil {
+	if err := db.Model(&old).Update(movie).Error; err != nil {
 		log.Errorf("Movie update error: %s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
 		return
 	}
-	if err := db.Debug().Model(&old).Association("Multiplechoice").
+	if err := db.Model(&old).Association("Multiplechoice").
 		Clear().Error; err != nil {
 		log.Errorf("remove multiplechoice error: %s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
