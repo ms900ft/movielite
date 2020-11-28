@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gammazero/workerpool"
 	"github.com/jinzhu/gorm"
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
@@ -252,7 +253,7 @@ func (m *Movie) GetMeta(t TMDBClients) (err error) {
 			m.Meta = nil
 		}
 	} else {
-		meta, err := getTMDBMeta(t, hit)
+		meta, err := getTMDBMeta(t, nil, hit)
 		m.Meta = &meta
 		m.Multiplechoice = nil
 		//m.Multiplechoice = nil
@@ -263,7 +264,7 @@ func (m *Movie) GetMeta(t TMDBClients) (err error) {
 	return err
 }
 
-func getTMDBMeta(t TMDBClients, id int) (TMDBMovie, error) {
+func getTMDBMeta(t TMDBClients, wp *workerpool.WorkerPool, id int) (TMDBMovie, error) {
 	//apikey := viper.GetString("TMDB.ApiKey")
 	lang := viper.GetString("language")
 	//conf := tmdb.Config{APIKey: apikey}
@@ -277,7 +278,7 @@ func getTMDBMeta(t TMDBClients, id int) (TMDBMovie, error) {
 		return TMDBMovie{}, err
 	}
 	//spew.Dump(res)
-	err = preFetchImages(res)
+	err = preFetchImages(res, wp)
 	if err != nil {
 		log.Error(err)
 	}
@@ -297,8 +298,8 @@ func getTMDBMeta(t TMDBClients, id int) (TMDBMovie, error) {
 	return msr, err
 }
 
-func (m *Movie) MetaByID(t TMDBClients, metaid int) error {
-	meta, err := getTMDBMeta(t, metaid)
+func (m *Movie) MetaByID(t TMDBClients, wp *workerpool.WorkerPool, metaid int) error {
+	meta, err := getTMDBMeta(t, wp, metaid)
 	if err != nil {
 		log.Error(err)
 		return err
@@ -421,39 +422,39 @@ func (m *Movie) GetCredits() string {
 }
 
 func (m *Movie) DeleteMeta(db *gorm.DB, movie *Movie) (err error) {
-	if err := db.Debug().Model(movie.Meta).Association("ProductionCountries").
+	if err := db.Model(movie.Meta).Association("ProductionCountries").
 		Delete(movie.Meta.ProductionCountries).Error; err != nil {
 		log.Errorf("ProductionCountries delete error: %s", err)
 		return err
 	}
-	if err := db.Debug().Model(movie.Meta).Association("ProductionCompanies").
+	if err := db.Model(movie.Meta).Association("ProductionCompanies").
 		Delete(movie.Meta.ProductionCompanies).Error; err != nil {
 		log.Errorf("ProductionCompanies delete error: %s", err)
 		return err
 	}
-	if err := db.Debug().Model(movie.Meta).Association("Genres").
+	if err := db.Model(movie.Meta).Association("Genres").
 		Delete(movie.Meta.Genres).Error; err != nil {
 		log.Errorf("Genres update error: %s", err)
 		return err
 	}
-	if err := db.Debug().Model(movie.Meta).Association("SpokenLanguages").
+	if err := db.Model(movie.Meta).Association("SpokenLanguages").
 		Delete(movie.Meta.SpokenLanguages).Error; err != nil {
 		log.Errorf("SpokenLanguages update error: %s", err)
 		return err
 	}
 
-	if err := db.Debug().Model(movie.Meta.Credits).Association("Crew").
+	if err := db.Model(movie.Meta.Credits).Association("Crew").
 		Delete(movie.Meta.Credits.Crew).Error; err != nil {
 		log.Errorf("Crew update error: %s", err)
 		return err
 	}
-	if err := db.Debug().Model(movie.Meta.Credits).Association("Cast").
+	if err := db.Model(movie.Meta.Credits).Association("Cast").
 		Delete(movie.Meta.Credits.Cast).Error; err != nil {
 		log.Errorf("Cast update error: %s", err)
 
 		return err
 	}
-	if err := db.Debug().Model(movie.Meta).Association("Credits").
+	if err := db.Model(movie.Meta).Association("Credits").
 		Delete(movie.Meta.Credits).Error; err != nil {
 		log.Errorf("Crew update error: %s", err)
 		return err
@@ -504,28 +505,34 @@ func Trash(f string, trash string) (trashcan string, err error) {
 	return trashcan, err
 }
 
-func preFetchImages(movie *tmdb.Movie) error {
+func preFetchImages(movie *tmdb.Movie, wp *workerpool.WorkerPool) error {
 	urls := preFetchURLS(movie)
 	for _, url := range urls {
 		log.Debugf("getting images %s", url)
-		client := &http.Client{}
-		req, err := http.NewRequest("GET", url, nil)
-		//req.Close = true
-		if err != nil {
-			log.Error(err)
-			return err
-		}
-		response, err := client.Do(req)
+		url := url
+		wp.Submit(func() {
+			log.Debugf("Add url to queue: %s", url)
+			time.Sleep(100 * time.Millisecond)
 
-		if err != nil {
-			log.Error(err)
-			return err
-		}
-		if response.StatusCode != http.StatusOK {
-			log.Errorf(fmt.Sprintf("Can't get %s: %s Status %d", url, err, response.StatusCode))
-			return err
-		}
-		defer response.Body.Close()
+			client := &http.Client{}
+			req, err := http.NewRequest("GET", url, nil)
+			//req.Close = true
+			if err != nil {
+				log.Error(err)
+				//return err
+			}
+			response, err := client.Do(req)
+
+			if err != nil {
+				log.Error(err)
+				//return err
+			}
+			if response.StatusCode != http.StatusOK {
+				log.Errorf(fmt.Sprintf("Can't get %s: %s Status %d", url, err, response.StatusCode))
+				//return err
+			}
+			defer response.Body.Close()
+		})
 	}
 	return nil
 }
@@ -544,7 +551,7 @@ func preFetchURLS(movie *tmdb.Movie) []string {
 		}
 	}
 	if movie.BackdropPath != "" {
-		url := fmt.Sprintf("%s/images/w300/%s", baseurl, movie.BackdropPath)
+		url := fmt.Sprintf("%s/images/w300%s", baseurl, movie.BackdropPath)
 		urls = append(urls, url)
 	}
 	if movie.Credits.Cast != nil {
@@ -569,5 +576,6 @@ func preFetchURLS(movie *tmdb.Movie) []string {
 			}
 		}
 	}
+	//spew.Dump(urls)
 	return urls
 }

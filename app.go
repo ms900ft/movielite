@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gammazero/workerpool"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/ryanbradynd05/go-tmdb"
@@ -23,6 +24,7 @@ type Service struct {
 	DB         *gorm.DB
 	User       *models.User
 	Config     *Config
+	WorkerPool *workerpool.WorkerPool
 	TMDBClient models.TMDBClients
 	//Config Config
 }
@@ -42,6 +44,8 @@ func (a *Service) Initialize() {
 		log.Fatal(err)
 	}
 	tmdbClient := tmdb.Init(tmdb.Config{APIKey: a.Config.TMDBApiKey})
+	// pool to slow down tmpdb image requests
+	a.WorkerPool = workerpool.New(1)
 
 	//sa.TMDBClient = new(models.TMDBClient)
 	a.TMDBClient = tmdbClient

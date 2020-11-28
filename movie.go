@@ -90,7 +90,7 @@ func (s *Service) getMovies(c *gin.Context) {
 		//
 		//		fmt.Sprintf("%s*", q.Qtitel))
 		tx = tx.Joins("JOIN fulltexts on fulltexts.movie_id =movies.id ")
-		tx = tx.Where("fulltexts = ?", fmt.Sprintf("%s*", q.Qtitel))
+		tx = tx.Where("fulltexts match ?", fmt.Sprintf("%s*", q.Qtitel))
 		//	strings.Replace(q.Qtitel, " ", "&", -1)+":*")
 	}
 
@@ -163,7 +163,7 @@ func (s *Service) getMovies(c *gin.Context) {
 	switch {
 	case q.Orderby == "name" || len(q.Alpha) > 0:
 		if fulltext && len(q.Qtitel) > 0 {
-			tx = tx.Order("bm25(fulltexts, 10.0, 5.0)")
+			tx = tx.Order("bm25(fulltexts, 20.0, 5.0)")
 		} else {
 			tx = tx.Order("movies.title ASC")
 		}
@@ -387,7 +387,7 @@ func (s *Service) addMeta(c *gin.Context) {
 		return
 	}
 
-	err = movie.MetaByID(s.TMDBClient, metaID)
+	err = movie.MetaByID(s.TMDBClient, s.WorkerPool, metaID)
 	movie.Title = movie.Meta.Title
 
 	if err != nil {
