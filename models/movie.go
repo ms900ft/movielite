@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -195,12 +194,12 @@ end run
 `
 
 func (m *Movie) GetMeta(t TMDBClients) (err error) {
-	defer func() {
-		// recover from panic if one occurred. Set err to nil otherwise.
-		if recover() != nil {
-			err = errors.New("can't get metadata")
-		}
-	}()
+	// defer func() {
+	// 	// recover from panic if one occurred. Set err to nil otherwise.
+	// 	if recover() != nil {
+	// 		err = errors.New("can't get metadata for " + m.Title)
+	// 	}
+	//	}()
 	lang := viper.GetString("language")
 	//apikey := viper.GetString("TMDB.ApiKey")
 	//conf := tmdb.Config{APIKey: apikey}
@@ -281,6 +280,7 @@ func getTMDBMeta(t TMDBClients, wp *workerpool.WorkerPool, id int) (TMDBMovie, e
 	err = preFetchImages(res, wp)
 	if err != nil {
 		log.Error(err)
+		return TMDBMovie{}, err
 	}
 	//spew.Dump(res)
 	//jsonRes := []byte("{}") //Default value in case of error
@@ -510,29 +510,31 @@ func preFetchImages(movie *tmdb.Movie, wp *workerpool.WorkerPool) error {
 	for _, url := range urls {
 		log.Debugf("getting images %s", url)
 		url := url
-		wp.Submit(func() {
-			log.Debugf("Add url to queue: %s", url)
-			time.Sleep(100 * time.Millisecond)
+		if wp != nil {
+			wp.Submit(func() {
+				log.Debugf("Add url to queue: %s", url)
+				time.Sleep(100 * time.Millisecond)
 
-			client := &http.Client{}
-			req, err := http.NewRequest("GET", url, nil)
-			//req.Close = true
-			if err != nil {
-				log.Error(err)
-				//return err
-			}
-			response, err := client.Do(req)
+				client := &http.Client{}
+				req, err := http.NewRequest("GET", url, nil)
+				//req.Close = true
+				if err != nil {
+					log.Error(err)
+					//return err
+				}
+				response, err := client.Do(req)
 
-			if err != nil {
-				log.Error(err)
-				//return err
-			}
-			if response.StatusCode != http.StatusOK {
-				log.Errorf(fmt.Sprintf("Can't get %s: %s Status %d", url, err, response.StatusCode))
-				//return err
-			}
-			defer response.Body.Close()
-		})
+				if err != nil {
+					log.Error(err)
+					//return err
+				}
+				if response.StatusCode != http.StatusOK {
+					log.Errorf(fmt.Sprintf("Can't get %s: %s Status %d", url, err, response.StatusCode))
+					//return err
+				}
+				defer response.Body.Close()
+			})
+		}
 	}
 	return nil
 }
