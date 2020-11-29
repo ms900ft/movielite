@@ -1,7 +1,6 @@
 package movielight
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +20,6 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		if c.Request.Method == "OPTIONS" {
-			fmt.Println("OPTIONS")
 			c.AbortWithStatus(200)
 		} else {
 			c.Next()
