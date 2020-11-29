@@ -38,7 +38,7 @@ func (s *Service) UserMiddleWare(c *gin.Context) {
 	}
 
 	username = strings.ToLower(username)
-	log.Debugf("Usernamex %s ", username)
+	log.Debugf("Username %s ", username)
 
 	//db := c.MustGet("DB").(*sql.DB)
 	db := s.DB
@@ -54,7 +54,7 @@ func (s *Service) UserMiddleWare(c *gin.Context) {
 	//c.Set("username", username)
 	//c.Set("user", user)
 	if err != nil {
-		log.Error(err)
+		log.Debugf("no user found %s", err)
 	}
 
 	// Pass on to the next-in-chain
