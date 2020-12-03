@@ -1,11 +1,12 @@
 package movielight
 
 import (
-	"ms/movielight/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+
+	"ms/movielight/models"
 )
 
 type FileInput struct {

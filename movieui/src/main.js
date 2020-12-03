@@ -12,7 +12,8 @@ import './assets/main.css'
 Vue.prototype._ = lodash
 
 Vue.config.productionTip = false
-let ApiUrl = 'http://' + location.host
+let ApiUrl = location.protocol
+
 if (process.env.NODE_ENV === 'development') {
   ApiUrl = 'http://localhost:8001'
 }
