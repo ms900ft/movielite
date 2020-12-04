@@ -1,18 +1,19 @@
 package movielight
 
 import (
-	"ms/movielight/models"
 	"net/http"
 	"testing"
 
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
+
+	"ms/movielight/models"
 )
 
 func TestGetMovie(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Get("/movie/1").
+			Get("/api/movie/1").
 			Expect(t).
 			Assert(jsonpath.Present(`$.meta`)).
 			Assert(jsonpath.Contains(`$.title`, "kehraus")).
@@ -24,7 +25,7 @@ func TestGetMovie(t *testing.T) {
 func TestGetMovies(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Get("/movie").
+			Get("/api/movie").
 			Expect(t).
 			Assert(jsonpath.GreaterThan(`$`, 1)).
 			Status(http.StatusOK).
@@ -36,7 +37,7 @@ func TestUpdateMovie(t *testing.T) {
 
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Put("/movie/1").
+			Put("/api/movie/1").
 			JSON(mo).
 			Expect(t).
 			Assert(jsonpath.Contains(`$.error`, "Movie.Title")).
@@ -45,7 +46,7 @@ func TestUpdateMovie(t *testing.T) {
 	mo.Title = "Patersonx"
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Put("/movie/1").
+			Put("/api/movie/1").
 			JSON(mo).
 			Expect(t).
 			Assert(jsonpath.Contains(`$.title`, "Patersonx")).
@@ -56,7 +57,7 @@ func TestUpdateMovie(t *testing.T) {
 	mo.Title = "Paterson"
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Put("/movie/1").
+			Put("/api/movie/1").
 			JSON(mo).
 			Expect(t).
 			Assert(jsonpath.Contains(`$.title`, "Paterson")).
@@ -67,7 +68,7 @@ func TestUpdateMovie(t *testing.T) {
 	mo.Title = "Nachtblende"
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Put("/movie/1").
+			Put("/api/movie/1").
 			JSON(mo).
 			Expect(t).
 			Assert(jsonpath.Contains(`$.title`, "Nachtblende")).

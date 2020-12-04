@@ -11,7 +11,7 @@ import (
 func TestCountriesGet(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Get("/country").
+			Get("/api/country").
 			Expect(t).
 			Assert(jsonpath.GreaterThan(`$`, 1)).
 			Status(http.StatusOK).

@@ -58,8 +58,8 @@ func (a *Service) Initialize() {
 	}
 
 	a.Router = gin.Default()
-	a.Router.Use(CORSMiddleware())
-	a.Router.Use(a.UserMiddleWare)
+	//a.Router.Use(CORSMiddleware())
+
 	a.Router.Use(gin.Recovery())
 
 	a.initializeRoutes()

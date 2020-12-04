@@ -12,14 +12,14 @@ import './assets/main.css'
 Vue.prototype._ = lodash
 
 Vue.config.productionTip = false
-let ApiUrl = location.protocol
+let BaseUrl = location.protocol
 
 if (process.env.NODE_ENV === 'development') {
-  ApiUrl = 'http://localhost:8001'
+  BaseUrl = 'http://localhost:8001'
 }
 
-axios.defaults.baseURL = ApiUrl
-Vue.prototype.$baseURL = ApiUrl
+axios.defaults.baseURL = BaseUrl + '/api'
+Vue.prototype.$baseURL = BaseUrl
 Vue.prototype.$localViewURL = 'http://localhost:8081'
 Vue.prototype.$hitspp = 30
 function isMobile () {

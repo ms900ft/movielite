@@ -5,19 +5,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"ms/movielight/models"
-
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+
+	"ms/movielight/models"
 )
 
 type Walker struct {
+	Config *Config
 }
 
 type payload struct {
@@ -74,6 +76,10 @@ func sendfile(file string) error {
 	extens := map[string]bool{".mov": true, ".avi": true, ".mp4": true, "mkv": true, "m4v": true}
 	extName := path.Ext(file)
 	fName := path.Base(file)
+	if strings.HasPrefix(fName, ".") {
+		log.Debugf("not sending dotname %s", fName)
+		return nil
+	}
 	if extens[extName] {
 		log.Debugf("file matches %s", file)
 		//change permission
@@ -160,7 +166,7 @@ func searchFile(name string) []models.File {
 func send(path string) error {
 	surl := viper.GetString("MovieServerUrl")
 	pl := payload{Path: path}
-	url := surl + "/file"
+	url := surl + "/api/file"
 	jsonValue, _ := json.Marshal(pl)
 	//pl := []byte(`{"FullPath": "xxxxxxx"}`)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonValue))

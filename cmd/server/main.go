@@ -20,7 +20,7 @@ var (
 func main() {
 	c := movielight.GetConfig()
 	a := movielight.Service{Config: c}
-	w := movielight.Walker{}
+	w := movielight.Walker{Config: c}
 
 	a.Initialize()
 

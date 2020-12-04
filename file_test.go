@@ -1,7 +1,6 @@
 package movielight
 
 import (
-	"ms/movielight/models"
 	"net/http"
 	"os"
 	"testing"
@@ -9,6 +8,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
+
+	"ms/movielight/models"
 )
 
 func TestMain(m *testing.M) {
@@ -17,6 +18,10 @@ func TestMain(m *testing.M) {
 	S.TMDBClient = &MockTMDBClient{}
 	file := models.File{FullPath: "/test/kehraus.mp4"}
 	if err := file.Create(S.DB, S.TMDBClient); err != nil {
+		log.Fatal("can't create first movie " + err.Error())
+	}
+	user := models.User{UserName: "test"}
+	if err := S.DB.Create(&user).Error; err != nil {
 		log.Fatal("can't create first movie " + err.Error())
 	}
 	code := m.Run()
@@ -28,7 +33,7 @@ func TestMain(m *testing.M) {
 func TestCreateFile_WRONG_DATA(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Post("/file").
+			Post("/api/file").
 			JSON(`{"filename":"kehraus.mp4"}`). // request
 			Expect(t).
 			Status(http.StatusBadRequest).
@@ -37,7 +42,7 @@ func TestCreateFile_WRONG_DATA(t *testing.T) {
 func TestCreateFile(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Post("/file").
+			Post("/api/file").
 			JSON(`{"fullpath":"/test/Paterson.mp4"}`). // request
 			Expect(t).
 			Assert(jsonpath.Present(`$.ID`)).
@@ -49,7 +54,7 @@ func TestCreateFile(t *testing.T) {
 func TestGetFile(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Get("/file/1").
+			Get("/api/file/1").
 			Expect(t).
 			Assert(jsonpath.Present(`$.ID`)).
 			Assert(jsonpath.Contains(`$.FileName`, "kehraus.mp4")).
@@ -59,7 +64,7 @@ func TestGetFile(t *testing.T) {
 func TestGetFile_NotFound(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Get("/file/111111").
+			Get("/api/file/111111").
 			Expect(t).
 			Status(http.StatusNotFound).
 			End()
@@ -68,7 +73,7 @@ func TestGetFile_NotFound(t *testing.T) {
 func TestGetFiles(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Get("/file").
+			Get("/api/file").
 			Expect(t).
 			Assert(jsonpath.GreaterThan(`$`, 1)).
 			Status(http.StatusOK).
@@ -78,7 +83,7 @@ func TestGetFiles(t *testing.T) {
 func TestUpdateFile(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Put("/file/1").
+			Put("/api/file/1").
 			JSON(`{"fullpath":"/test2/kehraus.mp4"}`). // request
 			Expect(t).
 			Assert(jsonpath.Present(`$.ID`)).
@@ -91,7 +96,7 @@ func TestUpdateFile(t *testing.T) {
 func TestUpdateFile_NOT_FOUND(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Put("/file/1111111").
+			Put("/api/file/1111111").
 			JSON(`{"fullpath":"/test2/kehraus.mp4"}`). // request
 			Expect(t).
 			Status(http.StatusNotFound).
@@ -101,7 +106,7 @@ func TestUpdateFile_NOT_FOUND(t *testing.T) {
 func TestUpdateFile_WRONG_DATA(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Put("/file/1").
+			Put("/api/file/1").
 			JSON(`{"filename":"kehraus.mp4"}`). // request
 			Expect(t).
 			Status(http.StatusBadRequest).
@@ -111,7 +116,7 @@ func TestUpdateFile_WRONG_DATA(t *testing.T) {
 func TestDeleteFile(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Delete("/file/1").
+			Delete("/api/file/1").
 			Expect(t).
 			Assert(jsonpath.Present(`$.ID`)).
 			Assert(jsonpath.Contains(`$.FileName`, "kehraus.mp4")).
@@ -122,7 +127,7 @@ func TestDeleteFile(t *testing.T) {
 func TestDeleteFile_NOT_FOUND(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Delete("/file/111111").
+			Delete("/api/file/111111").
 			Expect(t).
 			Status(http.StatusNotFound).
 			End()

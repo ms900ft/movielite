@@ -16,6 +16,7 @@ type Config struct {
 	TargetDir    string
 	SQLDebug     bool
 	DataBase     string
+	WebDav       bool
 }
 
 func GetConfig() *Config {
@@ -47,5 +48,6 @@ func GetConfig() *Config {
 	c.TargetDir = viper.GetString("TargetDirectory")
 	c.DataBase = viper.GetString("DataBase.DBname")
 	c.SQLDebug = viper.GetBool("SQLDebug")
+	c.WebDav = viper.GetBool("WebDav")
 	return &c
 }
