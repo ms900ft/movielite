@@ -16,7 +16,7 @@
 
   <div v-else>
     <dir-list v-if="showdirlist" :show="showdirlist" :movie="movie" @close="showdirlist = false"></dir-list>
-    <v-menu offset-y max-height="300">
+    <v-menu offset-y >
       <template v-slot:activator="{ on }">
         <div class="hamburger" v-on="on">
           <v-icon>menu</v-icon>
@@ -28,6 +28,9 @@
             @click="item.action(getMovieItem)"
             style="cursor: pointer"
           >{{ item.name() }}</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile>
+          <a  :href="downloadURL()">Download</a>
         </v-list-tile>
       </v-list>
     </v-menu>
@@ -76,18 +79,18 @@ export default {
             _this.dialog = true
           }
         },
-        {
-          name: function () {
-            if (_this.movie.watchlist) {
-              return 'Remove from watchlist'
-            }
-            return 'Add to watchlist'
-          },
-          action: function (item) {
-            console.log('watchlsit')
-            _this.toggleWatchlist(item)
-          }
-        },
+        // {
+        //   name: function () {
+        //     if (_this.movie.watchlist) {
+        //       return 'Remove from watchlist'
+        //     }
+        //     return 'Add to watchlist'
+        //   },
+        //   action: function (item) {
+        //     console.log('watchlsit')
+        //     _this.toggleWatchlist(item)
+        //   }
+        // },
         {
           name: function () {
             return 'Move Movie'
@@ -149,6 +152,10 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+    downloadURL () {
+      return this.$baseURL + '/api/file/' + this.movie.file_id + '/download'
+      // http://192.168.1.4:8000/file/161021/download
     }
   }
 }
@@ -165,5 +172,9 @@ export default {
 
 li:hover {
   cursor: pointer;
+}
+a {
+  text-decoration : none
+  color :black
 }
 </style>

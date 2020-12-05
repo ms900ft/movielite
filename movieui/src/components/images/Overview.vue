@@ -25,7 +25,7 @@
           overlay="true"
           :helper="localHelper"
         />
-        <download v-else :movie="movie" overlay="true" />
+
       </div>
       <div v-if="multipleChoice(movie)" class="multibutton">
         <v-btn color="#0d47a1" dark @click="openChoiceModal(movie)">
@@ -48,13 +48,13 @@
 <script>
 import Play from '@/components/buttons/Play'
 
-import Download from '@/components/buttons/Download'
+// import Download from '@/components/buttons/Download'
 import Watchlist from '@/components/buttons/Watchlist'
 import BurgerMenu from '@/components/menu/Burger'
 
 export default {
   name: 'ImageOverview',
-  components: { Play, Download, BurgerMenu, Watchlist },
+  components: { Play, BurgerMenu, Watchlist },
 
   data () {
     let float = ''
@@ -139,6 +139,7 @@ export default {
     openChoiceModal (item) {
       this.$emit('openChoiceModal', item)
     }
+
   }
 }
 </script>
