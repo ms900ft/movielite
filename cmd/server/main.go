@@ -1,54 +1,21 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
-	"golang.org/x/sync/errgroup"
+	"github.com/prometheus/common/log"
+	"github.com/urfave/cli"
 
-	"ms/movielight"
-)
-
-var (
-	g errgroup.Group
+	"ms/movielight/commands"
 )
 
 func main() {
-	c := movielight.GetConfig()
-	a := movielight.Service{Config: c}
-	w := movielight.Walker{Config: c}
-
-	a.Initialize()
-
-	var gracefulStop = make(chan os.Signal)
-	signal.Notify(gracefulStop, syscall.SIGTERM)
-	signal.Notify(gracefulStop, syscall.SIGINT)
-	go func() {
-		sig := <-gracefulStop
-		a.WorkerPool.Stop()
-		fmt.Printf("caught sig: %+v", sig)
-		fmt.Println("Wait for 2 second to finish processing")
-		time.Sleep(2 * time.Second)
-		os.Exit(0)
-	}()
-	//a.Run(":8080")
-	g.Go(func() error {
-		return a.Run()
-	})
-
-	g.Go(func() error {
-		return w.Run()
-	})
-	// if viper.GetBool("Rescan.Enable") {
-	// 	g.Go(func() error {
-	// 		return r.Run()
-	// 	})
-	// }
-	if err := g.Wait(); err != nil {
-		log.Fatal(err)
+	app := cli.NewApp()
+	app.Commands = []cli.Command{
+		commands.StartCommand,
+		commands.IndexCommand,
+	}
+	if err := app.Run(os.Args); err != nil {
+		log.Error(err)
 	}
 }

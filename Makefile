@@ -6,7 +6,7 @@ test:
 	go test --tags "fts5" $(test)
 
 run:
-	go run --tags "fts5" cmd/server/main.go
+	go run --tags "fts5" cmd/server/main.go start
 
 build:
 	go build -o ${APP}  --tags "fts5" ./cmd/server

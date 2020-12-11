@@ -163,7 +163,7 @@ func (s *Service) getMovies(c *gin.Context) {
 	switch {
 	case q.Orderby == "name" || len(q.Alpha) > 0:
 		if fulltext && len(q.Qtitel) > 0 {
-			tx = tx.Order("bm25(fulltexts, 20.0, 5.0)")
+			tx = tx.Order("bm25(fulltexts, 1.0, 50.0, 5.0, 10.0)")
 		} else {
 			tx = tx.Order("movies.title ASC")
 		}
