@@ -58,7 +58,7 @@ func startAction(ctx *cli.Context) error {
 	})
 
 	g.Go(func() error {
-		return w.Run()
+		return w.RunWatcher()
 	})
 	// if viper.GetBool("Rescan.Enable") {
 	// 	g.Go(func() error {

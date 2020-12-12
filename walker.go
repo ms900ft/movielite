@@ -60,14 +60,19 @@ func (w *Walker) Run() error {
 			}
 		}
 	}
-	//begin to watch
-	if watchdir != "" {
-		err = w.watchdirectory(watchdir)
+	return err
+}
+
+func (w *Walker) RunWatcher() error {
+	log.Debugf("starting watcher on %s", w.Config.Watchdirectory)
+	if w.Config.Watchdirectory != "" {
+		err := w.watchdirectory(w.Config.Watchdirectory)
 		if err != nil {
 			log.Errorf("watch dir %s", err)
+			return err
 		}
 	}
-	return err
+	return nil
 }
 
 func (w *Walker) sendfile(file string) error {
