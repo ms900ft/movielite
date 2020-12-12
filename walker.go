@@ -13,7 +13,6 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 
 	"ms/movielight/models"
 )
@@ -29,11 +28,11 @@ type payload struct {
 func (w *Walker) Run() error {
 	log.Debug("Starting walker")
 	var err error
-	directories := viper.GetStringSlice("Directories")
+	directories := w.Config.ScanDirectories
 	for _, dir := range directories {
 		log.Debugf("Scanning directory: %s\n", dir)
 	}
-	watchdir := viper.GetString("WatchDir")
+	watchdir := w.Config.Watchdirectory
 	log.Debug("watching " + watchdir)
 	//flag.Parse()
 	//root := flag.Arg(0)
@@ -54,7 +53,7 @@ func (w *Walker) Run() error {
 			}
 			//spew.Dump(fileList)
 			for _, file := range fileList {
-				err = sendfile(file)
+				err = w.sendfile(file)
 				if err != nil {
 					log.Errorf("sending file %s", err)
 				}
@@ -63,7 +62,7 @@ func (w *Walker) Run() error {
 	}
 	//begin to watch
 	if watchdir != "" {
-		err = watchdirectory(watchdir)
+		err = w.watchdirectory(watchdir)
 		if err != nil {
 			log.Errorf("watch dir %s", err)
 		}
@@ -71,7 +70,7 @@ func (w *Walker) Run() error {
 	return err
 }
 
-func sendfile(file string) error {
+func (w *Walker) sendfile(file string) error {
 	//log.Debugf("got files: %s", file)
 	extens := map[string]bool{".mov": true, ".avi": true, ".mp4": true, "mkv": true, "m4v": true}
 	extName := path.Ext(file)
@@ -92,7 +91,7 @@ func sendfile(file string) error {
 		log.Debugf("search for %s", fName)
 
 		//fmt.Println(extName)
-		files := searchFile(fName)
+		files := w.searchFile(fName)
 		if len(files) > 0 {
 			log.Debugf("found: %s\n", fName)
 			fileExits := map[string]bool{}
@@ -110,7 +109,7 @@ func sendfile(file string) error {
 				if toUpdate.ID > 0 {
 					toUpdate.FullPath = file
 					//spew.Dump(toUpdate)
-					err = update(toUpdate)
+					err = w.update(toUpdate)
 					if err != nil {
 						log.Error(err)
 						return err
@@ -121,7 +120,7 @@ func sendfile(file string) error {
 			}
 		} else {
 			//spew.Dump(files)
-			err := send(file)
+			err := w.send(file)
 			if err != nil {
 				log.Errorf("sending file %s", err)
 			}
@@ -130,8 +129,8 @@ func sendfile(file string) error {
 	return nil
 }
 
-func searchFile(name string) []models.File {
-	surl := viper.GetString("MovieServerUrl")
+func (w *Walker) searchFile(name string) []models.File {
+	surl := w.Config.ServerURL
 	name, err := URLEncoded(name)
 	if err != nil {
 		log.Errorf("search file %s", err)
@@ -163,8 +162,8 @@ func searchFile(name string) []models.File {
 	return files
 }
 
-func send(path string) error {
-	surl := viper.GetString("MovieServerUrl")
+func (w *Walker) send(path string) error {
+	surl := w.Config.ServerURL
 	pl := payload{Path: path}
 	url := surl + "/api/file"
 	jsonValue, _ := json.Marshal(pl)
@@ -187,8 +186,8 @@ func send(path string) error {
 	return err
 }
 
-func update(file models.File) error {
-	surl := viper.GetString("MovieServerUrl")
+func (w *Walker) update(file models.File) error {
+	surl := w.Config.ServerURL
 	url := fmt.Sprintf("%s/file/%d", surl, file.ID)
 	b := new(bytes.Buffer)
 	err := json.NewEncoder(b).Encode(file)
@@ -213,7 +212,7 @@ func update(file models.File) error {
 	return err
 }
 
-func watchdirectory(dir string) error {
+func (w *Walker) watchdirectory(dir string) error {
 	log.Debugf("watching directory %s", dir)
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -230,7 +229,7 @@ func watchdirectory(dir string) error {
 				if event.Op&fsnotify.Create == fsnotify.Create {
 					path := toUtf8Nfc(event.Name)
 					log.Debugf("sending file %s", path)
-					err = sendfile(path)
+					err = w.sendfile(path)
 					if err != nil {
 						log.Errorf("sending file %s", err)
 					}

@@ -8,15 +8,18 @@ import (
 )
 
 type Config struct {
-	Port         int
-	Mode         string
-	TMDBImageDir string
-	TMDBImageURL string
-	TMDBApiKey   string
-	TargetDir    string
-	SQLDebug     bool
-	DataBase     string
-	WebDav       bool
+	Port            int
+	Mode            string
+	TMDBImageDir    string
+	TMDBImageURL    string
+	TMDBApiKey      string
+	TargetDir       string
+	SQLDebug        bool
+	DataBase        string
+	WebDav          bool
+	Watchdirectory  string
+	ScanDirectories []string
+	ServerURL       string
 }
 
 func GetConfig() *Config {
@@ -49,5 +52,8 @@ func GetConfig() *Config {
 	c.DataBase = viper.GetString("DataBase.DBname")
 	c.SQLDebug = viper.GetBool("SQLDebug")
 	c.WebDav = viper.GetBool("WebDav")
+	c.ScanDirectories = viper.GetStringSlice("Directories")
+	c.Watchdirectory = viper.GetString("WatchDir")
+	c.ServerURL = viper.GetString("MovieServerUrl")
 	return &c
 }
