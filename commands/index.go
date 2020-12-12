@@ -31,28 +31,14 @@ func indexAction(ctx *cli.Context) error {
 	tx := db.Begin()
 	defer tx.Close()
 
-	//var movies []models.Movie
-	// var movie models.Movie
-
-	// if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&movie).Error; err != nil {
-	// 	return nil
-	// }
-	//db.Set("gorm:auto_preload", true).Model(&models.Movie{}).Find(&movies)
-	// defer rows.Close()
-	// if err != nil {
-	// 	log.Error(err)
-	//	}
-
 	rows, err := tx.Model(&models.Movie{}).Rows()
 	if err != nil {
 		log.Error(err)
 	}
 	defer rows.Close()
 	for rows.Next() {
-		//for rows.Next() {
 		var movie models.Movie
 		var new models.Movie
-		//ScanRows is a method of `gorm.DB`, it can be used to scan a row into a struct
 		db.ScanRows(rows, &movie)
 		if err := tx.Set("gorm:auto_preload", true).Where("id = ?", movie.ID).First(&new).Error; err != nil {
 			log.Error(err)
@@ -61,10 +47,7 @@ func indexAction(ctx *cli.Context) error {
 		if err := new.FullTextIndex(tx); err != nil {
 			log.Warn(err)
 		}
-		//	tx.Commit()
-		//spew.Dump(movie)
 	}
 	tx.Commit()
 	return nil
-	// do something
 }
