@@ -16,7 +16,7 @@ func TestMain(m *testing.M) {
 	S = Setup()
 	S.Initialize()
 	S.TMDBClient = &MockTMDBClient{}
-	file := models.File{FullPath: "/test/kehraus.mp4"}
+	file := models.File{FullPath: "./testdata/kehraus.mp4"}
 	if err := file.Create(S.DB, S.TMDBClient); err != nil {
 		log.Fatal("can't create first movie " + err.Error())
 	}
@@ -43,7 +43,7 @@ func TestCreateFile(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
 			Post("/api/file").
-			JSON(`{"fullpath":"/test/Paterson.mp4"}`). // request
+			JSON(`{"fullpath":"./testdata/Paterson.mp4"}`). // request
 			Expect(t).
 			Assert(jsonpath.Present(`$.ID`)).
 			Assert(jsonpath.Contains(`$.FileName`, "Paterson.mp4")).
@@ -78,6 +78,20 @@ func TestGetFiles(t *testing.T) {
 			Assert(jsonpath.GreaterThan(`$`, 1)).
 			Status(http.StatusOK).
 			End()
+}
+
+func TestDownloadFiles(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Get("/api/file/1/download").
+			Expect(t).
+		//Assert(jsonpath.GreaterThan(`$`, 1)).
+		Header("Content-Description", "File Transfer").
+		Header("Content-Transfer-Encoding", "binary").
+		Header("Content-Disposition", "attachment; filename=kehraus.mp4").
+		Header("Content-Type", "application/octet-stream").
+		Status(http.StatusOK).
+		End()
 }
 
 func TestUpdateFile(t *testing.T) {
@@ -128,6 +142,15 @@ func TestDeleteFile_NOT_FOUND(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
 			Delete("/api/file/111111").
+			Expect(t).
+			Status(http.StatusNotFound).
+			End()
+}
+
+func TestDownloadFile_NOT_FOUND(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Get("/api/file/1123/download").
 			Expect(t).
 			Status(http.StatusNotFound).
 			End()
