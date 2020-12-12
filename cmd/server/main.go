@@ -14,6 +14,7 @@ func main() {
 	app.Commands = []cli.Command{
 		commands.StartCommand,
 		commands.IndexCommand,
+		commands.ScanCommand,
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Error(err)

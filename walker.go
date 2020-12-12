@@ -25,12 +25,18 @@ type payload struct {
 	Path string `json:"FullPath"`
 }
 
-func (w *Walker) Run() error {
+func (w *Walker) Run(dir string) error {
 	log.Debug("Starting walker")
 	var err error
-	directories := w.Config.ScanDirectories
+	var directories []string
+	if dir != "" {
+		directories = append(directories, dir)
+	} else {
+		directories = w.Config.ScanDirectories
+	}
+
 	for _, dir := range directories {
-		log.Debugf("Scanning directory: %s\n", dir)
+		log.Infof("Scanning directory: %s\n", dir)
 	}
 	watchdir := w.Config.Watchdirectory
 	log.Debug("watching " + watchdir)
@@ -96,7 +102,11 @@ func (w *Walker) sendfile(file string) error {
 		log.Debugf("search for %s", fName)
 
 		//fmt.Println(extName)
-		files := w.searchFile(fName)
+		files, err := w.searchFile(fName)
+		if err != nil {
+			log.Error("can't search movie")
+			return err
+		}
 		if len(files) > 0 {
 			log.Debugf("found: %s\n", fName)
 			fileExits := map[string]bool{}
@@ -134,9 +144,10 @@ func (w *Walker) sendfile(file string) error {
 	return nil
 }
 
-func (w *Walker) searchFile(name string) []models.File {
+func (w *Walker) searchFile(name string) ([]models.File, error) {
 	surl := w.Config.ServerURL
 	name, err := URLEncoded(name)
+	files := []models.File{}
 	if err != nil {
 		log.Errorf("search file %s", err)
 	}
@@ -151,20 +162,23 @@ func (w *Walker) searchFile(name string) []models.File {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Error(err)
+		return files, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Error(err)
+		return files, err
 	}
 	bodyString := string(body)
 	log.Debug(bodyString)
-	files := []models.File{}
+
 	err = json.Unmarshal(body, &files)
 	if err != nil {
 		log.Error(err)
+		return files, err
 	}
-	return files
+	return files, err
 }
 
 func (w *Walker) send(path string) error {
