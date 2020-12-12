@@ -58,7 +58,7 @@ func indexAction(ctx *cli.Context) error {
 			log.Error(err)
 		}
 		log.Debugf("indexing %s", movie.Title)
-		if err := tx.Model(&new).Update(new).Error; err != nil {
+		if err := new.FullTextIndex(tx); err != nil {
 			log.Warn(err)
 		}
 		//	tx.Commit()

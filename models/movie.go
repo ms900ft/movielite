@@ -343,10 +343,10 @@ func (m *Movie) AfterCreate(scope *gorm.Scope) (err error) {
 	return
 }
 
-func (m *Movie) AfterUpdate(scope *gorm.Scope) (err error) {
+func (m *Movie) FullTextIndex(tx *gorm.DB) error {
 	fulltext := Fulltext{MovieID: m.ID}
 	found := true
-	if err := scope.DB().Where("movie_id = ?", m.ID).First(&fulltext).Error; gorm.IsRecordNotFoundError(err) {
+	if err := tx.Where("movie_id = ?", m.ID).First(&fulltext).Error; gorm.IsRecordNotFoundError(err) {
 		found = false
 	}
 	fulltext.Title = m.Title
@@ -358,15 +358,20 @@ func (m *Movie) AfterUpdate(scope *gorm.Scope) (err error) {
 		fulltext.Credits = m.GetCredits()
 	}
 	if found {
-		if err := scope.DB().Model(&fulltext).Update(&fulltext).Error; err != nil {
+		if err := tx.Model(&fulltext).Update(&fulltext).Error; err != nil {
 			return err
 		}
 	} else {
-		if err := scope.DB().Create(&fulltext).Error; err != nil {
+		if err := tx.Create(&fulltext).Error; err != nil {
 			return err
 		}
 	}
-	return
+	return nil
+}
+
+func (m *Movie) AfterUpdate(scope *gorm.Scope) (err error) {
+	return m.FullTextIndex(scope.DB())
+
 }
 
 func (m *Movie) AfterDelete(scope *gorm.Scope) (err error) {
