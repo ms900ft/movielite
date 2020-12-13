@@ -151,7 +151,7 @@ func (w *Walker) searchFile(name string) ([]models.File, error) {
 	if err != nil {
 		log.Errorf("search file %s", err)
 	}
-	url := fmt.Sprintf("%s/files?f=%s", surl, name)
+	url := fmt.Sprintf("%s/api/file?f=%s", surl, name)
 	log.Debugf("Getting: %s", url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -207,7 +207,7 @@ func (w *Walker) send(path string) error {
 
 func (w *Walker) update(file models.File) error {
 	surl := w.Config.ServerURL
-	url := fmt.Sprintf("%s/file/%d", surl, file.ID)
+	url := fmt.Sprintf("%s/api/file/%d", surl, file.ID)
 	b := new(bytes.Buffer)
 	err := json.NewEncoder(b).Encode(file)
 	if err != nil {
