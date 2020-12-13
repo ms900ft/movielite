@@ -82,13 +82,11 @@ func (s *Service) getImage(c *gin.Context) {
 }
 
 func (s *Service) getTMDBMovieImages(id int) (*tmdb.MovieImages, error) {
-	conf := tmdb.Config{APIKey: s.Config.TMDBApiKey}
-	TMDb := tmdb.Init(conf)
 	var options = make(map[string]string)
 
-	//options["append_to_response"] = "credits"
-	options["language"] = DEFLANG
-	res, err := TMDb.GetMovieImages(id, options)
+	// options["append_to_response"] = "credits"
+	//options["language"] = DEFLANG
+	res, err := s.TMDBClient.GetMovieImages(id, options)
 	if err != nil {
 		log.Error(err)
 		return res, err

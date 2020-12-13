@@ -38,6 +38,25 @@ func (m *MockTMDBClient) SearchMovie(s string, opts map[string]string) (*tmdb.Mo
 	//spew.Dump(search)
 	return &search, nil
 }
+func (m *MockTMDBClient) GetMovieImages(id int, opts map[string]string) (*tmdb.MovieImages, error) {
+	log.Debug("mock images")
+	filename := fmt.Sprintf("testdata/images_%d.json", id)
+	jsonFile, err := os.Open(filename)
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Successfully Opened " + filename)
+	defer jsonFile.Close()
+	byte, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var images tmdb.MovieImages
+	json.Unmarshal(byte, &images)
+	return &images, nil
+}
+
 func (m *MockTMDBClient) GetMovieInfo(id int, opts map[string]string) (*tmdb.Movie, error) {
 	log.Error("xxxxxxx search")
 	filename := fmt.Sprintf("testdata/movie_%d.json", id)
