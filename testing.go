@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"ms/movielight/models"
 	"os"
 
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
+
+	"ms/movielight/models"
 )
 
 type MockTMDBClient struct{}
@@ -60,6 +61,7 @@ func Setup() Service {
 
 	c := Config{}
 	c.Mode = "testing"
+	c.TargetDir = "./testdata"
 	s := Service{Config: &c}
 	s.TMDBClient = &MockTMDBClient{}
 	db := models.ConnectDataBase(":memory:")

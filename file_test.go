@@ -20,6 +20,10 @@ func TestMain(m *testing.M) {
 	if err := file.Create(S.DB, S.TMDBClient); err != nil {
 		log.Fatal("can't create first movie " + err.Error())
 	}
+	file = models.File{FullPath: "./testdata/move.mp4"}
+	if err := file.Create(S.DB, S.TMDBClient); err != nil {
+		log.Fatal("can't create second movie " + err.Error())
+	}
 	user := models.User{UserName: "test"}
 	if err := S.DB.Create(&user).Error; err != nil {
 		log.Fatal("can't create first movie " + err.Error())
@@ -79,11 +83,67 @@ func TestGetFiles(t *testing.T) {
 			Status(http.StatusOK).
 			End()
 }
+func TestDownloadFile_NOT_FOUND(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Get("/api/file/1123/download").
+			Expect(t).
+			Status(http.StatusNotFound).
+			End()
+}
+
+func TestMovieFileDirNotFound(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Put("/api/file/2/move/xxx").
+			Expect(t).
+			Status(http.StatusBadRequest).
+			Body(`{"error": "file unable to move"}`).
+			End()
+}
+
+func TestMovieFileFileNotFound(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Put("/api/file/11234/move/nottomove").
+			Expect(t).
+			Status(http.StatusNotFound).
+			Body(`{"error": "record not found"}`).
+			End()
+}
+
+func TestMovieFile(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Put("/api/file/2/move/tomove").
+			Expect(t).
+			Status(http.StatusOK).
+			Assert(jsonpath.Contains(`$.FullPath`, "./testdata/tomove/move.mp4")).
+			End()
+	err := os.Rename("./testdata/tomove/move.mp4", "./testdata/move.mp4")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
 
 func TestDownloadFiles(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
 			Get("/api/file/1/download").
+			Expect(t).
+		//Assert(jsonpath.GreaterThan(`$`, 1)).
+		Header("Content-Description", "File Transfer").
+		Header("Content-Transfer-Encoding", "binary").
+		Header("Content-Disposition", "attachment; filename=kehraus.mp4").
+		Header("Content-Type", "application/octet-stream").
+		Status(http.StatusOK).
+		End()
+}
+
+func TestDownloadFilesWithName(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Get("/api/file/1/download/testfile").
 			Expect(t).
 		//Assert(jsonpath.GreaterThan(`$`, 1)).
 		Header("Content-Description", "File Transfer").
@@ -142,15 +202,6 @@ func TestDeleteFile_NOT_FOUND(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
 			Delete("/api/file/111111").
-			Expect(t).
-			Status(http.StatusNotFound).
-			End()
-}
-
-func TestDownloadFile_NOT_FOUND(t *testing.T) {
-	apitest.New(). // configuration
-			Handler(S.Router).
-			Get("/api/file/1123/download").
 			Expect(t).
 			Status(http.StatusNotFound).
 			End()

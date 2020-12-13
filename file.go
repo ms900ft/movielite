@@ -1,6 +1,7 @@
 package movielight
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -128,13 +129,14 @@ func (s *Service) moveFile(c *gin.Context) {
 	dir := c.Param("dir")
 	var file models.File
 	if err := db.Where("id = ?", id).First(&file).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "record not found"})
 		return
 	}
-	newpath, err := file.Move(dir)
+	newDir := fmt.Sprintf("%s/%s", s.Config.TargetDir, dir)
+	newpath, err := file.Move(newDir)
 	if err != nil {
 		log.Error("move file:  " + err.Error())
-		content := gin.H{"error": "File not found"}
+		content := gin.H{"error": "file unable to move"}
 		log.Error(content)
 		c.JSON(http.StatusBadRequest, content)
 		return
