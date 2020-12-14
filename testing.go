@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 
 	"github.com/ryanbradynd05/go-tmdb"
@@ -14,10 +15,19 @@ import (
 
 type MockTMDBClient struct{}
 
+type MockHttpClient struct {
+	DoFunc func(req *http.Request) (*http.Response, error)
+}
+
 var S Service
 
+var (
+	// GetDoFunc fetches the mock client's `Do` func
+	GetDoFunc func(req *http.Request) (*http.Response, error)
+)
+
 func (m *MockTMDBClient) SearchMovie(s string, opts map[string]string) (*tmdb.MovieSearchResults, error) {
-	log.Error("xxxxxxx search")
+	log.Debug("search movie")
 	filename := fmt.Sprintf("testdata/search_%s.json", s)
 	jsonFile, err := os.Open(filename)
 	var search tmdb.MovieSearchResults
@@ -58,7 +68,7 @@ func (m *MockTMDBClient) GetMovieImages(id int, opts map[string]string) (*tmdb.M
 }
 
 func (m *MockTMDBClient) GetMovieInfo(id int, opts map[string]string) (*tmdb.Movie, error) {
-	log.Error("xxxxxxx search")
+	log.Debug("movie info")
 	filename := fmt.Sprintf("testdata/movie_%d.json", id)
 	jsonFile, err := os.Open(filename)
 	// if we os.Open returns an error then handle it
@@ -76,6 +86,10 @@ func (m *MockTMDBClient) GetMovieInfo(id int, opts map[string]string) (*tmdb.Mov
 	return &movie, nil
 }
 
+func (m *MockHttpClient) Do(req *http.Request) (*http.Response, error) {
+	return GetDoFunc(req)
+}
+
 func Setup() Service {
 
 	c := Config{}
@@ -83,6 +97,7 @@ func Setup() Service {
 	c.TargetDir = "./testdata"
 	s := Service{Config: &c}
 	s.TMDBClient = &MockTMDBClient{}
+	models.HttpClient = &http.Client{}
 	db := models.ConnectDataBase(":memory:")
 	s.DB = db
 	user := models.User{UserName: "marc"}

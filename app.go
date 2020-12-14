@@ -46,7 +46,7 @@ func (a *Service) Initialize() {
 	tmdbClient := tmdb.Init(tmdb.Config{APIKey: a.Config.TMDBApiKey})
 	// pool to slow down tmpdb image requests
 	a.WorkerPool = workerpool.New(1)
-
+	models.HttpClient = &http.Client{}
 	//sa.TMDBClient = new(models.TMDBClient)
 	a.TMDBClient = tmdbClient
 	if a.Config.Mode == "prod" {

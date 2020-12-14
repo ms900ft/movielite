@@ -11,6 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
+
+	"ms/movielight/models"
 )
 
 func (s *Service) getMovieImages(c *gin.Context) {
@@ -35,7 +37,7 @@ func (s *Service) getImage(c *gin.Context) {
 	imagepath := fmt.Sprintf("%s/%s", imagedir, image)
 	//check cache
 	if _, err := os.Stat(imagepath); os.IsNotExist(err) {
-		client := &http.Client{}
+		client := models.HttpClient
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			log.Error(err)
