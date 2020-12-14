@@ -95,6 +95,7 @@ func Setup() Service {
 	c := Config{}
 	c.Mode = "testing"
 	c.TargetDir = "./testdata"
+	c.TMDBImageDir = "/tmp/test"
 	s := Service{Config: &c}
 	s.TMDBClient = &MockTMDBClient{}
 	models.HttpClient = &http.Client{}

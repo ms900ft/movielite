@@ -26,22 +26,53 @@ func TestMovieImageGet(t *testing.T) {
 
 func TestImageGet(t *testing.T) {
 	models.HttpClient = &MockHttpClient{}
-	json := `{"name":"Test Name","full_name":"test full name","owner":{"login": "octocat"}}`
+	json := `{"some body"}}`
 	// create a new reader with that JSON
 	r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
 	GetDoFunc = func(*http.Request) (*http.Response, error) {
+		header := http.Header{}
+		header.Add("Content-Type", "image/jpg")
 		return &http.Response{
 			StatusCode: 200,
 			Body:       r,
+			Header:     header,
+		}, nil
+	}
+	S.Config.TMDBImageDir = t.TempDir()
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Get("/images/160/xxxxxxxx").
+			Expect(t).
+			HeaderNotPresent("X-cache").
+			Status(http.StatusOK).
+			End()
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Get("/images/160/xxxxxxxx").
+			Expect(t).
+			HeaderPresent("X-cache").
+			Status(http.StatusOK).
+			End()
+}
+
+func TestImageGetNotFound(t *testing.T) {
+	models.HttpClient = &MockHttpClient{}
+	json := `{"some body"}}`
+	// create a new reader with that JSON
+	r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+	GetDoFunc = func(*http.Request) (*http.Response, error) {
+		header := http.Header{}
+		return &http.Response{
+			StatusCode: 404,
+			Body:       r,
+			Header:     header,
 		}, nil
 	}
 	apitest.New(). // configuration
 			Handler(S.Router).
 			Get("/images/160/xxxxxxxx").
 			Expect(t).
-		// Assert(jsonpath.GreaterThan(`$.Backdrops`, 1)).
-		// Assert(jsonpath.GreaterThan(`$.Posters`, 1)).
-		// Assert(jsonpath.Equal(`$.ID`, float64(3476))).
-		Status(http.StatusOK).
-		End()
+			Status(http.StatusNotFound).
+			End()
+
 }

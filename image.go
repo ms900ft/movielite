@@ -77,6 +77,7 @@ func (s *Service) getImage(c *gin.Context) {
 
 		log.Debugf("save %s to %s", url, imagedir)
 	} else {
+		c.Header("X-cache", "HIT")
 		log.Debugf("getting image from cache %s", url)
 	}
 
