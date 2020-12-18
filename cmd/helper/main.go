@@ -30,12 +30,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Max-Age", "86400")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
 
-	url := fmt.Sprintf("%s/%s", Movieserver, url.QueryEscape(strings.Replace(r.URL.Path[1:], " ", "_", -1)))
+	url := fmt.Sprintf("%s/%s", Movieserver,
+		url.QueryEscape(strings.Replace(r.URL.Path[1:], " ", "_", -1)))
 	err := open.RunWith(url, "vlc")
 	log.Printf("opening %s", url)
 	if err != nil {
 		log.Print(err)
-		io.WriteString(w, fmt.Sprintf("%q", err.Error))
+		io.WriteString(w, fmt.Sprintf("%q", err.Error()))
 	} else {
 		io.WriteString(w, `{"message": "ok"}`)
 	}
