@@ -31,7 +31,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
 
 	url := fmt.Sprintf("%s/%s", Movieserver, url.QueryEscape(strings.Replace(r.URL.Path[1:], " ", "_", -1)))
-	//url = "https://alter-fisch.mooo.com/api/file/166983/download#xxxxx --input-title-format TITLE"
 	err := open.RunWith(url, "vlc")
 	log.Printf("opening %s", url)
 	if err != nil {
