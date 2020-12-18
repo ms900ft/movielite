@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+ <key>Label</key><string>vlc_helper</string>
+ <key>ProgramArguments</key>
+ <array>
+  <string>/Users/ms/bin/vlc_helper</string>
+  <string>http://192.168.1.4:8000</string>
+ </array>
+ <key>WorkingDirectory</key><string>/Users/ms/moviedb</string>
+ <key>StandardOutPath</key><string>/Users/ms/moviedb/vlc_helper.log</string>
+ <key>StandardErrorPath</key><string>/Users/ms/moviedb/vlc_helper.log</string>
+ <key>KeepAlive</key><true/>
+ <key>Disabled</key><false/>
+</dict>
+</plist>

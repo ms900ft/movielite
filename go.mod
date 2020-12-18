@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/PaesslerAG/gval v1.1.0 // indirect
-	github.com/davecgh/go-spew v1.1.1
+	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/gammazero/deque v0.0.0-20201010052221-3932da5530cc // indirect
 	github.com/gammazero/workerpool v1.1.1
@@ -20,9 +20,9 @@ require (
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
 	github.com/pelletier/go-toml v1.8.1 // indirect
-	github.com/photoprism/photoprism v0.0.0-20201202124702-1697c9e1e3e3
 	github.com/prometheus/common v0.4.0
 	github.com/rakyll/statik v0.1.7
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryanbradynd05/go-tmdb v0.0.0-20201006144520-c0566c3d1506
 	github.com/sirupsen/logrus v1.7.0
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966

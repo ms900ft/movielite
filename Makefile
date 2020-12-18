@@ -1,4 +1,5 @@
 APP=movielight
+HELPER=vlc_helper
 WATCH_FILES= find . -type f -not -path '*/\.*' | grep -i '.*[.]go\|html$$' 2> /dev/null
 
 
@@ -10,6 +11,9 @@ run:
 
 build:
 	go build -o ${APP}  --tags "fts5" ./cmd/server
+
+helper:
+	go build -o ${HELPER}   ./cmd/helper
 
 static:
 	$(MAKE) -C movieui
