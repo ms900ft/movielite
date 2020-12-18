@@ -1,4 +1,4 @@
-package movielight
+package movielite
 
 import (
 	"strings"
@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
-	"ms/movielight/models"
+	"ms/movielite/models"
 )
 
 //CORSMiddleware for gin

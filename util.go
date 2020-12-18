@@ -1,4 +1,4 @@
-package movielight
+package movielite
 
 import (
 	"fmt"

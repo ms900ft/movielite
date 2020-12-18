@@ -1,4 +1,4 @@
-package movielight
+package movielite
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
-	"ms/movielight/models"
+	"ms/movielite/models"
 )
 
 type FileInput struct {

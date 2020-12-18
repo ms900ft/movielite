@@ -1,4 +1,4 @@
-package movielight
+package movielite
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
 
-	"ms/movielight/models"
+	"ms/movielite/models"
 )
 
 type Walker struct {

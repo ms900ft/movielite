@@ -4,7 +4,7 @@ import (
 	"github.com/prometheus/common/log"
 	"github.com/urfave/cli"
 
-	"ms/movielight"
+	"ms/movielite"
 )
 
 var directory string
@@ -29,9 +29,9 @@ var scanFlags = []cli.Flag{
 // startAction start the web server and initializes the daemon
 func scanAction(ctx *cli.Context) error {
 
-	conf := movielight.GetConfig()
+	conf := movielite.GetConfig()
 
-	w := movielight.Walker{Config: conf}
+	w := movielite.Walker{Config: conf}
 	err := w.Run(directory)
 	if err != nil {
 		log.Fatalf("can't scan for movies: %s", err)

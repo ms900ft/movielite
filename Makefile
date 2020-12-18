@@ -1,4 +1,4 @@
-APP=movielight
+APP=movielite
 HELPER=vlc_helper
 WATCH_FILES= find . -type f -not -path '*/\.*' | grep -i '.*[.]go\|html$$' 2> /dev/null
 
@@ -37,10 +37,10 @@ install:
 	go install  ./...
 
 deploy: build
-	 			scp "./${APP}" nudel:/Users/ms/movielight
+	 			scp "./${APP}" nudel:/Users/ms/movielite
 	 			rm ./${APP}
-				ssh nudel  launchctl unload ~/Library/LaunchAgents/org.local.movielight.plist
-				ssh nudel  launchctl load ~/Library/LaunchAgents/org.local.movielight.plist
+				ssh nudel  launchctl unload ~/Library/LaunchAgents/org.local.movielite.plist
+				ssh nudel  launchctl load ~/Library/LaunchAgents/org.local.movielite.plist
 
 metalint:
 	if command -v gometalinter > /dev/null; then echo ''; else go get -u github.com/alecthomas/gometalinter; fi

@@ -6,7 +6,7 @@ import (
 	"github.com/prometheus/common/log"
 	"github.com/urfave/cli"
 
-	"ms/movielight/commands"
+	"ms/movielite/commands"
 )
 
 func main() {

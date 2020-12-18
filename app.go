@@ -1,4 +1,4 @@
-package movielight
+package movielite
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
 
-	"ms/movielight/models"
+	"ms/movielite/models"
 )
 
 const (

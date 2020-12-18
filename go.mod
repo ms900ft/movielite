@@ -1,4 +1,4 @@
-module ms/movielight
+module ms/movielite
 
 go 1.15
 

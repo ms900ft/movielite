@@ -1,7 +1,7 @@
-package movielight
+package movielite
 
 import (
-	"ms/movielight/models"
+	"ms/movielite/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

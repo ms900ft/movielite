@@ -11,7 +11,7 @@ import (
 	"github.com/urfave/cli"
 	"golang.org/x/sync/errgroup"
 
-	"ms/movielight"
+	"ms/movielite"
 )
 
 // StartCommand is used to register the start cli command
@@ -35,9 +35,9 @@ var (
 // startAction start the web server and initializes the daemon
 func startAction(ctx *cli.Context) error {
 
-	conf := movielight.GetConfig()
-	a := movielight.Service{Config: conf}
-	w := movielight.Walker{Config: conf}
+	conf := movielite.GetConfig()
+	a := movielite.Service{Config: conf}
+	w := movielite.Walker{Config: conf}
 
 	a.Initialize()
 

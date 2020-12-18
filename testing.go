@@ -1,4 +1,4 @@
-package movielight
+package movielite
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
 
-	"ms/movielight/models"
+	"ms/movielite/models"
 )
 
 type MockTMDBClient struct{}

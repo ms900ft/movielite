@@ -6,8 +6,8 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"ms/movielight"
-	"ms/movielight/models"
+	"ms/movielite"
+	"ms/movielite/models"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
@@ -46,7 +46,7 @@ func main() {
 		}
 		//bodyString := string(body)
 		//log.Debug(bodyString)
-		movies := movielight.Movielist{}
+		movies := movielite.Movielist{}
 		//log.Error(string(body))
 		err = json.Unmarshal(body, &movies)
 		if err != nil {

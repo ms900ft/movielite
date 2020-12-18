@@ -1,4 +1,4 @@
-package movielight
+package movielite
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ import (
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 
-	"ms/movielight/models"
+	"ms/movielite/models"
 )
 
 func TestMain(m *testing.M) {

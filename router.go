@@ -1,11 +1,11 @@
-package movielight
+package movielite
 
 import (
 	"github.com/gin-gonic/contrib/expvar"
 	"github.com/rakyll/statik/fs"
 	log "github.com/sirupsen/logrus"
 
-	_ "ms/movielight/statik"
+	_ "ms/movielite/statik"
 )
 
 func (a *Service) initializeRoutes() {

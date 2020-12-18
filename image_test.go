@@ -1,4 +1,4 @@
-package movielight
+package movielite
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 
-	"ms/movielight/models"
+	"ms/movielite/models"
 )
 
 func TestMovieImageGet(t *testing.T) {

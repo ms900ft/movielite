@@ -1,4 +1,4 @@
-package movielight
+package movielite
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ type Config struct {
 }
 
 func GetConfig() *Config {
-	viper.SetConfigName("movielight")
+	viper.SetConfigName("movielite")
 	viper.AddConfigPath(".")
 	viper.SetConfigType("yaml")
 	// default values

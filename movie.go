@@ -1,4 +1,4 @@
-package movielight
+package movielite
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/skratchdot/open-golang/open"
 
-	"ms/movielight/models"
+	"ms/movielite/models"
 )
 
 type UpdateMovie struct {

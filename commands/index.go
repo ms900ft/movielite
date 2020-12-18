@@ -4,8 +4,8 @@ import (
 	"github.com/prometheus/common/log"
 	"github.com/urfave/cli"
 
-	"ms/movielight"
-	"ms/movielight/models"
+	"ms/movielite"
+	"ms/movielite/models"
 )
 
 // StartCommand is used to register the start cli command
@@ -26,7 +26,7 @@ var indexFlags = []cli.Flag{
 // startAction start the web server and initializes the daemon
 func indexAction(ctx *cli.Context) error {
 
-	conf := movielight.GetConfig()
+	conf := movielite.GetConfig()
 	db := models.ConnectDataBase(conf.DataBase)
 	tx := db.Begin()
 	defer tx.Close()
