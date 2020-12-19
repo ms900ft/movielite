@@ -10,7 +10,7 @@ import (
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
 
-	"ms/movielite/models"
+	"github.com/ms900ft/movielite/models"
 )
 
 type MockTMDBClient struct{}

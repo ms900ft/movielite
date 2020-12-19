@@ -14,7 +14,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
 
-	"ms/movielite/models"
+	"github.com/ms900ft/movielite/models"
 )
 
 type Walker struct {

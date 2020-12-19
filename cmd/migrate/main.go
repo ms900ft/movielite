@@ -6,9 +6,10 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"ms/movielite"
-	"ms/movielite/models"
 	"net/http"
+
+	"github.com/ms900ft/movielite"
+	"github.com/ms900ft/movielite/models"
 
 	log "github.com/sirupsen/logrus"
 )

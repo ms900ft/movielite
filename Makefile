@@ -45,7 +45,7 @@ npminstall:
 	$(MAKE) -C movieui install
 
 deploy: build
-	 			scp "./${APP}" nudel:/Users/ms/movielite
+	 			scp "./${APP}" nudel:/Users/github.com/ms900ft/movielite
 	 			rm ./${APP}
 				ssh nudel  launchctl unload ~/Library/LaunchAgents/org.local.movielite.plist
 				ssh nudel  launchctl load ~/Library/LaunchAgents/org.local.movielite.plist

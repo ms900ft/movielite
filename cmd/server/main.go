@@ -6,7 +6,7 @@ import (
 	"github.com/prometheus/common/log"
 	"github.com/urfave/cli"
 
-	"ms/movielite/commands"
+	"github.com/ms900ft/movielite/commands"
 )
 
 var configPath string

@@ -9,7 +9,7 @@ import (
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 
-	"ms/movielite/models"
+	"github.com/ms900ft/movielite/models"
 )
 
 func TestMovieImageGet(t *testing.T) {

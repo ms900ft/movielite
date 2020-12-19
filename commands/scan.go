@@ -4,7 +4,7 @@ import (
 	"github.com/prometheus/common/log"
 	"github.com/urfave/cli"
 
-	"ms/movielite"
+	"github.com/ms900ft/movielite"
 )
 
 var directory string

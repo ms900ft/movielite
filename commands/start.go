@@ -11,7 +11,7 @@ import (
 	"github.com/urfave/cli"
 	"golang.org/x/sync/errgroup"
 
-	"ms/movielite"
+	"github.com/ms900ft/movielite"
 )
 
 // StartCommand is used to register the start cli command

@@ -5,7 +5,7 @@ import (
 	"github.com/rakyll/statik/fs"
 	log "github.com/sirupsen/logrus"
 
-	_ "ms/movielite/statik"
+	_ "github.com/ms900ft/movielite/statik"
 )
 
 func (a *Service) initializeRoutes() {

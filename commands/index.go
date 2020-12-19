@@ -1,11 +1,10 @@
 package commands
 
 import (
+	"github.com/ms900ft/movielite"
+	"github.com/ms900ft/movielite/models"
 	"github.com/prometheus/common/log"
 	"github.com/urfave/cli"
-
-	"ms/movielite"
-	"ms/movielite/models"
 )
 
 // StartCommand is used to register the start cli command

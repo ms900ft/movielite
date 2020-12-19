@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
-	"ms/movielite/models"
+	"github.com/ms900ft/movielite/models"
 )
 
 type FileInput struct {

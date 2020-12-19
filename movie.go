@@ -12,7 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/skratchdot/open-golang/open"
 
-	"ms/movielite/models"
+	"github.com/ms900ft/movielite/models"
 )
 
 type UpdateMovie struct {

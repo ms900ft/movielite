@@ -1,8 +1,9 @@
 package movielite
 
 import (
-	"ms/movielite/models"
 	"net/http"
+
+	"github.com/ms900ft/movielite/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"

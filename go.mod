@@ -1,6 +1,6 @@
-module ms/movielite
+module github.com/ms900ft/movielite
 
-go 1.15
+go 1.13
 
 require (
 	github.com/PaesslerAG/gval v1.1.0 // indirect
