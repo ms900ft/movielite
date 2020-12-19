@@ -29,7 +29,7 @@ var scanFlags = []cli.Flag{
 // startAction start the web server and initializes the daemon
 func scanAction(ctx *cli.Context) error {
 
-	conf := movielite.GetConfig()
+	conf := movielite.GetConfig(ctx.GlobalString("config"))
 
 	w := movielite.Walker{Config: conf}
 	err := w.Run(directory)

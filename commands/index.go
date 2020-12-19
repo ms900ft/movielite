@@ -26,7 +26,7 @@ var indexFlags = []cli.Flag{
 // startAction start the web server and initializes the daemon
 func indexAction(ctx *cli.Context) error {
 
-	conf := movielite.GetConfig()
+	conf := movielite.GetConfig(ctx.GlobalString("config"))
 	db := models.ConnectDataBase(conf.DataBase)
 	tx := db.Begin()
 	defer tx.Close()

@@ -15,27 +15,21 @@ import (
 )
 
 // StartCommand is used to register the start cli command
+
 var StartCommand = cli.Command{
 	Name:  "start",
 	Usage: "Starts web server",
-	//Flags:   startFlags,
+	//Flags:  startFlags,
 	Action: startAction,
 }
 
-var startFlags = []cli.Flag{
-	// cli.BoolFlag{
-	// 	Name:  "detach-server, d",
-	// 	Usage: "detach from the console (daemon mode)",
-	//	},
-}
 var (
 	g errgroup.Group
 )
 
 // startAction start the web server and initializes the daemon
 func startAction(ctx *cli.Context) error {
-
-	conf := movielite.GetConfig()
+	conf := movielite.GetConfig(ctx.GlobalString("config"))
 	a := movielite.Service{Config: conf}
 	w := movielite.Walker{Config: conf}
 

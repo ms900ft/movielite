@@ -1,7 +1,10 @@
 package movielite
 
 import (
+	"bufio"
 	"fmt"
+	"log"
+	"os"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -22,7 +25,7 @@ type Config struct {
 	ServerURL       string
 }
 
-func GetConfig() *Config {
+func GetConfig(path string) *Config {
 	viper.SetConfigName("movielite")
 	viper.AddConfigPath(".")
 	viper.SetConfigType("yaml")
@@ -36,10 +39,18 @@ func GetConfig() *Config {
 	viper.SetDefault("Mode", "prod")
 	viper.SetDefault("DataBase.DBname", "./movielite.db")
 	viper.SetDefault("TMDB.ImageDir", "./images")
+	if path != "" {
+		file, err := os.Open(path)
+		if err != nil {
+			log.Fatalf("cannot read config file %s: %s", path, err)
+		}
 
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil {             // Handle errors reading the config file
-		fmt.Printf("error reading config file: %s", err)
+		viper.ReadConfig(bufio.NewReader(file))
+	} else {
+		err := viper.ReadInConfig() // Find and read the config file
+		if err != nil {             // Handle errors reading the config file
+			fmt.Printf("error reading config file: %s", err)
+		}
 	}
 	viper.AutomaticEnv()
 	replacer := strings.NewReplacer(".", "_")
