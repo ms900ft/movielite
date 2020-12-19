@@ -19,3 +19,10 @@ You can specify local directories watched for new movies. If new movies found me
 * Download movies
 * Move movies to desired directory
 
+## Getting Started (Demo)
+- Clone the Repository
+- Run in this directory: docker-compose up
+- Goto http://localhost:8000/movie2/
+You will see some example data without media files.
+## Installation
+- Get the API Key from https://developers.themoviedb.org/3/

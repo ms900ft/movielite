@@ -30,5 +30,6 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /
 COPY --from=builder /go/src/github.com/ms900ft/movielite/movielite .
 #COPY --from=nodebuilder /movieui/dist /dist
-COPY Docker/movielite.yaml .
+COPY movielite.yaml.tmpl movielite.yaml
+COPY example/movielite.db example/
 CMD ["./movielite", "start"]
