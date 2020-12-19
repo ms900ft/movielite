@@ -44,16 +44,16 @@ func (s *Service) UserMiddleWare(c *gin.Context) {
 	var user models.User
 	if err := db.Where("user_name  = ?", username).First(&user).Error; err != nil {
 		//c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
-		return
+		log.Debugf("no user found %s", err)
 	}
 
 	s.User = &user
 	//err = user.get(db)
 	//c.Set("username", username)
 	//c.Set("user", user)
-	if err != nil {
-		log.Debugf("no user found %s", err)
-	}
+	// if err != nil {
+	// 	log.Debugf("no user found %s", err)
+	// }
 
 	// Pass on to the next-in-chain
 	c.Next()
