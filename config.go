@@ -33,9 +33,13 @@ func GetConfig() *Config {
 	viper.SetDefault("language", "de-DE")
 	viper.SetDefault("Port", 8000)
 	viper.SetDefault("TMDB.ImageURL", "https://image.tmdb.org/t/p")
+	viper.SetDefault("Mode", "prod")
+	viper.SetDefault("DataBase.DBname", "./movielite.db")
+	viper.SetDefault("TMDB.ImageDir", "./images")
+
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
-		panic(fmt.Errorf("error config file: %s", err))
+		fmt.Printf("error reading config file: %s", err)
 	}
 	viper.AutomaticEnv()
 	replacer := strings.NewReplacer(".", "_")

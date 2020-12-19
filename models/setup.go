@@ -10,7 +10,7 @@ func ConnectDataBase(dbname string) *gorm.DB {
 	database, err := gorm.Open("sqlite3", dbname)
 	//database.LogMode(true)
 	if err != nil {
-		panic("Failed to connect to database! " + dbname)
+		log.Panicf("Failed to connect to database! %s: %s", dbname, err)
 	}
 
 	database.AutoMigrate(&User{}, &File{}, &Movie{}, &MovieSearchResults{}, &MovieShort{},

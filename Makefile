@@ -22,6 +22,11 @@ static:
 serve:
 	$(MAKE) -C movieui serve
 
+clean:
+	rm -f $(APP)
+	rm -f statik/*
+	$(MAKE) -C movieui clean
+
 
 staticbuild:
 	$(MAKE) static
@@ -35,6 +40,9 @@ lint:
 
 install:
 	go install  ./...
+
+npminstall:
+	$(MAKE) -C movieui install
 
 deploy: build
 	 			scp "./${APP}" nudel:/Users/ms/movielite
