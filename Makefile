@@ -2,6 +2,8 @@ APP=movielite
 HELPER=vlc_helper
 WATCH_FILES= find . -type f -not -path '*/\.*' | grep -i '.*[.]go\|html$$' 2> /dev/null
 
+all:
+	$(MAKE) staticbuild
 
 test:
 	go test --tags "fts5" $(test)
@@ -30,7 +32,7 @@ clean:
 
 staticbuild:
 	$(MAKE) static
-	$(MAKE) install
+	$(MAKE) build
 
 runbuild:
 	go build ./...; ./${APP}

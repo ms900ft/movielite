@@ -2,7 +2,6 @@ package movielite
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -26,7 +25,7 @@ type Config struct {
 }
 
 func GetConfig(path string) *Config {
-	viper.SetConfigName("movielite")
+	viper.SetConfigName("movielite.yaml")
 	viper.AddConfigPath(".")
 	viper.SetConfigType("yaml")
 	// default values
@@ -49,7 +48,7 @@ func GetConfig(path string) *Config {
 	} else {
 		err := viper.ReadInConfig() // Find and read the config file
 		if err != nil {             // Handle errors reading the config file
-			fmt.Printf("error reading config file: %s", err)
+			log.Fatalf("error reading config file: %s", err)
 		}
 	}
 	viper.AutomaticEnv()
