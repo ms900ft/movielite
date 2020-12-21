@@ -73,5 +73,21 @@ WebDav: true
 
 
 
-```
+````
 ### Start server
+
+````
+./movielite start
+
+````
+ Now browse to the app at http://localhost:8000/movie2 .
+
+ If you use the default config a watcher is set on the directory **./example/movies**.
+ To add a new movie copy the movie in the watched folder.
+
+### Add your library
+The server must be running. To add you existing movies to movielite type
+`````
+movielite scan -d [directory to scan]
+
+`````
