@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Bios-Marcel/wastebasket"
 	"github.com/gammazero/workerpool"
 	"github.com/jinzhu/gorm"
 	"github.com/ryanbradynd05/go-tmdb"
@@ -399,14 +400,22 @@ func (m *Movie) AfterDelete(scope *gorm.Scope) (err error) {
 	}
 	_, e := os.Stat(m.File.FullPath)
 	if !os.IsNotExist(e) {
-		trashcan := viper.GetString("TrashCan")
-		log.Debugf("trash %s", trashcan)
-		if trashcan != "" && m.File.FullPath != "" {
-			log.Debugf("moving %s to trashcan", m.File.FullPath)
-			_, err = Trash(m.File.FullPath, trashcan)
-			if err != nil {
-				log.Error(err)
-				return err
+		trashcan := viper.GetBool("TrashCan")
+		if m.File.FullPath != "" {
+			if trashcan {
+				log.Debugf("moving %s to trashcan", m.File.FullPath)
+				err := wastebasket.Trash(m.File.FullPath)
+				if err != nil {
+					log.Error(err)
+					return err
+				}
+			} else {
+				log.Debugf("deleting movie %s", m.File.FullPath)
+				err := os.Remove(m.File.FullPath)
+				if err != nil {
+					log.Errorf("cannot delete file %s: %s", m.File.FullPath)
+					return err
+				}
 			}
 		}
 	}

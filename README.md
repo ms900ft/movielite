@@ -53,7 +53,7 @@ Language: "en-US"
 Database:
   Dbname: "./movielite.db"
 
-# Player to play movies default is vlc
+# Player to play movies default is vlc (optional)
 # Player: "QuickTime Player"
 
 
@@ -68,6 +68,9 @@ TargetDirectory: ./movies
 
 # URL of this server
 MovieServerUrl: http://localhost:8000
+
+# Use system trash instead of delete
+TrashCan: true
 
 #Watch here for new movies
 WatchDir: "./movies/new"

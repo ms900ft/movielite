@@ -326,7 +326,7 @@ func (s *Service) playMovie(c *gin.Context) {
 	}
 
 	dir := c.Query("showdir")
-	//open file on localhost
+	//works only on  macos
 	if dir != "" {
 		err := exec.Command("open", "-R", movie.File.FullPath).Start()
 		if err != nil {
