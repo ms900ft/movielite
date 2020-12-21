@@ -70,15 +70,11 @@ WatchDir: "./movies/new"
 
 # enable webdav (admin/test123)
 WebDav: true
-
-
-
 ````
 ### Start server
 
 ````
 ./movielite start
-
 ````
  Now browse to the app at http://localhost:8000/movie2 .
 
@@ -89,5 +85,4 @@ WebDav: true
 The server must be running. To add you existing movies to movielite type
 `````
 movielite scan -d [directory to scan]
-
 `````
