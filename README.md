@@ -68,6 +68,15 @@ MovieServerUrl: http://localhost:8000
 #Watch here for new movies
 WatchDir: "./movies/new"
 
+# Additional regex's to find movie name in filename
+# Key is only for debugging. Build in can be found in
+# models/files.go
+FilterRegEx:
+  OTR: ^(.+?)_\d{2}\.\d{2}\.\d{2}_\d{2}-\d{2}_
+  MT: ^.+?-(.+?)-\d+-\d+
+  MT_Zdf: ^.+?-(.+?)_-
+  MT_ZDF_SEASON: ^.+?-(.+?)_\((\d+)\)-\d+_\w+_\d+
+
 # enable webdav (admin/test123)
 WebDav: true
 ````
