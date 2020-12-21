@@ -22,6 +22,7 @@ type Config struct {
 	Watchdirectory  string
 	ScanDirectories []string
 	ServerURL       string
+	Player          string
 }
 
 func GetConfig(path string) *Config {
@@ -38,6 +39,8 @@ func GetConfig(path string) *Config {
 	viper.SetDefault("Mode", "prod")
 	viper.SetDefault("DataBase.DBname", "./movielite.db")
 	viper.SetDefault("TMDB.ImageDir", "./images")
+	viper.SetDefault("Player", "vlc")
+
 	if path != "" {
 		file, err := os.Open(path)
 		if err != nil {
@@ -69,5 +72,6 @@ func GetConfig(path string) *Config {
 	c.ScanDirectories = viper.GetStringSlice("Directories")
 	c.Watchdirectory = viper.GetString("WatchDir")
 	c.ServerURL = viper.GetString("MovieServerUrl")
+	c.Player = viper.GetString("Player")
 	return &c
 }

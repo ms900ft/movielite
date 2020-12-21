@@ -53,6 +53,10 @@ Language: "en-US"
 Database:
   Dbname: "./movielite.db"
 
+# Player to play movies default is vlc
+# Player: "QuickTime Player"
+
+
 TMDB:
   # Your API key. Without API key you can't get metadata from tmdb
   ApiKey: #add your api key

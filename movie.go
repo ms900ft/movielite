@@ -9,10 +9,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/ms900ft/movielite/models"
 	log "github.com/sirupsen/logrus"
 	"github.com/skratchdot/open-golang/open"
-
-	"github.com/ms900ft/movielite/models"
 )
 
 type UpdateMovie struct {
@@ -337,7 +336,7 @@ func (s *Service) playMovie(c *gin.Context) {
 		return
 	}
 
-	err := open.Start(movie.File.FullPath)
+	err := open.RunWith(movie.File.FullPath, s.Config.Player)
 	if err != nil {
 		log.Error(err)
 	}
