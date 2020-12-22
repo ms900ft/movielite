@@ -102,7 +102,7 @@ export default {
     },
     open (item) {
       this.$emit('closeModal')
-      this.$router.push('?person=' + item.ID)
+      this.$router.push('?person=' + item.ID + '&orderby=name')
       this.show = false
     },
     desc (item) {
