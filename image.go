@@ -6,13 +6,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ms900ft/movielite/models"
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/ms900ft/movielite/models"
 )
 
 func (s *Service) getMovieImages(c *gin.Context) {
@@ -33,8 +33,10 @@ func (s *Service) getImage(c *gin.Context) {
 	size := c.Param("size")
 	image := c.Param("image")
 	url := fmt.Sprintf("%s/%s/%s", imageURL, size, image)
-	imagedir := fmt.Sprintf("%s/%s/%s/%s", imageDir, size, image[0:1], image[1:2])
-	imagepath := fmt.Sprintf("%s/%s", imagedir, image)
+	//imagedir := fmt.Sprintf("%s/%s/%s/%s", imageDir, size, image[0:1], image[1:2])
+	imagedir := filepath.Join(imageDir, size, image[0:1], image[1:2])
+	//imagepath := fmt.Sprintf("%s/%s", imagedir, image)
+	imagepath := filepath.Join(imagedir, image)
 	//check cache
 	if _, err := os.Stat(imagepath); os.IsNotExist(err) {
 		client := models.HttpClient

@@ -5,11 +5,10 @@ import (
 	"os"
 	"testing"
 
+	"github.com/ms900ft/movielite/models"
 	log "github.com/sirupsen/logrus"
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
-
-	"github.com/ms900ft/movielite/models"
 )
 
 func TestMain(m *testing.M) {
@@ -118,8 +117,9 @@ func TestMovieFile(t *testing.T) {
 			Put("/api/file/2/move/tomove").
 			Expect(t).
 			Status(http.StatusOK).
-			Assert(jsonpath.Contains(`$.FullPath`, "./testdata/tomove/move.mp4")).
-			End()
+			Assert(jsonpath.Contains(`$.FullPath`, "testdata/tomove/move.mp4")).
+		//	Assert(jsonpath.Contains(`$`, "./testdata/tomove/move.mp4")).
+		End()
 	err := os.Rename("./testdata/tomove/move.mp4", "./testdata/move.mp4")
 	if err != nil {
 		t.Fatal(err)

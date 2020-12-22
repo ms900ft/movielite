@@ -1,13 +1,12 @@
 package movielite
 
 import (
-	"fmt"
 	"net/http"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
-
 	"github.com/ms900ft/movielite/models"
+	log "github.com/sirupsen/logrus"
 )
 
 type FileInput struct {
@@ -132,7 +131,7 @@ func (s *Service) moveFile(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "record not found"})
 		return
 	}
-	newDir := fmt.Sprintf("%s/%s", s.Config.TargetDir, dir)
+	newDir := filepath.Join(s.Config.TargetDir, dir)
 	newpath, err := file.Move(newDir)
 	if err != nil {
 		log.Error("move file:  " + err.Error())

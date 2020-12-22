@@ -413,7 +413,7 @@ func (m *Movie) AfterDelete(scope *gorm.Scope) (err error) {
 				log.Debugf("deleting movie %s", m.File.FullPath)
 				err := os.Remove(m.File.FullPath)
 				if err != nil {
-					log.Errorf("cannot delete file %s: %s", m.File.FullPath)
+					log.Errorf("cannot delete file %s: %s", m.File.FullPath, err)
 					return err
 				}
 			}

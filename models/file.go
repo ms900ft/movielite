@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -73,16 +74,14 @@ func (f *File) Move(dir string) (string, error) {
 	//target := viper.GetString("TargetDirectory")
 	var newpath string
 	if stat, err := os.Stat(dir); err == nil && stat.IsDir() {
-		//	newpath = fmt.Sprintf("%s/%s/%s", target, dir, f.FileName)
-		newpath = fmt.Sprintf("%s/%s", dir, f.FileName)
+		newpath = filepath.Join(dir, f.FileName)
 		err = os.Rename(f.FullPath, newpath)
 		if err != nil {
 			return "", fmt.Errorf("%s: %s", dir, err)
 		}
-		// path is a directory
 
 	} else {
-		return "", err
+		return "", fmt.Errorf("path %s is not a directory", newpath)
 	}
 	return newpath, nil
 }
