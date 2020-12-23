@@ -6,6 +6,7 @@ require (
 	github.com/Bios-Marcel/wastebasket v0.0.0-20190304193457-ba788b19da79
 	github.com/PaesslerAG/gval v1.1.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/gammazero/deque v0.0.0-20201010052221-3932da5530cc // indirect
 	github.com/gammazero/workerpool v1.1.1
@@ -36,7 +37,7 @@ require (
 	github.com/steinfletcher/apitest-jsonpath v1.6.0
 	github.com/ugorji/go v1.2.0 // indirect
 	github.com/urfave/cli v1.22.5
-	golang.org/x/crypto v0.0.0-20201124201722-c8d3bf9c5392 // indirect
+	golang.org/x/crypto v0.0.0-20201124201722-c8d3bf9c5392
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 	golang.org/x/sys v0.0.0-20201126233918-771906719818 // indirect

@@ -2,16 +2,18 @@ package movielite
 
 import (
 	"github.com/gin-gonic/contrib/expvar"
+	_ "github.com/ms900ft/movielite/statik"
 	"github.com/rakyll/statik/fs"
 	log "github.com/sirupsen/logrus"
-
-	_ "github.com/ms900ft/movielite/statik"
 )
 
 func (a *Service) initializeRoutes() {
 	api := a.Router.Group("/api")
 	api.Use(CORSMiddleware())
 	api.Use(a.UserMiddleWare)
+
+	api.POST("/login", a.login)
+
 	api.GET("/file", a.getFiles)
 
 	api.POST("/file", a.addFile)
