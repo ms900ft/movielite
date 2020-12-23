@@ -8,11 +8,11 @@ import (
 )
 
 func (a *Service) initializeRoutes() {
+	a.Router.Use(CORSMiddleware())
+	a.Router.POST("/login", a.login)
 	api := a.Router.Group("/api")
-	api.Use(CORSMiddleware())
-	api.Use(a.UserMiddleWare)
-
-	api.POST("/login", a.login)
+	//	api.Use(CORSMiddleware())
+	api.Use(a.JwtVerify)
 
 	api.GET("/file", a.getFiles)
 

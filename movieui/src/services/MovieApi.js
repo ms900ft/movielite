@@ -1,5 +1,6 @@
 import axios from 'axios'
 import _ from 'lodash'
+import authHeader from './auth-header'
 // axios.defaults.withCredentials = true
 export default {
 
@@ -14,43 +15,46 @@ export default {
     })
 
     const queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&')
-    const response = await axios.get('movie?' + queryString)
+    const response = await axios.get('movie?' + queryString, { headers: authHeader() })
     // console.log(response)
     return response.data
   },
 
   fetchSingleMovie (id) {
-    return axios.get('movie/' + id)
+    return axios.get('movie/' + id, { headers: authHeader() })
       .then(response => {
         return response.data
       })
   },
   moveMovie (movie, where) {
-    return axios.put('file/' + movie.file_id + '/move/' + encodeURIComponent(where))
+    return axios.put('file/' + movie.file_id + '/move/' + encodeURIComponent(where), { headers: authHeader() })
       .then(response => {
         return response.data
       })
   },
   addMeta (movie, metaid) {
-    return axios.put('movie/' + movie.id + '/addMeta/' + metaid, movie)
+    return axios.put('movie/' + movie.id + '/addMeta/' + metaid, movie, { headers: authHeader() })
       .then(response => {
         return response.data
       })
   },
   async fetchGenres () {
-    const response = await axios.get('genre')
+    const response = await axios.get('genre', { headers: authHeader() })
     return response
   },
   async fetchCountries () {
-    const response = await axios.get('country')
+    console.log('xxx---------------------------------')
+    console.log(authHeader())
+    console.log('------------------------------------')
+    const response = await axios.get('country', { headers: authHeader() })
     return response
   },
   async fetchTargets () {
-    const response = await axios.get('targets')
+    const response = await axios.get('targets', { headers: authHeader() })
     return response
   },
   async fetchUsers () {
-    const response = await axios.get('user')
+    const response = await axios.get('user', { headers: authHeader() })
     return response
   },
   playLocal (item, args = {}) {
@@ -61,13 +65,13 @@ export default {
       })
   },
   updateMovie (item) {
-    return axios.put('movie/' + item.id, item)
+    return axios.put('movie/' + item.id, item, { headers: authHeader() })
       .then(response => {
         return response
       })
   },
   deleteMovie (item) {
-    return axios.delete('movie/' + item.id, item)
+    return axios.delete('movie/' + item.id, item, { headers: authHeader() })
       .then(response => {
         return response
       })

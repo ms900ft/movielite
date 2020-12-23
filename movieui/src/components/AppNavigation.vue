@@ -47,7 +47,7 @@
           ></keyboard>
         </div>
       </transition>
-
+<v-btn class="hidden-sm-and-down" flat exact @click.prevent="logOut">logout</v-btn>
       <menu-user class="hidden-sm-and-down"></menu-user>
 
       <v-chip outline dark style="color: white;">Results found: {{total()}}</v-chip>
@@ -104,6 +104,10 @@ export default {
     },
     total () {
       return this.$store.state.resultsFound
+    },
+    logOut () {
+      this.$store.dispatch('auth/logout')
+      this.$router.push('/login')
     }
   },
   computed: {
