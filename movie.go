@@ -3,13 +3,13 @@ package movielite
 import (
 	"fmt"
 	"net/http"
-	"os/exec"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/ms900ft/movielite/models"
+	"github.com/ms900ft/movielite/pkg/filemanager"
 	log "github.com/sirupsen/logrus"
 	"github.com/skratchdot/open-golang/open"
 )
@@ -328,9 +328,11 @@ func (s *Service) playMovie(c *gin.Context) {
 	dir := c.Query("showdir")
 	//works only on  macos
 	if dir != "" {
-		err := exec.Command("open", "-R", movie.File.FullPath).Start()
+		err := filemanager.ShowDir(movie.File.FullPath)
 		if err != nil {
 			log.Error(err)
+			c.JSON(http.StatusBadRequest, nil)
+			return
 		}
 		c.JSON(http.StatusNoContent, nil)
 		return
