@@ -102,9 +102,12 @@ func Setup() Service {
 	db := models.ConnectDataBase(":memory:")
 	s.DB = db
 	user := models.User{UserName: "marc"}
+
 	if err := db.Create(&user).Error; err != nil {
 		log.Fatal(err)
 	}
-	s.User = &user
+
+	token := models.Token{UserID: user.ID, Name: "marc"}
+	s.Token = &token
 	return s
 }

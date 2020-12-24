@@ -94,7 +94,7 @@ func (s *Service) getMovies(c *gin.Context) {
 	}
 
 	tx = tx.Joins("JOIN files on files.id=movies.file_id").
-		Joins("Left Join watchlists ON (movies.id = watchlists.movie_id AND watchlists.user_id = ?)", s.User.ID).
+		Joins("Left Join watchlists ON (movies.id = watchlists.movie_id AND watchlists.user_id = ?)", s.Token.UserID).
 		//Where("watchlists.user_id = ?", s.User.ID).
 		Where("is_tv = false")
 
@@ -114,7 +114,7 @@ func (s *Service) getMovies(c *gin.Context) {
 		tx = tx.Where("movies.movie_search_results_id > 0")
 	case q.Orderby == "recent":
 		tx = tx.Joins("LEFT JOIN recentlies on recentlies.movie_id = movies.id").
-			Where("recentlies.user_id = ?", s.User.ID)
+			Where("recentlies.user_id = ?", s.Token.UserID)
 	case q.Show == "unrated":
 		tx = tx.Where("rating = ?", 0)
 	case q.Show == "duplicate":
@@ -124,7 +124,7 @@ func (s *Service) getMovies(c *gin.Context) {
 	case q.Show == "nodesc":
 		tx = tx.Where("movies.tmdb_movie_id == 0")
 	case q.Show == "watchlist":
-		tx = tx.Where("watchlists.movie_id is not null AND watchlists.user_id = ?", s.User.ID)
+		tx = tx.Where("watchlists.movie_id is not null AND watchlists.user_id = ?", s.Token.UserID)
 	}
 	if q.Genre > 0 {
 		tx = tx.Where(`tmdb_movie_id in (SELECT id
@@ -291,7 +291,7 @@ func (s *Service) updateMovie(c *gin.Context) {
 		}
 	}
 	hasWatchlist := true
-	w := models.Watchlist{UserID: s.User.ID, MovieID: movie.ID}
+	w := models.Watchlist{UserID: s.Token.UserID, MovieID: movie.ID}
 	if db.Find(&w).First(&w).RecordNotFound() {
 		hasWatchlist = false
 	}
@@ -343,7 +343,7 @@ func (s *Service) playMovie(c *gin.Context) {
 		log.Error(err)
 	}
 
-	recently := models.Recently{MovieID: movie.ID, UserID: s.User.ID, LastPlayed: time.Now()}
+	recently := models.Recently{MovieID: movie.ID, UserID: s.Token.UserID, LastPlayed: time.Now()}
 	if err := db.Save(&recently).Error; err != nil {
 		content := gin.H{"error: ": "create" + err.Error()}
 		log.Error(content)

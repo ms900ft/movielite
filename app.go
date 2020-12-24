@@ -7,10 +7,9 @@ import (
 	"github.com/gammazero/workerpool"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/ms900ft/movielite/models"
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/ms900ft/movielite/models"
 )
 
 const (
@@ -22,7 +21,7 @@ const (
 type Service struct {
 	Router     *gin.Engine
 	DB         *gorm.DB
-	User       *models.User
+	Token      *models.Token
 	Config     *Config
 	WorkerPool *workerpool.WorkerPool
 	TMDBClient models.TMDBClients
