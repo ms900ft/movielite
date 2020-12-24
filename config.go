@@ -24,6 +24,7 @@ type Config struct {
 	ServerURL         string
 	Player            string
 	UseAuthentication bool
+	Secret            string
 }
 
 func GetConfig(path string) *Config {
@@ -75,5 +76,6 @@ func GetConfig(path string) *Config {
 	c.Watchdirectory = viper.GetString("WatchDir")
 	c.ServerURL = viper.GetString("MovieServerUrl")
 	c.Player = viper.GetString("Player")
+	c.Secret = viper.GetString("Secret")
 	return &c
 }

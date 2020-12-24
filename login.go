@@ -61,7 +61,7 @@ func (s *Service) FindOne(username, password string) (token, error) {
 
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 
-	tokenString, error := token.SignedString([]byte("secret"))
+	tokenString, error := token.SignedString([]byte(s.Config.Secret))
 	if error != nil {
 		fmt.Println(error)
 	}

@@ -79,7 +79,7 @@ func (s *Service) JwtVerify(c *gin.Context) {
 	tk := &models.Token{}
 
 	_, err := jwt.ParseWithClaims(reqToken, tk, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
+		return []byte(s.Config.Secret), nil
 	})
 
 	if err != nil {
