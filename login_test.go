@@ -1,14 +1,49 @@
 package movielite
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/jinzhu/gorm"
 	"github.com/ms900ft/movielite/models"
 	log "github.com/sirupsen/logrus"
+	"github.com/steinfletcher/apitest"
+	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 	"golang.org/x/crypto/bcrypt"
 )
 
+func TestLoginSuccess(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Post("/login").
+			JSON(`{"username":"test", "password": "test123"}`).
+			Expect(t).
+			Assert(jsonpath.Matches(`$.token`, `^ey.+$`)).
+			Assert(jsonpath.Contains(`$.user_name`, "test")).
+			Status(http.StatusOK).
+			End()
+}
+
+func TestLoginFailed(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Post("/login").
+			JSON(`{"username":"test", "password": "test"}`).
+			Expect(t).
+			Assert(jsonpath.Contains(`$.error`, InvalidCredentials.Error())).
+			Status(http.StatusBadRequest).
+			End()
+}
+func TestLoginInvalid(t *testing.T) {
+	apitest.New(). // configuration
+			Handler(S.Router).
+			Post("/login").
+			FormData("username", "test").
+			FormData("password", "test").
+			Expect(t).
+			Status(http.StatusBadRequest).
+			End()
+}
 func TestService_FindOne(t *testing.T) {
 	//c := Config{Secret: "test123"}
 	db := models.ConnectDataBase(":memory:")

@@ -18,20 +18,24 @@ type token struct {
 	Token    string `json:"token"`
 }
 
+type input struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 var (
 	InvalidCredentials = fmt.Errorf("invalid login credentials. Please try again")
 	NoSecretFound      = fmt.Errorf("no secret found")
 )
 
 func (s *Service) login(c *gin.Context) {
-
-	user := &models.User{}
-	err := json.NewDecoder(c.Request.Body).Decode(user)
+	in := input{}
+	err := json.NewDecoder(c.Request.Body).Decode(&in)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	token, err := s.FindOne(user.UserName, user.Password)
+	token, err := s.FindOne(in.Username, in.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

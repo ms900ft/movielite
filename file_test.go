@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func TestMain(m *testing.M) {
@@ -23,7 +24,8 @@ func TestMain(m *testing.M) {
 	if err := file.Create(S.DB, S.TMDBClient); err != nil {
 		log.Fatal("can't create second movie " + err.Error())
 	}
-	user := models.User{UserName: "test"}
+	pass, _ := bcrypt.GenerateFromPassword([]byte("test123"), bcrypt.DefaultCost)
+	user := models.User{UserName: "test", Password: string(pass)}
 	if err := S.DB.Create(&user).Error; err != nil {
 		log.Fatal("can't create first movie " + err.Error())
 	}

@@ -10,6 +10,7 @@ import (
 	"github.com/ms900ft/movielite/models"
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type MockTMDBClient struct{}
@@ -102,7 +103,8 @@ func Setup() Service {
 	models.HttpClient = &http.Client{}
 	db := models.ConnectDataBase(":memory:")
 	s.DB = db
-	user := models.User{UserName: "marc"}
+	pass, _ := bcrypt.GenerateFromPassword([]byte("test123"), bcrypt.DefaultCost)
+	user := models.User{UserName: "marc", Password: string(pass)}
 
 	if err := db.Create(&user).Error; err != nil {
 		log.Fatal(err)
