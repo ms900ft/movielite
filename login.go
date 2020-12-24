@@ -18,6 +18,11 @@ type token struct {
 	Token    string `json:"token"`
 }
 
+const (
+	InvalidCredentials = "invalid login credentials. Please try again"
+	NoSecretFound      = "no secret found"
+)
+
 func (s *Service) login(c *gin.Context) {
 
 	user := &models.User{}
@@ -40,14 +45,14 @@ func (s *Service) FindOne(username, password string) (token, error) {
 	resp := token{}
 
 	if err := db.Where("user_name = ?", username).First(user).Error; err != nil {
-		log.Debug(err)
-		return resp, fmt.Errorf("user %s not found", username)
+		log.Errorf("user %s not found", username)
+		return resp, fmt.Errorf(InvalidCredentials)
 	}
 	expiresAt := time.Now().Add(time.Minute * 100000).Unix()
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil { //Password does not match!
 		log.Debug(err)
-		var err = fmt.Errorf("Invalid login credentials. Please try again %s", err)
+		var err = fmt.Errorf(InvalidCredentials)
 		return resp, err
 	}
 
@@ -60,10 +65,13 @@ func (s *Service) FindOne(username, password string) (token, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-
-	tokenString, error := token.SignedString([]byte(s.Config.Secret))
-	if error != nil {
-		fmt.Println(error)
+	if s.Config.Secret == "" {
+		return resp, fmt.Errorf(NoSecretFound)
+	}
+	tokenString, err := token.SignedString([]byte(s.Config.Secret))
+	if err != nil {
+		fmt.Println(err)
+		return resp, err
 	}
 
 	resp.Token = tokenString
