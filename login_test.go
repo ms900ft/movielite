@@ -30,7 +30,7 @@ func TestService_FindOne(t *testing.T) {
 		fields  fields
 		args    args
 		want    token
-		wantErr string
+		wantErr error
 	}{
 		{
 			name: "success",
@@ -38,7 +38,7 @@ func TestService_FindOne(t *testing.T) {
 				Config: &Config{Secret: "test123"}, DB: db},
 			args:    args{username: "login", password: "test123"},
 			want:    token{UserName: "login"},
-			wantErr: "",
+			wantErr: nil,
 		},
 		{
 			name: "wrong password",
@@ -74,7 +74,7 @@ func TestService_FindOne(t *testing.T) {
 			}
 			got, err := s.FindOne(tt.args.username, tt.args.password)
 			if err != nil {
-				if err.Error() != tt.wantErr {
+				if err != tt.wantErr {
 					t.Errorf("Service.FindOne() error = %v, wantErr %v", err, tt.wantErr)
 				}
 				return
