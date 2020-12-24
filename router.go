@@ -12,8 +12,9 @@ func (a *Service) initializeRoutes() {
 	a.Router.POST("/login", a.login)
 	api := a.Router.Group("/api")
 	//	api.Use(CORSMiddleware())
-	api.Use(a.JwtVerify)
-
+	if a.Config.UseAuthentication {
+		api.Use(a.JwtVerify)
+	}
 	api.GET("/file", a.getFiles)
 
 	api.POST("/file", a.addFile)

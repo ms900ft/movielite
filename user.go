@@ -3,15 +3,16 @@ package movielite
 import (
 	"net/http"
 
-	"github.com/ms900ft/movielite/models"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/ms900ft/movielite/models"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserInput struct {
 	UserName string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 func (s *Service) getUsers(c *gin.Context) {
@@ -44,8 +45,13 @@ func (s *Service) createUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	pass, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, err)
+	}
 
-	user := models.User{UserName: input.UserName}
+	user := models.User{UserName: input.UserName, Password: string(pass)}
 
 	if err := db.Create(&user).Error; gorm.IsRecordNotFoundError(err) {
 		content := gin.H{"error: ": "create" + err.Error()}
@@ -64,7 +70,11 @@ func (s *Service) updateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	pass, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, err)
+	}
 	var user models.User
 	if err := db.Where("id = ?", c.Param("id")).First(&user).Error; err != nil {
 		log.Errorf("user not found: %s", err)
@@ -73,7 +83,7 @@ func (s *Service) updateUser(c *gin.Context) {
 	}
 
 	// Validate input
-
+	input.Password = string(pass)
 	if err := db.Model(&user).Updates(input).Error; err != nil {
 		log.Errorf("user update error: %s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})

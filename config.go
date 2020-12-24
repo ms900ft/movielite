@@ -10,19 +10,20 @@ import (
 )
 
 type Config struct {
-	Port            int
-	Mode            string
-	TMDBImageDir    string
-	TMDBImageURL    string
-	TMDBApiKey      string
-	TargetDir       string
-	SQLDebug        bool
-	DataBase        string
-	WebDav          bool
-	Watchdirectory  string
-	ScanDirectories []string
-	ServerURL       string
-	Player          string
+	Port              int
+	Mode              string
+	TMDBImageDir      string
+	TMDBImageURL      string
+	TMDBApiKey        string
+	TargetDir         string
+	SQLDebug          bool
+	DataBase          string
+	WebDav            bool
+	Watchdirectory    string
+	ScanDirectories   []string
+	ServerURL         string
+	Player            string
+	UseAuthentication bool
 }
 
 func GetConfig(path string) *Config {
@@ -40,6 +41,7 @@ func GetConfig(path string) *Config {
 	viper.SetDefault("DataBase.DBname", "./movielite.db")
 	viper.SetDefault("TMDB.ImageDir", "./images")
 	viper.SetDefault("Player", "vlc")
+	viper.SetDefault("UseAuthentication", true)
 
 	if path != "" {
 		file, err := os.Open(path)

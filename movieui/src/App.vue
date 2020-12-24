@@ -1,6 +1,6 @@
 <template>
   <v-app class="main">
-    <app-navigation></app-navigation>
+    <app-navigation v-if="currentUser"></app-navigation>
     <v-content class="content">
       <router-view></router-view>
     </v-content>
@@ -33,6 +33,9 @@ export default {
   computed: {
     dataAvailable () {
       return this.searchString !== null && this.searchString !== ''
+    },
+    currentUser () {
+      return this.$store.state.auth.user
     }
   }
 }

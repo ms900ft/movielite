@@ -7,10 +7,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ms900ft/movielite/models"
 	"github.com/ryanbradynd05/go-tmdb"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/ms900ft/movielite/models"
 )
 
 type MockTMDBClient struct{}
@@ -96,6 +95,7 @@ func Setup() Service {
 	c.Mode = "testing"
 	c.TargetDir = "./testdata"
 	c.TMDBImageDir = "/tmp/test"
+	c.UseAuthentication = false
 	s := Service{Config: &c}
 	s.TMDBClient = &MockTMDBClient{}
 	models.HttpClient = &http.Client{}
