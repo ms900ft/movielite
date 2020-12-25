@@ -77,5 +77,6 @@ func GetConfig(path string) *Config {
 	c.ServerURL = viper.GetString("MovieServerUrl")
 	c.Player = viper.GetString("Player")
 	c.Secret = viper.GetString("Secret")
+	c.UseAuthentication = viper.GetBool("UseAuthentication")
 	return &c
 }

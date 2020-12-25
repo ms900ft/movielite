@@ -72,7 +72,7 @@ func (s *Service) JwtVerify(c *gin.Context) {
 		//Token is missing, returns with error code 403 Unauthorized
 		//w.WriteHeader(http.StatusForbidden)
 		//json.NewEncoder(w).Encode(Exception{Message: "Missing auth token"})
-		c.JSON(http.StatusForbidden, gin.H{"Message": "Missing auth token"})
+		c.JSON(http.StatusUnauthorized, gin.H{"Message": "Missing auth token"})
 		c.Abort()
 		return
 	}
@@ -83,7 +83,7 @@ func (s *Service) JwtVerify(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"Message": err.Error()})
+		c.JSON(http.StatusUnauthorized, gin.H{"Message": err.Error()})
 		c.Abort()
 		return
 	}
@@ -94,6 +94,7 @@ func (s *Service) JwtVerify(c *gin.Context) {
 		log.Debugf("no user found %s", err)
 	}
 	s.Token = tk
+	//spew.Dump(tk)
 	// ctx := context.WithValue(r.Context(), "user", tk)
 	// next.ServeHTTP(w, r.WithContext(ctx))
 	c.Next()

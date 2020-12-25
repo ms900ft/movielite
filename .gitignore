@@ -4,3 +4,5 @@ movielite.yaml
 statik/statik.go
 movielite
 vlc_helper
+vetur.config.js
+jsconfig.json
