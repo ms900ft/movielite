@@ -1,7 +1,18 @@
 import axios from 'axios'
 import _ from 'lodash'
 import authHeader from './auth-header'
-// axios.defaults.withCredentials = true
+
+axios.interceptors.response.use(function (response) {
+  return response
+}, function (error) {
+  console.log(error.response.data)
+  if (error.response.status === 401) {
+    localStorage.removeItem('user')
+    window.location.href = '/login'
+  }
+  return Promise.reject(error)
+})
+
 export default {
 
   async fetchMovieCollection (vue, args) {
@@ -43,9 +54,6 @@ export default {
     return response
   },
   async fetchCountries () {
-    console.log('xxx---------------------------------')
-    console.log(authHeader())
-    console.log('------------------------------------')
     const response = await axios.get('country', { headers: authHeader() })
     return response
   },
