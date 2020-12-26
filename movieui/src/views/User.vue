@@ -22,7 +22,7 @@
         <v-list two-line subheader>
 
           <v-list-tile
-            v-for="item in Users"
+            v-for="(item,index) in Users"
             :key="item.id"
             avatar
 
@@ -38,7 +38,7 @@
 
             <v-list-tile-action>
               <v-btn icon delete>
-                <v-icon color="grey lighten-1">delete</v-icon>
+                <v-icon color="grey lighten-1" @click="deleteUser(item,index)">delete</v-icon>
               </v-btn>
                </v-list-tile-action>
                   <v-list-tile-action>
@@ -92,27 +92,19 @@ export default {
     }
   },
   methods: {
-    handleRegister () {
-      this.message = ''
-      this.submitted = true
-      this.$validator.validate().then(isValid => {
-        if (isValid) {
-          this.$store.dispatch('auth/register', this.user).then(
-            data => {
-              this.message = data.message
-              this.successful = true
-            },
-            error => {
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString()
-              this.successful = false
-            }
-          )
-        }
-      })
+    deleteUser (item, index) {
+      movieApi
+        .deleteUser(item)
+        .then((response) => {
+          this.loading = false
+          // this.user = {}
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+      this.$delete(this.Users, index)
     }
+
   }
 }
 </script>

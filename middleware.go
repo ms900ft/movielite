@@ -63,7 +63,11 @@ func CORSMiddleware() gin.HandlerFunc {
 func (s *Service) JwtVerify(c *gin.Context) {
 
 	var header = c.Request.Header.Get("authorization") //Grab the token from the header
-
+	if header == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"Message": "Missing auth header"})
+		c.Abort()
+		return
+	}
 	reqToken := strings.TrimSpace(header)
 	splitToken := strings.Split(reqToken, "Bearer ")
 	reqToken = splitToken[1]

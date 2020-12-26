@@ -135,6 +135,7 @@ export default {
           .addUser(this.user)
           .then((response) => {
             this.loading = false
+            this.user = {}
           })
           .catch((error) => {
             console.log(error)

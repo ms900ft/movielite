@@ -89,6 +89,11 @@ export default {
       .then(response => {
         return response
       })
+  },
+  deleteUser (item) {
+    return axios.delete('user/' + item.id, { headers: authHeader() })
+      .then(response => {
+        return response
+      })
   }
-
 }
