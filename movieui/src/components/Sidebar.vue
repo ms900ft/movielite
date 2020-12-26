@@ -60,8 +60,7 @@ export default {
       items: [
         { title: 'Home', icon: 'home', to: '/?orderby=name' },
         { title: 'Watchlist', icon: 'star', to: '?show=watchlist' },
-        { title: 'Recently', icon: 'star', to: '?orderby=recent' },
-        { title: 'Admin', icon: 'user', to: '/user' }
+        { title: 'Recently', icon: 'star', to: '?orderby=recent' }
       ]
     }
   },

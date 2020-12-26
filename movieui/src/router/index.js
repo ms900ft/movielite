@@ -2,7 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import ListMovie from '@/components/ListMovie'
 import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
+import User from '../views/User.vue'
+
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 
 Vue.use(VueRouter)
 
@@ -26,8 +31,8 @@ export const router = new VueRouter({
     component: Login
   },
   {
-    path: '/register',
-    component: Register
+    path: '/user',
+    component: User
   }
   ],
   mode: 'history',

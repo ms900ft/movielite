@@ -83,6 +83,12 @@ export default {
       .then(response => {
         return response
       })
+  },
+  addUser (item) {
+    return axios.post('user', item, { headers: authHeader() })
+      .then(response => {
+        return response
+      })
   }
 
 }

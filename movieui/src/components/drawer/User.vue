@@ -8,9 +8,9 @@
     </template>
 
     <v-list>
-      <v-list-tile v-for="(item, index) in Users" :key="index" @click="changeUser(item)">
+      <v-list-tile v-for="(item, index) in items" :key="index" @click="gotoItem(item)">
         <v-list-tile-action></v-list-tile-action>
-        <v-list-tile-title>{{ item.UserName }}</v-list-tile-title>
+        <v-list-tile-title>{{ item.name }}</v-list-tile-title>
       </v-list-tile>
     </v-list>
   </v-list-group>
@@ -26,11 +26,16 @@ export default {
   data () {
     return {
       Users: [],
-      User: 'Users'
+      User: 'Users',
+      items: [
+        { name: 'Show User', to: '/user' }
+        // { name: 'No Title', to: '/?show=notitle' },
+        // { name: 'Duplicates', to: '/?show=duplicate&orderby=name' }
+      ]
     }
   },
   mounted () {
-    this.User = VueCookies.get('movieuser')
+    this.User = this.$store.state.auth.user.user_name
     movieApi
       .fetchUsers()
       .then(response => {
@@ -46,6 +51,9 @@ export default {
       this.User = item.UserName
       VueCookies.set('movieuser', this.User, '365d')
       this.$router.go(this.$router.currentRoute)
+    },
+    gotoItem (item) {
+      this.$router.push(item.to)
     }
   }
 }

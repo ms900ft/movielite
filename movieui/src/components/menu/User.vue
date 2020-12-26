@@ -27,7 +27,7 @@ export default {
     }
   },
   mounted () {
-    this.User = VueCookies.get('movieuser')
+    this.User = this.$store.state.auth.user.user_name
     movieApi
       .fetchUsers()
       .then(response => {
