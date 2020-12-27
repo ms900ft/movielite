@@ -10,7 +10,7 @@
         </button>
       </form>
     </div>
-    <div class="row">
+    <div >
       <p class="editable text-area" v-if="!isEditMode" @click="toggleEdit">{{text}}</p>
     </div>
   </div>
