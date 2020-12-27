@@ -95,5 +95,11 @@ export default {
       .then(response => {
         return response
       })
+  },
+  updateUser (item) {
+    return axios.put('user/' + item.id, item, { headers: authHeader() })
+      .then(response => {
+        return response
+      })
   }
 }

@@ -1,55 +1,63 @@
 <template>
-
   <v-layout row>
-    <add-user
-    v-show=ShowAdd
-    v-model=ShowAdd
-    >
-    </add-user>
+    <add-user v-show="ShowAdd" v-model="ShowAdd"> </add-user>
     <v-flex xs12 sm6 offset-sm3>
-      <v-card>
-        <v-toolbar color="white" >
+      <v-form>
+        <v-card>
+          <v-toolbar color="white">
+            <v-toolbar-title>Users</v-toolbar-title>
 
-          <v-toolbar-title>Users</v-toolbar-title>
+            <v-spacer></v-spacer>
 
-          <v-spacer></v-spacer>
+            <v-btn icon>
+              <v-icon @click="ShowAdd = !ShowAdd">add</v-icon>
+            </v-btn>
+          </v-toolbar>
 
-          <v-btn icon>
-            <v-icon @click="ShowAdd=!ShowAdd">add</v-icon>
-          </v-btn>
-        </v-toolbar>
+          <v-list two-line subheader>
+            <v-list-tile v-for="(item, index) in Users" :key="item.id" avatar>
+              <v-list-tile-avatar>
+                <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon>
+              </v-list-tile-avatar>
 
-        <v-list two-line subheader>
-
-          <v-list-tile
-            v-for="(item,index) in Users"
-            :key="item.id"
-            avatar
-
-          >
-            <v-list-tile-avatar>
-              <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon>
-            </v-list-tile-avatar>
-
-            <v-list-tile-content>
-              <v-list-tile-title>{{ item.UserName }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-
-            <v-list-tile-action>
-              <v-btn icon delete>
-                <v-icon color="grey lighten-1" @click="deleteUser(item,index)">delete</v-icon>
-              </v-btn>
-               </v-list-tile-action>
-                  <v-list-tile-action>
-               <v-btn icon edit>
-                <v-icon color="grey lighten-1">edit</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
-
-        </v-list>
-      </v-card>
+              <v-list-tile-content>
+                <v-text-field
+                  v-model="item.UserName"
+                  label="Username"
+                  v-bind:disabled="!(edit == index)"
+                ></v-text-field>
+              </v-list-tile-content>
+              <v-list-tile-content>
+                <v-text-field
+                  v-if="edit == index"
+                  v-model="item.password"
+                  label="Password"
+                  type="password"
+                />
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-btn icon delete>
+                  <v-icon
+                    color="grey lighten-1"
+                    @click="deleteUser(item, index)"
+                    >delete</v-icon
+                  >
+                </v-btn>
+              </v-list-tile-action>
+              <v-list-tile-action>
+                <v-btn icon edit>
+                  <v-icon v-if="edit==index" color="grey lighten-1" @click="updateUser(item)"
+                    >save</v-icon
+                  >
+                  <v-icon v-else color="grey lighten-1" @click="edit = index"
+                    >edit</v-icon
+                  >
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list>
+        </v-card>
+      </v-form>
     </v-flex>
   </v-layout>
 </template>
@@ -68,6 +76,8 @@ export default {
       Users: [],
       User: 'Users',
       ShowAdd: false,
+      edit: -1,
+
       items: [
         { name: 'Show User', to: '/user' }
         // { name: 'No Title', to: '/?show=notitle' },
@@ -95,16 +105,27 @@ export default {
     deleteUser (item, index) {
       movieApi
         .deleteUser(item)
-        .then((response) => {
+        .then(response => {
           this.loading = false
           // this.user = {}
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
       this.$delete(this.Users, index)
+    },
+    updateUser (item, index) {
+      movieApi
+        .updateUser(item)
+        .then(response => {
+          this.loading = false
+          // this.user = {}
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      this.edit = undefined
     }
-
   }
 }
 </script>
