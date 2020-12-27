@@ -44,7 +44,7 @@ export default {
       return '/?country=' + item.iso_id
     },
     country (item) {
-      this.$router.push('?orderby=name&country=' + item.iso_id)
+      this.$router.push('/?orderby=name&country=' + item.iso_id)
     }
   }
 }
