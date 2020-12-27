@@ -22,6 +22,7 @@
         <drawer-genres></drawer-genres>
         <drawer-countries></drawer-countries>
         <drawer-work></drawer-work>
+        <drawer-users></drawer-users>
         <drawer-user></drawer-user>
       </v-list>
     </v-navigation-drawer>
@@ -33,13 +34,15 @@ import DrawerGenres from '@/components/drawer/Genres'
 import DrawerCountries from '@/components/drawer/Countries'
 import DrawerWork from '@/components/drawer/Work'
 import DrawerUser from '@/components/drawer/User'
+import DrawerUsers from '@/components/drawer/Users'
 
 export default {
   components: {
     DrawerGenres,
     DrawerCountries,
     DrawerWork,
-    DrawerUser
+    DrawerUser,
+    DrawerUsers
   },
   computed: {
     visible: {

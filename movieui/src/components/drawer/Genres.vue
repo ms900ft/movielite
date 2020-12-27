@@ -49,7 +49,7 @@ export default {
       return '/?genre=' + item.tmdb_id
     },
     genre (item) {
-      this.$router.push('?orderby=name&genre=' + item.tmdb_id)
+      this.$router.push('/?orderby=name&genre=' + item.tmdb_id)
     }
   }
 }
