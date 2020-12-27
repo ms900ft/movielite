@@ -22,5 +22,6 @@ func ConnectDataBase(dbname string) *gorm.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	return database
 }
