@@ -9,7 +9,7 @@
 
     <v-list>
       <v-flex v-for="(item, index) in orderedPersons" :key="index" >
-        <div class="row" style="margin-bottom: 10px">
+        <div class="rowreg" style="margin-bottom: 10px">
           <div class="rowsmall">
             <img
               :src="castimage(item.profile_path)"

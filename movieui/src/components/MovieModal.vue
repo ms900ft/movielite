@@ -85,12 +85,12 @@
           <div class="detail breakall">{{fullpath()}}</div>
         </div>
         <div v-if="movie.meta">
-          <div class="row">
+          <div class="rowreg">
             <div class="column  crew">Cast</div>
 
             <div class="column crew crewleft">Crew</div>
           </div>
-          <div v-if="movie.meta.Credits.Crew" class="row">
+          <div v-if="movie.meta.Credits.Crew" class="rowreg">
             <person-list :persons="movie.meta.Credits.Cast" type="cast" v-on:closeModal="close()"></person-list>
             <person-list class="crewleft" :persons="movie.meta.Credits.Crew" type="crew" v-on:closeModal="close()"></person-list>
           </div>
@@ -303,7 +303,7 @@ export default {
   margin-right: auto;
 }
 
-.row {
+.rowreg {
   display: flex;
   flex-direction: row;
 }
