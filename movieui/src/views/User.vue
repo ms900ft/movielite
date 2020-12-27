@@ -1,9 +1,14 @@
 <template>
   <v-layout row>
+
     <add-user v-show="ShowAdd" v-model="ShowAdd"> </add-user>
     <v-flex xs12 sm6 offset-sm3>
-      <v-form>
+           <v-alert :color="type" icon="check_circle" value="true" v-if="type">
+        User saved
+      </v-alert>
+      <v-form v-model="valid">
         <v-card>
+
           <v-toolbar color="white">
             <v-toolbar-title>Users</v-toolbar-title>
 
@@ -23,7 +28,11 @@
               <v-list-tile-content>
                 <v-text-field
                   v-model="item.UserName"
+                  key="'username_'+index"
+
                   label="Username"
+                  required
+                  :rules="nameRules"
                   v-bind:disabled="!(edit == index)"
                 ></v-text-field>
               </v-list-tile-content>
@@ -31,8 +40,11 @@
                 <v-text-field
                   v-if="edit == index"
                   v-model="item.password"
+                  key="'password_'+index"
                   label="Password"
                   type="password"
+                  :rules="passwdRules"
+                  required
                 />
               </v-list-tile-content>
               <v-list-tile-action>
@@ -45,11 +57,14 @@
                 </v-btn>
               </v-list-tile-action>
               <v-list-tile-action>
-                <v-btn icon edit>
-                  <v-icon v-if="edit==index" color="grey lighten-1" @click="updateUser(item)"
+                <v-btn icon edit >
+                  <v-icon v-if="edit==index && !valid"  color="grey lighten-1" @click="cancelUser(item)"
+                    >cancel</v-icon
+                  >
+                  <v-icon v-else-if="edit==index"   color="grey lighten-1" @click="updateUser(item)"
                     >save</v-icon
                   >
-                  <v-icon v-else color="grey lighten-1" @click="edit = index"
+                  <v-icon v-else color="grey lighten-1" @click="editUser(index)"
                     >edit</v-icon
                   >
                 </v-btn>
@@ -66,6 +81,7 @@
 // import User from '../models/user'
 import movieApi from '@/services/MovieApi'
 import AddUser from '@/components/dialog/AddUser'
+
 export default {
   name: 'User',
   components: {
@@ -77,24 +93,29 @@ export default {
       User: 'Users',
       ShowAdd: false,
       edit: -1,
+      valid: false,
+      type: null,
+      elapse: null,
 
+      nameRules: [
+        v => !!v || 'Name is required',
+        v => v.length <= 10 || 'Name must be less than 10 characters'
+      ],
+      passwdRules: [
+        v => !!v || 'Password is required',
+        v => (v && v.length >= 8) || 'Password must be more than 8 characters'
+      ],
       items: [
         { name: 'Show User', to: '/user' }
         // { name: 'No Title', to: '/?show=notitle' },
         // { name: 'Duplicates', to: '/?show=duplicate&orderby=name' }
       ]
+
     }
   },
   mounted () {
     this.User = this.$store.state.auth.user.user_name
-    movieApi
-      .fetchUsers()
-      .then(response => {
-        this.Users = response.data
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    this.getUser()
   },
   computed: {
     loggedIn () {
@@ -102,6 +123,11 @@ export default {
     }
   },
   methods: {
+    editUser (index) {
+      this.User = this.$store.state.auth.user.user_name
+      this.getUser()
+      this.edit = index
+    },
     deleteUser (item, index) {
       movieApi
         .deleteUser(item)
@@ -125,8 +151,50 @@ export default {
           console.log(error)
         })
       this.edit = undefined
+      this.showAlert('success')
+    },
+    cancelUser (index) {
+      this.edit = null
+      this.getUser()
+    },
+    getUser () {
+      movieApi
+        .fetchUsers()
+        .then(response => {
+          this.Users = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    showAlert (type) {
+      this.type = type
+
+      let timer = this.showAlert.timer
+      if (timer) {
+        clearTimeout(timer)
+      }
+      this.showAlert.timer = setTimeout(() => {
+        this.type = null
+      }, 3000)
+
+      this.elapse = 1
+      let t = this.showAlert.t
+      if (t) {
+        clearInterval(t)
+      }
+
+      this.showAlert.t = setInterval(() => {
+        if (this.elapse === 3) {
+          this.elapse = 0
+          clearInterval(this.showAlert.t)
+        } else {
+          this.elapse++
+        }
+      }, 1000)
     }
   }
+
 }
 </script>
 
