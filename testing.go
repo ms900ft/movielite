@@ -101,7 +101,8 @@ func Setup() Service {
 	s := Service{Config: &c}
 	s.TMDBClient = &MockTMDBClient{}
 	models.HttpClient = &http.Client{}
-	db := models.ConnectDataBase(":memory:")
+	dbc := models.DBConfig{DBName: ":memory:"}
+	db := models.ConnectDataBase(dbc)
 	s.DB = db
 	pass, _ := bcrypt.GenerateFromPassword([]byte("test123"), bcrypt.DefaultCost)
 	user := models.User{UserName: "marc", Password: string(pass)}

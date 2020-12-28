@@ -26,7 +26,8 @@ var indexFlags = []cli.Flag{
 func indexAction(ctx *cli.Context) error {
 
 	conf := movielite.GetConfig(ctx.GlobalString("config"))
-	db := models.ConnectDataBase(conf.DataBase)
+	dbc := models.DBConfig{DBName: conf.DataBase}
+	db := models.ConnectDataBase(dbc)
 	tx := db.Begin()
 	defer tx.Close()
 

@@ -35,7 +35,8 @@ type meta struct {
 //Initialize mal sehen
 func (a *Service) Initialize() {
 	var err error
-	a.DB = models.ConnectDataBase(a.Config.DataBase) // new
+	dbc := models.DBConfig{DBName: a.Config.DataBase, InitialAdminPassword: a.Config.InitialAdminPassword}
+	a.DB = models.ConnectDataBase(dbc) // new
 	if a.Config.SQLDebug {
 		a.DB.LogMode(true)
 	}

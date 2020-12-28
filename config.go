@@ -10,21 +10,22 @@ import (
 )
 
 type Config struct {
-	Port              int
-	Mode              string
-	TMDBImageDir      string
-	TMDBImageURL      string
-	TMDBApiKey        string
-	TargetDir         string
-	SQLDebug          bool
-	DataBase          string
-	WebDav            bool
-	Watchdirectory    string
-	ScanDirectories   []string
-	ServerURL         string
-	Player            string
-	UseAuthentication bool
-	Secret            string
+	Port                 int
+	Mode                 string
+	TMDBImageDir         string
+	TMDBImageURL         string
+	TMDBApiKey           string
+	TargetDir            string
+	SQLDebug             bool
+	DataBase             string
+	WebDav               bool
+	Watchdirectory       string
+	ScanDirectories      []string
+	ServerURL            string
+	Player               string
+	UseAuthentication    bool
+	Secret               string
+	InitialAdminPassword string
 }
 
 func GetConfig(path string) *Config {
@@ -43,7 +44,7 @@ func GetConfig(path string) *Config {
 	viper.SetDefault("TMDB.ImageDir", "./images")
 	viper.SetDefault("Player", "vlc")
 	viper.SetDefault("UseAuthentication", true)
-
+	viper.SetDefault("InitialAdminPassword", "password")
 	if path != "" {
 		file, err := os.Open(path)
 		if err != nil {
