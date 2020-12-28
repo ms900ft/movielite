@@ -46,7 +46,8 @@ func TestLoginInvalid(t *testing.T) {
 }
 func TestService_FindOne(t *testing.T) {
 	//c := Config{Secret: "test123"}
-	db := models.ConnectDataBase(":memory:")
+	dbc := models.DBConfig{DBName: ":memory:"}
+	db := models.ConnectDataBase(dbc)
 	pass, _ := bcrypt.GenerateFromPassword([]byte("test123"), bcrypt.DefaultCost)
 	user := models.User{UserName: "login", Password: string(pass)}
 	if err := db.Create(&user).Error; err != nil {

@@ -13,10 +13,10 @@ func TestUserGet(t *testing.T) {
 			Handler(S.Router).
 			Get("/api/user").
 			Expect(t).
-			Body(`[{"UserName":"test", "id":1}]`).
-			Assert(jsonpath.GreaterThan(`$`, 1)).
-			Status(http.StatusOK).
-			End()
+		//Body(`[{"UserName":"admin", "id":1}]`).
+		Assert(jsonpath.GreaterThan(`$`, 2)).
+		Status(http.StatusOK).
+		End()
 }
 
 func TestUserGetOne(t *testing.T) {
@@ -24,7 +24,7 @@ func TestUserGetOne(t *testing.T) {
 			Handler(S.Router).
 			Get("/api/user/1").
 			Expect(t).
-			Body(`{"UserName":"test", "id":1}`).
+			Body(`{"UserName":"admin", "id":1}`).
 			Status(http.StatusOK).
 			End()
 }

@@ -12,13 +12,13 @@ import (
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
-	log "github.com/sirupsen/logrus"
-
 	"github.com/ms900ft/movielite/models"
+	log "github.com/sirupsen/logrus"
 )
 
 type Walker struct {
 	Config *Config
+	Token  string
 }
 
 type payload struct {
@@ -158,6 +158,7 @@ func (w *Walker) searchFile(name string) ([]models.File, error) {
 		log.Error(err)
 	}
 	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Authorization", "Bearer "+w.Token)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -192,6 +193,7 @@ func (w *Walker) send(path string) error {
 		log.Error(err)
 	}
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Bearer "+w.Token)
 	//response := executeRequest(req)
 	client := &http.Client{}
 	response, err := client.Do(req)
@@ -218,6 +220,7 @@ func (w *Walker) update(file models.File) error {
 		log.Error(err)
 	}
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Bearer "+w.Token)
 	//response := executeRequest(req)
 	client := &http.Client{}
 	response, err := client.Do(req)
