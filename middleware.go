@@ -28,37 +28,14 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-//UserMiddleWare Get username from movieuser cookie and set username in context
-// func (s *Service) UserMiddleWare(c *gin.Context) {
-// 	username, err := c.Cookie("movieuser")
-// 	if err != nil {
-// 		log.Debug(err)
-// 		username = "marc"
-// 	}
-
-// 	username = strings.ToLower(username)
-// 	log.Debugf("Username %s ", username)
-
-// 	//db := c.MustGet("DB").(*sql.DB)
-// 	db := s.DB
-
-// 	var user models.User
-// 	if err := db.Where("user_name  = ?", username).First(&user).Error; err != nil {
-// 		//c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
-// 		log.Debugf("no user found %s", err)
-// 	}
-
-// 	s.User = &user
-// 	//err = user.get(db)
-// 	//c.Set("username", username)
-// 	//c.Set("user", user)
-// 	// if err != nil {
-// 	// 	log.Debugf("no user found %s", err)
-// 	// }
-
-// 	// Pass on to the next-in-chain
-// 	c.Next()
-// }
+func (s *Service) IsAdmin(c *gin.Context) {
+	if !s.Token.IsAdmin {
+		c.JSON(http.StatusForbidden, gin.H{"Message": "forbidden"})
+		c.Abort()
+		return
+	}
+	c.Next()
+}
 
 func (s *Service) JwtVerify(c *gin.Context) {
 

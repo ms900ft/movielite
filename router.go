@@ -34,9 +34,9 @@ func (a *Service) initializeRoutes() {
 
 	api.GET("/user", a.getUsers)
 	api.GET("/user/:id", a.getUser)
-	api.PUT("/user/:id", a.updateUser)
-	api.POST("/user", a.createUser)
-	api.DELETE("/user/:id", a.deleteUser)
+	api.PUT("/user/:id", a.IsAdmin, a.updateUser)
+	api.POST("/user", a.IsAdmin, a.createUser)
+	api.DELETE("/user/:id", a.IsAdmin, a.deleteUser)
 
 	// api.GET("/movieMeta/:metaid", getMovieMeta)
 	api.PUT("/movie/:id/addMeta/:metaid", a.addMeta) //update movie

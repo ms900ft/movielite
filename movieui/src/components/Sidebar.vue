@@ -22,7 +22,7 @@
         <drawer-genres></drawer-genres>
         <drawer-countries></drawer-countries>
         <drawer-work></drawer-work>
-        <drawer-users v-if="User.is_admin" ></drawer-users>
+        <drawer-users  ></drawer-users>
         <drawer-user></drawer-user>
       </v-list>
     </v-navigation-drawer>

@@ -4,7 +4,7 @@
     <add-user v-show="ShowAdd" v-model="ShowAdd"> </add-user>
     <v-flex xs12 sm6 offset-sm3>
            <v-alert :color="type" icon="check_circle" value="true" v-if="type">
-        User saved
+        {{alert_message}}
       </v-alert>
       <v-form v-model="valid">
         <v-card>
@@ -96,6 +96,7 @@ export default {
       valid: false,
       type: null,
       elapse: null,
+      alert_message: '',
 
       nameRules: [
         v => !!v || 'Name is required',
@@ -145,13 +146,16 @@ export default {
         .updateUser(item)
         .then(response => {
           this.loading = false
-          // this.user = {}
+          this.edit = undefined
+          this.alert_message = 'user saved'
+          this.showAlert('success') // this.user = {}
         })
         .catch(error => {
           console.log(error)
+          this.edit = undefined
+          this.alert_message = error
+          this.showAlert('error') // this.user = {}
         })
-      this.edit = undefined
-      this.showAlert('success')
     },
     cancelUser (index) {
       this.edit = null

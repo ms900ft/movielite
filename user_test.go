@@ -24,7 +24,7 @@ func TestUserGetOne(t *testing.T) {
 			Handler(S.Router).
 			Get("/api/user/1").
 			Expect(t).
-			Body(`{"UserName":"admin", "id":1}`).
+			Body(`{"UserName":"admin", "id":1, "is_admin": true}`).
 			Status(http.StatusOK).
 			End()
 }
