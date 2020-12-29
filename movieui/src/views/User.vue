@@ -1,7 +1,7 @@
 <template>
   <v-layout row>
 
-    <add-user v-show="ShowAdd" v-model="ShowAdd"> </add-user>
+    <add-user v-show="ShowAdd" v-model="ShowAdd" v-on:userAdded="userAdded"> </add-user>
     <v-flex xs12 sm6 offset-sm3>
            <v-alert :color="type" icon="check_circle" value="true" v-if="type">
         {{alert_message}}
@@ -9,7 +9,7 @@
       <v-form v-model="valid">
         <v-card>
 
-          <v-toolbar v-if="User.is_admin" color="white">
+          <v-toolbar v-if="Admin.is_admin" color="white">
             <v-toolbar-title>Users</v-toolbar-title>
 
             <v-spacer></v-spacer>
@@ -47,7 +47,7 @@
                   required
                 />
               </v-list-tile-content>
-              <v-list-tile-action v-if="User.is_admin">
+              <v-list-tile-action v-if="Admin.is_admin && !item.is_admin">
                 <v-btn icon delete>
                   <v-icon
                     color="grey lighten-1"
@@ -56,7 +56,7 @@
                   >
                 </v-btn>
               </v-list-tile-action>
-              <v-list-tile-action v-if="User.is_admin">
+              <v-list-tile-action v-if="Admin.is_admin">
                 <v-btn icon edit >
                   <v-icon v-if="edit==index && !valid"  color="grey lighten-1" @click="cancelUser(item)"
                     >cancel</v-icon
@@ -90,17 +90,18 @@ export default {
   data () {
     return {
       Users: [],
-      User: 'Users',
+      User: '',
+      Admin: {},
       ShowAdd: false,
       edit: -1,
-      valid: false,
+      valid: true,
       type: null,
       elapse: null,
       alert_message: '',
 
       nameRules: [
         v => !!v || 'Name is required',
-        v => v.length <= 10 || 'Name must be less than 10 characters'
+        v => v.length <= 15 || 'Name must be less than 10 characters'
       ],
       passwdRules: [
         v => !!v || 'Password is required',
@@ -115,7 +116,7 @@ export default {
     }
   },
   mounted () {
-    this.User = this.$store.state.auth.user
+    this.Admin = this.$store.state.auth.user
     this.getUser()
   },
   computed: {
@@ -125,7 +126,7 @@ export default {
   },
   methods: {
     editUser (index) {
-      this.User = this.$store.state.auth.user.user_name
+      // this.User = this.$store.state.auth.user.user_name
       this.getUser()
       this.edit = index
     },
@@ -156,6 +157,11 @@ export default {
           this.alert_message = error
           this.showAlert('error') // this.user = {}
         })
+    },
+    userAdded (user) {
+      this.alert_message = 'User ' + user.username + ' added'
+      this.showAlert('success')
+      this.getUser()
     },
     cancelUser (index) {
       this.edit = null

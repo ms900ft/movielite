@@ -22,13 +22,6 @@
                <v-flex xs12>
                 <v-text-field label="Password repeat*" type="password" v-model="user.password2" required :rules="matchrules"></v-text-field>
               </v-flex>
-              <v-flex xs12 sm6>
-                <v-select
-                  :items="['admin', 'user']"
-                  label="Type*"
-                  required
-                ></v-select>
-              </v-flex>
             </v-layout>
           </v-container>
           <small>*indicates required field</small>
@@ -36,7 +29,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click="show = false">Close</v-btn>
-          <v-btn  color="blue darken-1" flat type="submit">Save</v-btn>
+          <v-btn  color="blue darken-1" flat @click="addUser">Save</v-btn>
         </v-card-actions>
         </form>
       </v-card>
@@ -122,20 +115,13 @@ export default {
 
   methods: {
     addUser () {
-      // this.$validator.validateAll().then(isValid => {
-      //   if (!isValid) {
-      //     this.loading = false
-      //     return
-      //   }
-      console.log('------------------------------------')
-      console.log('submit')
-      console.log('------------------------------------')
       if (this.user.username && this.user.password) {
         movieApi
           .addUser(this.user)
           .then((response) => {
             this.loading = false
-            this.user = {}
+            this.show = false
+            this.$emit('userAdded', this.user)
           })
           .catch((error) => {
             console.log(error)

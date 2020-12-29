@@ -31,7 +31,7 @@ if (process.env.NODE_ENV === 'development') {
   BaseUrl = 'http://localhost:8001'
 }
 
-axios.defaults.baseURL = BaseUrl + '/api'
+axios.defaults.baseURL = BaseUrl
 Vue.prototype.$baseURL = BaseUrl
 Vue.prototype.$localViewURL = 'http://localhost:8081'
 Vue.prototype.$hitspp = 30

@@ -26,78 +26,102 @@ export default {
     })
 
     const queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&')
-    const response = await axios.get('movie?' + queryString, { headers: authHeader() })
+    const response = await axios.get('/api/movie?' + queryString, { headers: authHeader() })
     // console.log(response)
     return response.data
   },
 
   fetchSingleMovie (id) {
-    return axios.get('movie/' + id, { headers: authHeader() })
+    return axios.get('/api/movie/' + id, {
+      headers: authHeader()
+    })
       .then(response => {
         return response.data
       })
   },
   moveMovie (movie, where) {
-    return axios.put('file/' + movie.file_id + '/move/' + encodeURIComponent(where), { headers: authHeader() })
+    return axios.put('/api/file/' + movie.file_id + '/move/' + encodeURIComponent(where), {
+      headers: authHeader()
+    })
       .then(response => {
         return response.data
       })
   },
   addMeta (movie, metaid) {
-    return axios.put('movie/' + movie.id + '/addMeta/' + metaid, movie, { headers: authHeader() })
+    return axios.put('/api/movie/' + movie.id + '/addMeta/' + metaid, movie, {
+      headers: authHeader()
+    })
       .then(response => {
         return response.data
       })
   },
   async fetchGenres () {
-    const response = await axios.get('genre', { headers: authHeader() })
+    const response = await axios.get('/api/genre', {
+      headers: authHeader()
+    })
     return response
   },
   async fetchCountries () {
-    const response = await axios.get('country', { headers: authHeader() })
+    const response = await axios.get('/api/country', {
+      headers: authHeader()
+    })
     return response
   },
   async fetchTargets () {
-    const response = await axios.get('targets', { headers: authHeader() })
+    const response = await axios.get('/api/targets', {
+      headers: authHeader()
+    })
     return response
   },
   async fetchUsers () {
-    const response = await axios.get('user', { headers: authHeader() })
+    const response = await axios.get('/api/user', {
+      headers: authHeader()
+    })
     return response
   },
   playLocal (item, args = {}) {
     const queryString = Object.keys(args).map(key => key + '=' + args[key]).join('&')
-    return axios.put('movie/' + item.id + '/play?' + queryString, {})
+    return axios.put('/api/movie/' + item.id + '/play?' + queryString, {})
       .then(response => {
         return response
       })
   },
   updateMovie (item) {
-    return axios.put('movie/' + item.id, item, { headers: authHeader() })
+    return axios.put('/api/movie/' + item.id, item, {
+      headers: authHeader()
+    })
       .then(response => {
         return response
       })
   },
   deleteMovie (item) {
-    return axios.delete('movie/' + item.id, item, { headers: authHeader() })
+    return axios.delete('/api/movie/' + item.id, item, {
+      headers: authHeader()
+    })
       .then(response => {
         return response
       })
   },
   addUser (item) {
-    return axios.post('user', item, { headers: authHeader() })
+    return axios.post('/api/user', item, {
+      headers: authHeader()
+    })
       .then(response => {
         return response
       })
   },
   deleteUser (item) {
-    return axios.delete('user/' + item.id, { headers: authHeader() })
+    return axios.delete('/api/user/' + item.id, {
+      headers: authHeader()
+    })
       .then(response => {
         return response
       })
   },
   updateUser (item) {
-    return axios.put('user/' + item.id, item, { headers: authHeader() })
+    return axios.put('/api/user/' + item.id, item, {
+      headers: authHeader()
+    })
       .then(response => {
         return response
       })

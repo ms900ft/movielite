@@ -1,6 +1,10 @@
 package movielite
 
 import (
+	"net/http"
+	"os"
+	"path"
+
 	"github.com/gin-gonic/contrib/expvar"
 	_ "github.com/ms900ft/movielite/statik"
 	"github.com/rakyll/statik/fs"
@@ -60,6 +64,19 @@ func (a *Service) initializeRoutes() {
 		log.Info("webdav: /webdav/ waiting for connection")
 	}
 	// a.Router.Static("/html", staticDir)
-	a.Router.StaticFS("/movie2", statikFS)
+	a.Router.StaticFS("/movie2", &indexWrapper{statikFS})
 	a.Router.GET("/debug/vars", expvar.Handler())
+}
+
+type indexWrapper struct {
+	assets http.FileSystem
+}
+
+func (i *indexWrapper) Open(name string) (http.File, error) {
+	ret, err := i.assets.Open(name)
+	if !os.IsNotExist(err) || path.Ext(name) != "" {
+		return ret, err
+	}
+
+	return i.assets.Open("/index.html")
 }
