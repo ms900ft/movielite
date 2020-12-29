@@ -9,7 +9,7 @@ import (
 )
 
 // ANY /webdav/*
-func WebDAV(path string, router *gin.RouterGroup) {
+func (s *Service) WebDAV(path string, router *gin.RouterGroup) {
 	if router == nil {
 		log.Error("webdav: router is nil")
 		return
@@ -19,7 +19,7 @@ func WebDAV(path string, router *gin.RouterGroup) {
 	// 	log.Error("webdav: conf is nil")
 	// 	return
 	//	}
-	router.Use(gin.BasicAuth(gin.Accounts{"admin": "test123"}))
+	router.Use(s.basicAuth)
 	f := webdav.Dir(path)
 
 	srv := &webdav.Handler{

@@ -2,17 +2,23 @@ package movielite
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/ms900ft/movielite/models"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //CORSMiddleware for gin
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		if strings.HasPrefix(c.Request.URL.Path, "/webdav/") {
+			c.Next()
+		}
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
@@ -75,8 +81,33 @@ func (s *Service) JwtVerify(c *gin.Context) {
 		log.Debugf("no user found %s", err)
 	}
 	s.Token = tk
-	//spew.Dump(tk)
-	// ctx := context.WithValue(r.Context(), "user", tk)
-	// next.ServeHTTP(w, r.WithContext(ctx))
 	c.Next()
+}
+
+func (s *Service) basicAuth(c *gin.Context) {
+	// Get the Basic Authentication credentials
+	realm := "Authorization Required"
+	realm = "Basic realm=" + strconv.Quote(realm)
+	db := s.DB
+	username, password, hasAuth := c.Request.BasicAuth()
+	if hasAuth {
+		return
+	}
+	user := models.User{}
+	//found := false
+	if err := db.Where("user_name = ?", username).First(user).Error; err != nil {
+		log.Errorf("user %s not found", username)
+		c.Header("WWW-Authenticate", realm)
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		log.Error(err)
+		c.Header("WWW-Authenticate", realm) //Password does not match!
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+	c.Set("user", user.UserName)
+	return
 }

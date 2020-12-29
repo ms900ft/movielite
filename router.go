@@ -15,7 +15,7 @@ func (a *Service) initializeRoutes() {
 	a.Router.Use(CORSMiddleware())
 	a.Router.POST("/login", a.login)
 	api := a.Router.Group("/api")
-	//	api.Use(CORSMiddleware())
+	api.Use(CORSMiddleware())
 	if a.Config.UseAuthentication {
 		api.Use(a.JwtVerify)
 	}
@@ -60,7 +60,7 @@ func (a *Service) initializeRoutes() {
 		log.Fatal(err)
 	}
 	if a.Config.WebDav {
-		WebDAV(a.Config.TargetDir, a.Router.Group("/webdav"))
+		a.WebDAV(a.Config.TargetDir, a.Router.Group("/webdav"))
 		log.Info("webdav: /webdav/ waiting for connection")
 	}
 	// a.Router.Static("/html", staticDir)
