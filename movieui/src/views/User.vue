@@ -9,7 +9,7 @@
       <v-form v-model="valid">
         <v-card>
 
-          <v-toolbar color="white">
+          <v-toolbar v-if="User.is_admin" color="white">
             <v-toolbar-title>Users</v-toolbar-title>
 
             <v-spacer></v-spacer>
@@ -47,7 +47,7 @@
                   required
                 />
               </v-list-tile-content>
-              <v-list-tile-action>
+              <v-list-tile-action v-if="User.is_admin">
                 <v-btn icon delete>
                   <v-icon
                     color="grey lighten-1"
@@ -56,7 +56,7 @@
                   >
                 </v-btn>
               </v-list-tile-action>
-              <v-list-tile-action>
+              <v-list-tile-action v-if="User.is_admin">
                 <v-btn icon edit >
                   <v-icon v-if="edit==index && !valid"  color="grey lighten-1" @click="cancelUser(item)"
                     >cancel</v-icon
@@ -114,7 +114,7 @@ export default {
     }
   },
   mounted () {
-    this.User = this.$store.state.auth.user.user_name
+    this.User = this.$store.state.auth.user
     this.getUser()
   },
   computed: {

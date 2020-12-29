@@ -22,7 +22,7 @@
         <drawer-genres></drawer-genres>
         <drawer-countries></drawer-countries>
         <drawer-work></drawer-work>
-        <drawer-users></drawer-users>
+        <drawer-users v-if="User.is_admin" ></drawer-users>
         <drawer-user></drawer-user>
       </v-list>
     </v-navigation-drawer>
@@ -44,6 +44,9 @@ export default {
     DrawerUser,
     DrawerUsers
   },
+  mounted: function () {
+    this.User = this.$store.state.auth.user
+  },
   computed: {
     visible: {
       get () {
@@ -64,7 +67,8 @@ export default {
         { title: 'Home', icon: 'home', to: '/?orderby=name' },
         { title: 'Watchlist', icon: 'star', to: '?show=watchlist' },
         { title: 'Recently', icon: 'star', to: '?orderby=recent' }
-      ]
+      ],
+      User: {}
     }
   },
   props: ['show']

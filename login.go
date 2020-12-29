@@ -16,6 +16,7 @@ import (
 type token struct {
 	UserName string `json:"user_name"`
 	Token    string `json:"token"`
+	IsAdmin  bool   `json:"is_admin"`
 }
 
 type input struct {
@@ -60,8 +61,9 @@ func (s *Service) FindOne(username, password string) (token, error) {
 	}
 
 	tk := &models.Token{
-		UserID: user.ID,
-		Name:   user.UserName,
+		UserID:  user.ID,
+		Name:    user.UserName,
+		IsAdmin: user.IsAdmin,
 		StandardClaims: &jwt.StandardClaims{
 			ExpiresAt: expiresAt,
 		},
@@ -79,5 +81,6 @@ func (s *Service) FindOne(username, password string) (token, error) {
 
 	resp.Token = tokenString
 	resp.UserName = username
+	resp.IsAdmin = user.IsAdmin
 	return resp, nil
 }

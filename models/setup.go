@@ -49,7 +49,7 @@ func addAdmin(db *gorm.DB, pass string) error {
 		if err != nil {
 			return err
 		}
-		u := User{UserName: adminName, Password: string(p)}
+		u := User{UserName: adminName, Password: string(p), IsAdmin: true}
 		if err := db.Create(&u).Error; gorm.IsRecordNotFoundError(err) {
 			return err
 		}
