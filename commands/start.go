@@ -8,9 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/ms900ft/movielite"
-	"github.com/ms900ft/movielite/models"
+	"github.com/ms900ft/movielite/pkg/token"
 	"github.com/urfave/cli"
 	"golang.org/x/sync/errgroup"
 )
@@ -35,24 +34,11 @@ func startAction(ctx *cli.Context) error {
 	w := movielite.Walker{Config: conf}
 
 	a.Initialize()
-
-	expiresAt := time.Now().Add(time.Minute * 1000000).Unix()
-	tk := &models.Token{
-		Name: "admin",
-		StandardClaims: &jwt.StandardClaims{
-			ExpiresAt: expiresAt,
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	if conf.Secret == "" {
-		log.Fatal("no secret found")
-	}
-	tokenString, err := token.SignedString([]byte(conf.Secret))
+	token, err := token.AdminToken(conf.Secret)
 	if err != nil {
 		log.Fatal(err)
 	}
-	w.Token = tokenString
+	w.Token = token
 
 	var gracefulStop = make(chan os.Signal)
 	signal.Notify(gracefulStop, syscall.SIGTERM)

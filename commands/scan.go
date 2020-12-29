@@ -1,11 +1,8 @@
 package commands
 
 import (
-	"time"
-
-	"github.com/dgrijalva/jwt-go"
 	"github.com/ms900ft/movielite"
-	"github.com/ms900ft/movielite/models"
+	"github.com/ms900ft/movielite/pkg/token"
 	"github.com/prometheus/common/log"
 	"github.com/urfave/cli"
 )
@@ -33,25 +30,12 @@ var scanFlags = []cli.Flag{
 func scanAction(ctx *cli.Context) error {
 
 	conf := movielite.GetConfig(ctx.GlobalString("config"))
-	expiresAt := time.Now().Add(time.Minute * 1000000).Unix()
-	tk := &models.Token{
-		Name: "admin",
-		StandardClaims: &jwt.StandardClaims{
-			ExpiresAt: expiresAt,
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	if conf.Secret == "" {
-		log.Fatal("no secret found")
-	}
-	tokenString, err := token.SignedString([]byte(conf.Secret))
+	w := movielite.Walker{Config: conf}
+	token, err := token.AdminToken(conf.Secret)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	w := movielite.Walker{Config: conf}
-	w.Token = tokenString
+	w.Token = token
 	err = w.Run(directory)
 	if err != nil {
 		log.Fatalf("can't scan for movies: %s", err)

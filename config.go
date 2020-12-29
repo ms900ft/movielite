@@ -79,5 +79,6 @@ func GetConfig(path string) *Config {
 	c.Player = viper.GetString("Player")
 	c.Secret = viper.GetString("Secret")
 	c.UseAuthentication = viper.GetBool("UseAuthentication")
+
 	return &c
 }
