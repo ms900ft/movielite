@@ -16,7 +16,7 @@ RUN go get github.com/rakyll/statik
 
 WORKDIR /go/src/github.com/ms900ft/movielite
 COPY . .
-COPY movielite.yaml /go/src/github.com/ms900ft/movielite
+COPY docker/movielite.yaml /go/src/github.com/ms900ft/movielite
 COPY --from=nodebuilder /go/src/github.com/ms900ft/movielite/movieui/dist /go/src/github.com/ms900ft/movielite/movieui/dist
 RUN /go/bin/statik  -src=/go/src/github.com/ms900ft/movielite/movieui/dist
 RUN CGO_ENABLED=1 GOOS=linux  go build -a -ldflags "-linkmode external -extldflags '-static' -s -w" --tags "fts5" -o movielite cmd/server/main.go
