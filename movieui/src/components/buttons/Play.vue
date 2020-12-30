@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn v-if="!overlay" outline color="primary" dark @click="playMovie(movie)">
+    <v-btn v-if="!overlay" text color="primary" dark @click="playMovie(movie)">
       Play
       <v-icon right dark>play_circle_outline</v-icon>
     </v-btn>

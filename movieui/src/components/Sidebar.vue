@@ -10,21 +10,24 @@
       <v-list class="pt-0" dense>
         <v-divider></v-divider>
 
-        <v-list-tile v-for="item in items" :key="item.title" :to="{path:item.to}" exact>
-          <v-list-tile-action>
+        <v-list-item v-for="item in items" :key="item.title" :to="{path:item.to}" exact>
+          <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
+          </v-list-item-icon>
 
-          <v-list-tile-content>
-            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <drawer-genres></drawer-genres>
         <drawer-countries></drawer-countries>
         <drawer-work></drawer-work>
         <drawer-users  ></drawer-users>
         <drawer-user></drawer-user>
+
       </v-list>
+
     </v-navigation-drawer>
   </v-layout>
 </template>

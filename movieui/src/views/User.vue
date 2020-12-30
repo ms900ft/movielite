@@ -20,12 +20,12 @@
           </v-toolbar>
 
           <v-list two-line subheader>
-            <v-list-tile v-for="(item, index) in Users" :key="item.id" avatar>
-              <v-list-tile-avatar>
+            <v-list-item v-for="(item, index) in Users" :key="item.id" avatar>
+              <v-list-item-avatar>
                 <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon>
-              </v-list-tile-avatar>
+              </v-list-item-avatar>
 
-              <v-list-tile-content>
+              <v-list-item-content>
                 <v-text-field
                   v-model="item.UserName"
                   key="'username_'+index"
@@ -35,8 +35,8 @@
                   :rules="nameRules"
                   v-bind:disabled="!(edit == index)"
                 ></v-text-field>
-              </v-list-tile-content>
-              <v-list-tile-content>
+              </v-list-item-content>
+              <v-list-item-content>
                 <v-text-field
                   v-if="edit == index"
                   v-model="item.password"
@@ -46,8 +46,8 @@
                   :rules="passwdRules"
                   required
                 />
-              </v-list-tile-content>
-              <v-list-tile-action v-if="Admin.is_admin && !item.is_admin">
+              </v-list-item-content>
+              <v-list-item-action v-if="Admin.is_admin && !item.is_admin">
                 <v-btn icon delete>
                   <v-icon
                     color="grey lighten-1"
@@ -55,8 +55,8 @@
                     >delete</v-icon
                   >
                 </v-btn>
-              </v-list-tile-action>
-              <v-list-tile-action v-if="Admin.is_admin">
+              </v-list-item-action>
+              <v-list-item-action v-if="Admin.is_admin">
                 <v-btn icon edit >
                   <v-icon v-if="edit==index && !valid"  color="grey lighten-1" @click="cancelUser(item)"
                     >cancel</v-icon
@@ -68,8 +68,8 @@
                     >edit</v-icon
                   >
                 </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
           </v-list>
         </v-card>
       </v-form>

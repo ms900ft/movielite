@@ -1,16 +1,16 @@
 <template>
   <v-list-group prepend-icon="movie" :value="false">
     <template v-slot:activator>
-      <v-list-tile>
-        <v-list-tile-title>Genres</v-list-tile-title>
-      </v-list-tile>
+
+        <v-list-item-title>Genres</v-list-item-title>
+
     </template>
 
     <v-list>
-      <v-list-tile v-for="(item, index) in orderedGenres" :key="index" @click="genre(item)">
-        <v-list-tile-action></v-list-tile-action>
-        <v-list-tile-title to="getLink(item)">{{ item.name }}</v-list-tile-title>
-      </v-list-tile>
+      <v-list-item v-for="(item, index) in orderedGenres" :key="index" @click="genre(item)">
+        <v-list-item-action></v-list-item-action>
+        <v-list-item-title to="getLink(item)">{{ item.name }}</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-list-group>
 </template>

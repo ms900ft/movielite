@@ -1,14 +1,14 @@
 
 <template>
-         <v-list-tile to="/user">
-          <v-list-tile-action>
+         <v-list-item to="/user">
+          <v-list-item-action>
             <v-icon>supervisor_account</v-icon>
-          </v-list-tile-action>
+          </v-list-item-action>
 
-          <v-list-tile-content>
-            <v-list-tile-title>Users</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          <v-list-item-content>
+            <v-list-item-title>Users</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
 </template>
 

@@ -2,12 +2,12 @@
   <div class="text-xs-center">
     <v-menu offset-y max-height="300">
       <template v-slot:activator="{ on }">
-        <v-btn flat v-on="on">Genres</v-btn>
+        <v-btn text v-on="on">Genres</v-btn>
       </template>
       <v-list>
-        <v-list-tile v-for="(item, index) in orderedGenres" :key="index" @click="genre(item)">
-          <v-list-tile-title to="getLink(item)">{{ item.name }}</v-list-tile-title>
-        </v-list-tile>
+        <v-list-item v-for="(item, index) in orderedGenres" :key="index" @click="genre(item)">
+          <v-list-item-title to="getLink(item)">{{ item.name }}</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-menu>
   </div>

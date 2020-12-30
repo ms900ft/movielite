@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import './plugins/vuetify'
+import vuetify from './plugins/vuetify'
+
 import App from './App.vue'
 import store from './store'
 import { router } from './router'
@@ -60,6 +61,7 @@ library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt)
 Vue.use(VeeValidate)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 new Vue({
+  vuetify,
   render: h => h(App),
   store,
   router

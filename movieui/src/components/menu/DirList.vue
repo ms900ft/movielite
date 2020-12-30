@@ -6,20 +6,20 @@
           <v-list two-line subheader>
             <v-subheader class="headline">Move movie to:</v-subheader>
 
-            <v-list-tile
+            <v-list-item
               ripple
               v-for="(item) in orderedTargets"
               :key="item.name"
               v-on:click="move(item.name)"
             >
-              <v-list-tile-avatar>
+              <v-list-item-avatar>
                 <v-icon class="blue lighten-1 white--text">folder</v-icon>
-              </v-list-tile-avatar>
+              </v-list-item-avatar>
 
-              <v-list-tile-content>
-                <v-list-tile-title class="movietitle">{{ item.name }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+              <v-list-item-content>
+                <v-list-item-title class="movietitle">{{ item.name }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-card>
       </v-flex>

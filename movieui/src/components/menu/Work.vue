@@ -5,9 +5,9 @@
         <v-btn flat v-on="on">Work</v-btn>
       </template>
       <v-list>
-        <v-list-tile v-for="(item, index) in items" :key="index" @click="gotoItem(item)">
-          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-        </v-list-tile>
+        <v-list-item v-for="(item, index) in items" :key="index" @click="gotoItem(item)">
+          <v-list-item-title>{{ item.name }}</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-menu>
   </div>

@@ -1,16 +1,13 @@
 <template>
-  <v-list-group prepend-icon="map" :value="false">
+  <v-list-group  prepend-icon="map" :value="false">
     <template v-slot:activator>
-      <v-list-tile>
-        <v-list-tile-title>Countries</v-list-tile-title>
-      </v-list-tile>
+        <v-list-item-title>Countries</v-list-item-title>
     </template>
-
     <v-list>
-      <v-list-tile v-for="(item, index) in orderedCountries" :key="index" @click="country(item)">
-        <v-list-tile-action></v-list-tile-action>
-        <v-list-tile-title to="getLink(item)">{{ item.name }}</v-list-tile-title>
-      </v-list-tile>
+      <v-list-item v-for="(item, index) in orderedCountries" :key="index" @click="country(item)">
+        <v-list-item-action></v-list-item-action>
+        <v-list-item-title to="getLink(item)">{{ item.name }}</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-list-group>
 </template>

@@ -2,16 +2,14 @@
 <template>
   <v-list-group prepend-icon="account_circle" :value="false">
     <template v-slot:activator>
-      <v-list-tile>
-        <v-list-tile-title>{{User}}</v-list-tile-title>
-      </v-list-tile>
+        <v-list-item-title>{{User}}</v-list-item-title>
     </template>
 
     <v-list>
-      <v-list-tile v-for="(item, index) in items" :key="index" @click="gotoItem(item)">
-        <v-list-tile-action></v-list-tile-action>
-        <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-      </v-list-tile>
+      <v-list-item v-for="(item, index) in items" :key="index" @click="gotoItem(item)">
+        <v-list-item-action></v-list-item-action>
+        <v-list-item-title>{{ item.name }}</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-list-group>
 </template>

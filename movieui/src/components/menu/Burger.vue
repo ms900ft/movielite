@@ -23,15 +23,15 @@
         </div>
       </template>
       <v-list>
-        <v-list-tile v-for="(item, index) in getItems" :key="index">
-          <v-list-tile-title
+        <v-list-item v-for="(item, index) in getItems" :key="index">
+          <v-list-item-title
             @click="item.action(getMovieItem)"
             style="cursor: pointer"
-          >{{ item.name() }}</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile>
+          >{{ item.name() }}</v-list-item-title>
+        </v-list-item>
+        <v-list-item>
           <a  :href="downloadURL()">Download</a>
-        </v-list-tile>
+        </v-list-item>
       </v-list>
     </v-menu>
   </div>

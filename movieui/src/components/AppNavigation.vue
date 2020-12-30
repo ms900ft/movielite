@@ -1,7 +1,7 @@
 <template>
   <span>
     <sidebar :show="showsidebar" @closesidebar="showsidebar=false"></sidebar>
-    <v-toolbar app color="blue darken-4" dark dense :scroll-threshold="3" scroll-off-screen>
+    <v-app-bar app color="blue darken-4" dark dense :scroll-threshold="3" scroll-off-screen>
       <!-- <template v-if="showExtended()" #extension>
         <v-toolbar-items>
           <v-chip v-model="chip1" outline dark style="color: white;" close>search: {{searchstring}}</v-chip>
@@ -9,19 +9,18 @@
           <v-btn text>Link 3</v-btn>
         </v-toolbar-items>
       </template>-->
-      <v-toolbar-side-icon @click="showsidebar=!showsidebar"></v-toolbar-side-icon>
-
-      <v-btn class="hidden-sm-and-down" flat exact to="/?orderby=name">
+      <v-app-bar-nav-icon  @click.stop="showsidebar=!showsidebar"></v-app-bar-nav-icon>
+      <v-btn class="hidden-sm-and-down" text exact to="/?orderby=name">
         <v-icon>home</v-icon>
       </v-btn>
-      <v-btn class="hidden-sm-and-down" flat exact to="/?show=watchlist">Watchlist</v-btn>
-      <v-btn class="hidden-sm-and-down" flat exact to="/?orderby=recent">Recently</v-btn>
+      <v-btn class="hidden-sm-and-down" text exact to="/?show=watchlist">Watchlist</v-btn>
+      <v-btn class="hidden-sm-and-down" text exact to="/?orderby=recent">Recently</v-btn>
       <menu-genres class="hidden-sm-and-down"></menu-genres>
       <menu-countries class="hidden-sm-and-down"></menu-countries>
 
       <v-text-field
         v-model="searchstring"
-        flat
+        text
         clearable
         autofocus
         height="30"
@@ -47,11 +46,11 @@
           ></keyboard>
         </div>
       </transition>
-<v-btn class="hidden-sm-and-down" flat exact @click.prevent="logOut">logout</v-btn>
+<v-btn class="hidden-sm-and-down" text exact @click.prevent="logOut">logout</v-btn>
       <menu-user class="hidden-sm-and-down"></menu-user>
 
-      <v-chip outline dark style="color: white;">Results found: {{total()}}</v-chip>
-    </v-toolbar>
+      <v-chip outlined dark style="color: white;">Results found: {{total()}}</v-chip>
+    </v-app-bar>
   </span>
 </template>
 
