@@ -23,6 +23,7 @@ You can specify local directories watched for new movies. If new movies found me
 - Clone the Repository
 - Run in this directory: docker-compose up
 - Goto http://localhost:8000/movie2/
+- Login with admin/password
 You will see some example data without media files.
 ## Installation
 - Get the API Key from https://developers.themoviedb.org/3/
@@ -52,7 +53,10 @@ Language: "en-US"
 # Location of the sqlite database
 Database:
   Dbname: "./movielite.db"
-
+# Secret to sign token
+Secret: "dsdhsjhsdhr8q73z478274z3qhui4"
+# Initial Admin password, can be changed later
+InitialAdminPassword: "password"
 # Player to play movies default is vlc (optional)
 # Player: "QuickTime Player"
 
@@ -93,6 +97,7 @@ WebDav: true
 ./movielite start
 ````
  Now browse to the app at http://localhost:8000/movie2 .
+ Login with admin/password
 
  If you use the default config a watcher is set on the directory **./example/movies**.
  To add a new movie copy the movie in the watched folder.

@@ -3,7 +3,7 @@
 
     <add-user v-show="ShowAdd" v-model="ShowAdd" v-on:userAdded="userAdded"> </add-user>
     <v-flex xs12 sm6 offset-sm3>
-           <v-alert :color="type" icon="check_circle" value="true" v-if="type">
+           <v-alert :color="type" icon="check_circle" value="true" dismissible outline v-if="type">
         {{alert_message}}
       </v-alert>
       <v-form v-model="valid">
@@ -139,7 +139,11 @@ export default {
         })
         .catch(error => {
           console.log(error)
+          this.alert_message = error
+          this.showAlert('error') // this.user = {}
         })
+      this.alert_message = item.username + ' deleted'
+      this.showAlert('success') // this.user = {}
       this.$delete(this.Users, index)
     },
     updateUser (item, index) {
@@ -148,7 +152,7 @@ export default {
         .then(response => {
           this.loading = false
           this.edit = undefined
-          this.alert_message = 'user saved'
+          this.alert_message = item.username + ' saved'
           this.showAlert('success') // this.user = {}
         })
         .catch(error => {
@@ -186,7 +190,7 @@ export default {
       }
       this.showAlert.timer = setTimeout(() => {
         this.type = null
-      }, 3000)
+      }, 5000)
 
       this.elapse = 1
       let t = this.showAlert.t
