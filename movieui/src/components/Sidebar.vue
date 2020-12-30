@@ -16,7 +16,7 @@
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title v-text="item.title"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -77,3 +77,9 @@ export default {
   props: ['show']
 }
 </script>
+
+<style scoped>
+a{
+    text-decoration: none !important;
+}
+</style>

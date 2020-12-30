@@ -2,7 +2,7 @@
 <template>
   <v-list-group prepend-icon="account_circle" :value="false">
     <template v-slot:activator>
-        <v-list-item-title>{{User}}</v-list-item-title>
+        <v-list-item-title v-text="User"></v-list-item-title>
     </template>
 
     <v-list>
@@ -58,4 +58,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

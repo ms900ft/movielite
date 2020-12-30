@@ -25,6 +25,7 @@
         autofocus
         height="30"
         placeholder="Search..."
+        class="search"
       ></v-text-field>
 
       <v-btn icon class="hidden-sm-and-down" v-on:click="keybordVisible">
@@ -157,4 +158,16 @@ export default {
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
+
+.search{
+  display: block;
+  right: 0;
+  bottom: 0;
+  position: flex;
+}
+
+a{
+    text-decoration: none !important;
+}
+
 </style>
