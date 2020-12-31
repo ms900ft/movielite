@@ -81,7 +81,8 @@ export default {
   },
   playLocal (item, args = {}) {
     const queryString = Object.keys(args).map(key => key + '=' + args[key]).join('&')
-    return axios.put('/movie/' + item.id + '/play?' + queryString, {})
+    return axios.put('/api/movie/' + item.id + '/play?' + queryString, {},
+      { headers: authHeader() })
       .then(response => {
         return response
       })

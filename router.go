@@ -66,7 +66,6 @@ func (a *Service) initializeRoutes() {
 	// a.Router.Static("/html", staticDir)
 	a.Router.GET("/file/:id/download", a.downloadFile)
 	a.Router.GET("/file/:id/download/:name", a.downloadFile) //name im pfad
-	a.Router.PUT("/movie/:id/play", a.playMovie)
 	a.Router.StaticFS("/movie2", &indexWrapper{statikFS})
 	a.Router.GET("/debug/vars", expvar.Handler())
 }
