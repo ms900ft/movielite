@@ -44,9 +44,6 @@ export default {
       headers: authHeader()
     })
       .then(response => {
-        console.log('------------------------------------')
-        console.log(authHeader())
-        console.log('------------------------------------')
         return response.data
       })
   },
