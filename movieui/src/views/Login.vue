@@ -7,7 +7,7 @@
         <v-icon   size="100px">account_circle</v-icon>
         </v-layout>
          <v-alert color="error" icon="check_circle" value="true" dismissible outline v-if="message">
-        {{message}}
+        {{message.error}}
       </v-alert>
       </v-card-title>
       <v-card-text>
