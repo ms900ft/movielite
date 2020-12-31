@@ -40,10 +40,13 @@ export default {
       })
   },
   moveMovie (movie, where) {
-    return axios.put('/api/file/' + movie.file_id + '/move/' + encodeURIComponent(where), {
+    return axios.put('/api/file/' + movie.file_id + '/move/' + encodeURIComponent(where), {}, {
       headers: authHeader()
     })
       .then(response => {
+        console.log('------------------------------------')
+        console.log(authHeader())
+        console.log('------------------------------------')
         return response.data
       })
   },
