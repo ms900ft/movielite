@@ -29,17 +29,17 @@
     style="margin-top: 50px"
 
   >
-                  <v-btn outline   @click="saveTMDBID(item)">
+                  <v-btn    @click="saveTMDBID(item)">
                     Add Metadata
-                    <v-icon right dark>add_circle_outline</v-icon>
+                    <v-icon right >add_circle_outline</v-icon>
                   </v-btn>
-                  <v-btn outline  @click="openTmdb(item)">
+                  <v-btn   @click="openTmdb(item)">
                     View in TMDB
-                    <v-icon right dark>movie</v-icon>
+                    <v-icon right >movie</v-icon>
                   </v-btn>
-                  <v-btn outline  @click="playMovie(movie)">
+                  <v-btn   @click="playMovie(movie)">
                     Paly
-                    <v-icon right dark>play_circle_outline</v-icon>
+                    <v-icon right >play_circle_outline</v-icon>
                   </v-btn>
                   </v-row>
                 </div>
