@@ -40,7 +40,7 @@ export default {
       })
   },
   moveMovie (movie, where) {
-    return axios.put('/api/file/' + movie.file_id + '/move/' + encodeURIComponent(where), {
+    return axios.put('/api/file/' + movie.file_id + '/move/' + encodeURIComponent(where), {}, {
       headers: authHeader()
     })
       .then(response => {
@@ -81,7 +81,8 @@ export default {
   },
   playLocal (item, args = {}) {
     const queryString = Object.keys(args).map(key => key + '=' + args[key]).join('&')
-    return axios.put('/api/movie/' + item.id + '/play?' + queryString, {})
+    return axios.put('/api/movie/' + item.id + '/play?' + queryString, {},
+      { headers: authHeader() })
       .then(response => {
         return response
       })
