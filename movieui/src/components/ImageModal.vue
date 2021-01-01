@@ -49,7 +49,7 @@ export default {
 }
 </script>
 
-<style >
+<style scoped>
 .close {
   position: absolute;
   right: 10px;
@@ -84,5 +84,6 @@ object-fit: contain */
  margin-left: auto;
   margin-right: auto;
   position: relative;
+  display: flex;
 }
 </style>‚

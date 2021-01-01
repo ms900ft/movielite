@@ -10,7 +10,7 @@
           <div class="close">
             <v-icon size="30" @click="show = false">close</v-icon>
           </div>
-          <div class="row">
+          <div class="choice-row">
             <div>
               <img
                 :src="image(item)"
@@ -23,24 +23,28 @@
               <p style="margin: 10px">{{ title(item) }} {{ release(item) }}</p>
               <p style="margin: 10px" class="moviedesc">{{ item.overview }}</p>
 
-              <div class="row">
-                <div class="column">
-                  <v-btn outline dark @click="saveTMDBID(item)">
+<v-row
+    align="center"
+    justify="space-around"
+    style="margin-top: 50px"
+
+  >
+                  <v-btn outline   @click="saveTMDBID(item)">
                     Add Metadata
                     <v-icon right dark>add_circle_outline</v-icon>
                   </v-btn>
-                  <v-btn outline dark @click="openTmdb(item)">
+                  <v-btn outline  @click="openTmdb(item)">
                     View in TMDB
                     <v-icon right dark>movie</v-icon>
                   </v-btn>
-                  <v-btn outline dark @click="playMovie(movie)">
+                  <v-btn outline  @click="playMovie(movie)">
                     Paly
                     <v-icon right dark>play_circle_outline</v-icon>
                   </v-btn>
+                  </v-row>
                 </div>
-              </div>
             </div>
-          </div>
+
         </v-card>
       </v-flex>
     </v-layout>
@@ -154,7 +158,7 @@ export default {
   background-color: white;
 }
 
-.row {
+.choice-row {
   display: flex;
   flex-direction: row;
   margin-left: 10px;
@@ -208,8 +212,8 @@ export default {
 
 .close {
   position: absolute;
-  right: 5px;
-  top: 5px;
+  right: 15px;
+  top: 15px;
   background-color: white;
 }
 </style>
