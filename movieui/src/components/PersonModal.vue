@@ -86,5 +86,6 @@ object-fit: contain */
  margin-left: auto;
   margin-right: auto;
   position: relative;
+  display: flex;
 }
 </style>‚
