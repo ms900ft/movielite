@@ -1,12 +1,14 @@
 <template>
-  <v-dialog v-model="show" height="100%" fullscreen style="position: relative" content-class="imagedialog">
-   <div class="fullimagecontainer">
-    <img :src="image()" @click="close()" class="fullimage">
-    <div class="close">
-      <v-icon size="30" @click="show=false">close</v-icon>
-    </div>
-   </div>
+
+  <v-dialog v-model="show"   >
+   <v-img
+  contain
+   @click="close()"
+  :src="image()"
+   max-height="90vh"
+></v-img>
   </v-dialog>
+
 </template>
 
 <script>
