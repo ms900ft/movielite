@@ -8,7 +8,7 @@
       >
         <v-card style="overflow: hidden">
           <div class="close">
-            <v-icon size="30" @click="show = false">close</v-icon>
+            <v-icon size="30" @click="show = false">mdi-close</v-icon>
           </div>
           <div class="choice-row">
             <div>

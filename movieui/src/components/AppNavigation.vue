@@ -11,7 +11,7 @@
       </template>-->
       <v-app-bar-nav-icon  @click.stop="showsidebar=!showsidebar"></v-app-bar-nav-icon>
       <v-btn class="hidden-sm-and-down" text exact to="/?orderby=name">
-        <v-icon>home</v-icon>
+        <v-icon>mdi-home</v-icon>
       </v-btn>
       <v-btn class="hidden-sm-and-down" text exact to="/?show=watchlist">Watchlist</v-btn>
       <v-btn class="hidden-sm-and-down" text exact to="/?orderby=recent">Recently</v-btn>
@@ -29,7 +29,7 @@
       ></v-text-field>
 
       <v-btn icon class="hidden-sm-and-down" v-on:click="keybordVisible">
-        <v-icon>keyboard</v-icon>
+        <v-icon>mdi-keyboard</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
       <transition name="fade">
