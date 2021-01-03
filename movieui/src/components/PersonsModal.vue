@@ -4,7 +4,7 @@
       <v-carousel-item v-for="(item, i) in items" :key="i">
         <v-container>
           <div class="title">
-            {{ item.Name }}
+            {{ item.Name }} ({{desc(item)}})
           </div>
           <v-img
             :contain="contain"
@@ -52,9 +52,6 @@ export default {
   },
   methods: {
     image (item) {
-      console.log('------------------------------------')
-      console.log(item)
-      console.log('------------------------------------')
       if (!item) {
         return ''
       }
@@ -67,6 +64,16 @@ export default {
     },
     close (value) {
       this.$emit('input', value)
+    },
+    desc (item) {
+      console.log('------------------------------------')
+      console.log(item)
+      console.log('------------------------------------')
+      if (item.Job) {
+        return item.Job
+      } else {
+        return item.Character
+      }
     }
   }
 }
