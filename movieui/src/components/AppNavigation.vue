@@ -26,6 +26,8 @@
         height="30"
         placeholder="Search..."
         class="search"
+        single-line
+        hide-details
       ></v-text-field>
 
       <v-btn icon class="hidden-sm-and-down" v-on:click="keybordVisible">
