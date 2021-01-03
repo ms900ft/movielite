@@ -1,3 +1,4 @@
+import '@mdi/font/css/materialdesignicons.css'
 import Vue from 'vue'
 import vuetify from './plugins/vuetify'
 
@@ -11,7 +12,6 @@ import MobileDetect from 'mobile-detect'
 import VeeValidate from 'vee-validate'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import '@mdi/font/css/materialdesignicons.css'
 
 import './assets/main.css'
 
