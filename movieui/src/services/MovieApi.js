@@ -96,7 +96,7 @@ export default {
       })
   },
   deleteMovie (item) {
-    return axios.delete('/api/movie/' + item.id, item, {
+    return axios.delete('/api/movie/' + item.id, {
       headers: authHeader()
     })
       .then(response => {
