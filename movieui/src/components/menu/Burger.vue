@@ -30,7 +30,7 @@
           >{{ item.name() }}</v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <a  :href="downloadURL()">Download</a>
+          <a style="color: black" :href="downloadURL()">Download</a>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -176,5 +176,6 @@ li:hover {
 a {
   text-decoration : none
   color :black
+
 }
 </style>
