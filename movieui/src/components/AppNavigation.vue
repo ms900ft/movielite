@@ -33,7 +33,7 @@
       </v-btn>
       <v-spacer></v-spacer>
       <transition name="fade">
-        <div v-show="showkeybord" class="fixed">
+        <div v-if="showkeybord" class="fixed">
           <keyboard
             class="keybord"
             v-model="searchstring"
@@ -164,6 +164,8 @@ export default {
   right: 0;
   bottom: 0;
   position: flex;
+  max-width: 200px;
+
 }
 
 a{

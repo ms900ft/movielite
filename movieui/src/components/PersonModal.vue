@@ -1,10 +1,12 @@
 <template>
-  <v-dialog v-model="show"   >
-   <v-img
-  contain
+  <v-dialog v-model="show"  overlay-color="black"
+   overlay-opacity="1">
+    <v-img
+  :contain="contain"
    @click="close()"
   :src="image()"
-   max-height="90vh"
+   :max-height="maxheight"
+
 ></v-img>
   </v-dialog>
 </template>
@@ -20,7 +22,9 @@ export default {
       // data: {},
       // movie: this.data,
 
-      fullimage: false
+      fullimage: false,
+      maxheight: '90vh',
+      contain: true
       // TMDBID: this.data.meta.ID
     }
   },

@@ -1,12 +1,19 @@
 <template>
 
-  <v-dialog v-model="show"   >
+  <v-dialog v-model="show"  overlay-color="black"
+   overlay-opacity="1"
+
+    >
+    <!-- <v-container> -->
    <v-img
-  contain
+  :contain="contain"
    @click="close()"
   :src="image()"
-   max-height="90vh"
+   :max-height="maxheight"
+
 ></v-img>
+<!-- <v-icon style="top: 20; right: 50; postion: absolute" color="white">mdi-home</v-icon>
+</v-container> -->
   </v-dialog>
 
 </template>
@@ -22,7 +29,9 @@ export default {
       // data: {},
       // movie: this.data,
 
-      fullimage: false
+      fullimage: false,
+      maxheight: '90vh',
+      contain: true
       // TMDBID: this.data.meta.ID
     }
   },
