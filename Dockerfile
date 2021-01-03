@@ -1,4 +1,5 @@
 FROM node:lts-alpine AS nodebuilder
+RUN apk update && apk add python make g++
 WORKDIR /go/src/github.com/ms900ft/movielite
 COPY . .
 WORKDIR /go/src/github.com/ms900ft/movielite/movieui
