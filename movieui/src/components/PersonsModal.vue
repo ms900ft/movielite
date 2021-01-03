@@ -1,19 +1,20 @@
 <template>
-  <v-dialog v-model="show"  overlay-color="black"
-   overlay-opacity="1">
-
-    <v-container>
-  <div class="title">
-    {{data.Name}}
-  </div>
-    <v-img
-  :contain="contain"
-   @click="close()"
-  :src="image()"
-   :max-height="maxheight"
-
-></v-img>
-    </v-container>
+  <v-dialog v-model="show" overlay-color="black" overlay-opacity="1">
+    <v-carousel hide-delimiters v-model="startIndex" height="100vh">
+      <v-carousel-item v-for="(item, i) in items" :key="i">
+        <v-container>
+          <div class="title">
+            {{ item.Name }}
+          </div>
+          <v-img
+            :contain="contain"
+            @click="close()"
+            :src="image(item)"
+            :max-height="maxheight"
+          ></v-img>
+        </v-container>
+      </v-carousel-item>
+    </v-carousel>
   </v-dialog>
 </template>
 
@@ -21,7 +22,11 @@
 export default {
   props: {
     value: Boolean,
+    startIndex: Number,
     data: {}
+  },
+  mounted () {
+    this.items = this.data
   },
   data () {
     return {
@@ -30,7 +35,8 @@ export default {
 
       fullimage: false,
       maxheight: '90vh',
-      contain: true
+      contain: true,
+      items: {}
       // TMDBID: this.data.meta.ID
     }
   },
@@ -45,11 +51,17 @@ export default {
     }
   },
   methods: {
-    image () {
+    image (item) {
+      console.log('------------------------------------')
+      console.log(item)
+      console.log('------------------------------------')
+      if (!item) {
+        return ''
+      }
       var pic
       var size = 500
-      this.data.profile_path
-        ? (pic = this.$baseURL + '/images/w' + size + this.data.profile_path)
+      item.profile_path
+        ? (pic = this.$baseURL + '/images/w' + size + item.profile_path)
         : (pic = this.$baseURL + '/movie2/na.gif')
       return pic
     },
@@ -73,10 +85,9 @@ export default {
   position: relative;
   max-height: 100%;
   top: 0px;
-    /* margin-left: -440px;
+  /* margin-left: -440px;
   left: 50%; */
   display: grid;
-
 }
 .fullimage {
   padding: 3px;
@@ -91,13 +102,13 @@ object-fit: contain */
   max-height: 100vh;
   margin: auto;
 }
-.fullimagecontainer{
- margin-left: auto;
+.fullimagecontainer {
+  margin-left: auto;
   margin-right: auto;
   position: relative;
   display: flex;
 }
-.title{
+.title {
   color: aliceblue;
   width: 50%;
   margin: 0 auto;

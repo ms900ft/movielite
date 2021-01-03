@@ -4,7 +4,7 @@
    overlay-opacity="1"
 
     >
-    <!-- <v-container> -->
+
    <v-img
   :contain="contain"
    @click="close()"
@@ -12,8 +12,6 @@
    :max-height="maxheight"
 
 ></v-img>
-<!-- <v-icon style="top: 20; right: 50; postion: absolute" color="white">mdi-home</v-icon>
-</v-container> -->
   </v-dialog>
 
 </template>
@@ -97,4 +95,5 @@ object-fit: contain */
   position: relative;
   display: flex;
 }
+
 </style>‚

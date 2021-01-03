@@ -1,22 +1,23 @@
 <template>
   <div class="column crewlist">
-     <personModal
+    <personsModal
       v-show="fullimage"
       @close="fullimage = false"
-      :data="person"
+      :data="orderedPersons"
       v-model="fullimage"
+      :startIndex="startIndex"
     />
 
     <v-list>
-      <v-flex v-for="(item, index) in orderedPersons" :key="index" >
+      <v-flex v-for="(item, index) in orderedPersons" :key="index">
         <div class="rowreg" style="margin-bottom: 10px">
           <div class="rowsmall">
             <img
               :src="castimage(item.profile_path)"
               width="45px"
               height="68px"
-              style="margin-right: 10px;"
-              @click="showfullimage(item)"
+              style="margin-right: 10px"
+              @click="showfullimage(item, index)"
             />
           </div>
           <div class="rowsmall">
@@ -27,9 +28,15 @@
               class="fullimage"
             /> -->
           </div>
-          <div @click="open(item)" class="rowsmall cast" style="flex: 30%; margin: auto; display: block">
-            <p style="margin: 0;">{{item.Name}}</p>
-            <p style="color: black; margin:0; font-size: small">{{desc(item)}}</p>
+          <div
+            @click="open(item, index)"
+            class="rowsmall cast"
+            style="flex: 30%; margin: auto; display: block"
+          >
+            <p style="margin: 0">{{ item.Name }}</p>
+            <p style="color: black; margin: 0; font-size: small">
+              {{ desc(item) }}
+            </p>
           </div>
         </div>
       </v-flex>
@@ -38,11 +45,11 @@
 </template>
 
 <script>
-import personModal from '@/components/PersonModal'
+import personsModal from '@/components/PersonsModal'
 
 export default {
   name: 'PersonList',
-  components: { personModal },
+  components: { personsModal },
 
   data () {
     return {
@@ -50,6 +57,7 @@ export default {
       // collapsed: true
       // showdir: true
       fullimage: false,
+      startIndex: 0,
       person: {}
     }
   },
@@ -59,11 +67,11 @@ export default {
   computed: {
     orderedPersons: function () {
       const order = {
-        'Director': 1,
-        'Producer': 2,
-        'Writer': 3,
-        'Story': 4,
-        'Screenplay': 5
+        Director: 1,
+        Producer: 2,
+        Writer: 3,
+        Story: 4,
+        Screenplay: 5
       }
       var list = this.persons
       return list.sort(function (a, b) {
@@ -87,7 +95,8 @@ export default {
         }
         return 0
       })
-    } },
+    }
+  },
 
   methods: {
     castimage (path, size) {
@@ -112,13 +121,13 @@ export default {
         return item.Character
       }
     },
-    showfullimage (item) {
+    showfullimage (item, index) {
       if (item.profile_path !== '') {
         this.fullimage = !this.fullimage
         this.person = item
+        this.startIndex = index
       }
     }
-
   }
 }
 </script>
@@ -134,6 +143,6 @@ export default {
   overflow-y: auto;
   /* buttom: 20% */
 
-   margin-bottom: 300px;
+  margin-bottom: 300px;
 }
 </style>
