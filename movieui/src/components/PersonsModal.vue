@@ -1,6 +1,6 @@
 <template>
-  <v-dialog v-model="show" overlay-color="black" overlay-opacity="1">
-    <v-carousel hide-delimiters v-model="startIndex" height="100vh">
+  <v-dialog v-model="show" overlay-color="black" overlay-opacity="1" style="position: absolute; top: 0;z-index:999">
+    <v-carousel hide-delimiters v-model="startIndex" height="100vh" >
       <v-carousel-item v-for="(item, i) in items" :key="i">
         <v-container>
           <div class="title">
@@ -33,7 +33,6 @@ export default {
       // data: {},
       // movie: this.data,
 
-      fullimage: false,
       maxheight: '90vh',
       contain: true,
       items: {}
@@ -66,9 +65,6 @@ export default {
       this.$emit('input', value)
     },
     desc (item) {
-      console.log('------------------------------------')
-      console.log(item)
-      console.log('------------------------------------')
       if (item.Job) {
         return item.Job
       } else {
@@ -121,4 +117,5 @@ object-fit: contain */
   margin: 0 auto;
   text-align: center;
 }
+
 </style>‚
