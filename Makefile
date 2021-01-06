@@ -1,6 +1,6 @@
 APP=movielite
 HELPER=vlc_helper
-WATCH_FILES= find . -type f -not -path '*/\.*' | grep -i '.*[.]go\|html$$' 2> /dev/null
+WATCH_FILES= find . -type f -not -path '*/\.*' -not -path '*movieui\/*' | grep -i '.*[.]go\|html$$' 2> /dev/null
 
 all:
 	$(MAKE) staticbuild
