@@ -66,9 +66,9 @@ export default {
     },
     desc (item) {
       if (item.Job) {
-        return item.Job
+        return item.Job.replace(/^\((.+)\)$/, '$1')
       } else {
-        return item.Character
+        return item.Character.replace(/^\((.+)\)$/, '$1')
       }
     }
   }
