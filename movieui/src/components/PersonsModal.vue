@@ -1,17 +1,23 @@
 <template>
   <v-dialog v-model="show" overlay-color="black" overlay-opacity="1" style="position: absolute; top: 0;z-index:999">
-    <v-carousel hide-delimiters v-model="startIndex" height="100vh" >
+    <v-carousel hide-delimiters v-model="index" height="100vh" >
       <v-carousel-item v-for="(item, i) in items" :key="i">
         <v-container>
           <div class="title">
             {{ item.Name }} ({{desc(item)}})
           </div>
           <v-img
+            v-if=item.profile_path
             :contain="contain"
             @click="close()"
             :src="image(item)"
             :max-height="maxheight"
           ></v-img>
+          <v-avatar v-else  class="avatar" @click="close()" size="90vh" :max-height="maxheight" >
+
+          <v-icon  :max-height="maxheight" size="90vh"  color="#337ab7" >mdi-account</v-icon>
+
+          </v-avatar>
         </v-container>
       </v-carousel-item>
     </v-carousel>
@@ -27,6 +33,7 @@ export default {
   },
   mounted () {
     this.items = this.data
+    // this.index = this.startIndex
   },
   data () {
     return {
@@ -36,6 +43,7 @@ export default {
       maxheight: '90vh',
       contain: true,
       items: {}
+      // index: 0
       // TMDBID: this.data.meta.ID
     }
   },
@@ -46,6 +54,14 @@ export default {
       },
       set (value) {
         this.$emit('input', value)
+      }
+    },
+    index: {
+      get () {
+        return this.startIndex
+      },
+      set (value) {
+        this.$emit('startIndex', value)
       }
     }
   },
@@ -117,5 +133,9 @@ object-fit: contain */
   margin: 0 auto;
   text-align: center;
 }
-
+.avatar {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
 </style>‚

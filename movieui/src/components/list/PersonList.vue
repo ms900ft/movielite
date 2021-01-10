@@ -13,12 +13,14 @@
         <div class="rowreg" style="margin-bottom: 10px">
           <div class="rowsmall">
             <img
+            v-if=item.profile_path
               :src="castimage(item.profile_path)"
               width="45px"
               height="68px"
               style="margin-right: 10px"
               @click="showfullimage(item, index)"
             />
+            <v-icon  v-else size="45px" color="#337ab7" >mdi-account</v-icon>
           </div>
           <div class="rowsmall">
             <!-- <img
