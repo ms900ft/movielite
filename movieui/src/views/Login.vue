@@ -46,6 +46,12 @@ export default {
       message: ''
     }
   },
+  props: [
+    'username'
+  ],
+  mounted () {
+    this.user.username = this.username
+  },
   computed: {
     loggedIn () {
       return this.$store.state.auth.status.loggedIn

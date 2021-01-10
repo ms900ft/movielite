@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import VueCookies from 'vue-cookies'
+// import VueCookies from 'vue-cookies'
 import movieApi from '@/services/MovieApi'
 export default {
   name: 'MenuUser',
@@ -26,6 +26,7 @@ export default {
       User: 'Users'
     }
   },
+
   mounted () {
     this.User = this.$store.state.auth.user.user_name
     movieApi
@@ -41,8 +42,8 @@ export default {
   methods: {
     changeUser (item) {
       this.User = item.UserName
-      VueCookies.set('movieuser', this.User, '365d', null, null, null, 'Lax')
-      this.$router.go(this.$router.currentRoute)
+      this.$store.dispatch('auth/logout')
+      this.$router.push('/login?username=' + item.UserName)
     }
   }
 }

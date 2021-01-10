@@ -55,5 +55,8 @@ new Vue({
   vuetify,
   render: h => h(App),
   store,
-  router
+  router,
+  icons: {
+    iconfont: 'mdi' // default - only for display purposes
+  }
 }).$mount('#app')

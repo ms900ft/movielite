@@ -28,7 +28,10 @@ export const router = new VueRouter({
   },
   {
     path: '/login',
-    component: Login
+    component: Login,
+    props: (route) => ({
+      username: route.query.username
+    })
   },
   {
     path: '/user',
