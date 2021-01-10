@@ -21,6 +21,7 @@
       <v-text-field
         v-model="searchstring"
         text
+
         clearable
         autofocus
         height="30"
@@ -52,7 +53,7 @@
 <v-btn class="hidden-sm-and-down" text exact @click.prevent="logOut">logout</v-btn>
       <menu-user class="hidden-sm-and-down"></menu-user>
 
-      <v-chip outlined dark style="color: white;">Results found: {{total()}}</v-chip>
+      <v-chip outlined dark style="color: white;">found: {{total()}}</v-chip>
     </v-app-bar>
   </span>
 </template>
@@ -166,7 +167,7 @@ export default {
   right: 0;
   bottom: 0;
   position: flex;
-  max-width: 200px;
+  width: 150px;
 
 }
 
