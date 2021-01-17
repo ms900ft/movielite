@@ -5,13 +5,13 @@
       <div class="close">
         <v-icon size="30" @click="close()">close</v-icon>
       </div>
-      <div class="media-object">
-        <div>
+      <div  class="media-object">
+        <div >
           <img
             :src="image()"
             @click=showFullImage()
             height="250px"
-            style="padding: 10px"
+
             width="180px"
           />
         </div>
@@ -388,6 +388,7 @@ export default {
 
 .media-object {
   margin-right: 1em;
+  padding: 5px
 }
 
 .media-body {

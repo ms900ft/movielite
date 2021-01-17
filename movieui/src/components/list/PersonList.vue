@@ -20,7 +20,7 @@
               style="margin-right: 10px"
               @click="showfullimage(item, index)"
             />
-            <v-icon  v-else size="45px" color="#337ab7" >mdi-account</v-icon>
+            <v-icon  v-else  size="45px"  color="#337ab7" >mdi-account</v-icon>
           </div>
           <div class="rowsmall">
             <!-- <img
@@ -124,11 +124,11 @@ export default {
       }
     },
     showfullimage (item, index) {
-      if (item.profile_path !== '') {
-        this.fullimage = !this.fullimage
-        this.person = item
-        this.startIndex = index
-      }
+      // if (item.profile_path !== '') {
+      this.fullimage = !this.fullimage
+      this.person = item
+      this.startIndex = index
+      // }
     }
   }
 }
