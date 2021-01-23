@@ -259,6 +259,7 @@ func (s *Service) updateMovie(c *gin.Context) {
 		return
 	}
 	old := movie
+	movie.IsTv = input.IsTv
 	if input.Title != old.Title {
 		movie.Title = input.Title
 		if err := movie.GetMeta(s.TMDBClient); err != nil {
