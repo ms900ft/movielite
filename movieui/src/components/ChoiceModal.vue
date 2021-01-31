@@ -1,7 +1,65 @@
 <template>
-  <v-dialog v-model="show" width="90%" class="v-dialog">
-    <v-layout v-if="show" wrap row style="background-color: white">
-      <v-flex
+  <v-dialog v-model="show" width="90%" >
+    <v-layout v-if="show"  style="background-color: white;">
+        <div class="close">
+            <v-icon size="30" outlined @click="show = false">mdi-close</v-icon>
+          </div>
+
+       <v-container  >
+      <v-row class="mr-6" dense >
+        <v-col
+          v-for="(item, index) in data.multiplechoice.Results"
+          :key="index"
+          cols="12"
+          class="ma-6"
+
+        >
+          <v-card
+            color="#337ab7"
+            dark
+            class="d-flex flex-column"
+
+          >
+            <div class="d-flex flex-no-wrap justify-space-between">
+              <v-container >
+                <v-card-title
+                  class="headline"
+                  v-text="title(item) + release(item) "
+                ></v-card-title>
+
+                <v-card-text  v-text="item.overview"></v-card-text>
+  <v-card-text ></v-card-text >
+                <v-card-actions style="position:absolute; bottom:0px;">
+
+                 <v-btn    @click="saveTMDBID(item)">
+                    Add Metadata
+                    <v-icon right >add_circle_outline</v-icon>
+                  </v-btn>
+                  <v-btn   @click="openTmdb(item)">
+                    View in TMDB
+                    <v-icon right >movie</v-icon>
+                  </v-btn>
+                  <v-btn   @click="playMovie(movie)">
+                    Paly
+                    <v-icon right >play_circle_outline</v-icon>
+                  </v-btn>
+                </v-card-actions>
+              </v-container>
+
+              <v-avatar
+                class="ma-3"
+                height="400px"
+                width="400px"
+                tile
+              >
+                <v-img contain :src="image(item)"></v-img>
+              </v-avatar>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+      <!-- <v-flex
         xs12
         v-for="(item, index) in data.multiplechoice.Results"
         :key="index"
@@ -11,7 +69,7 @@
             <v-icon size="30" @click="show = false">mdi-close</v-icon>
           </div>
           <div class="choice-row">
-            <div>
+            <div >
               <img
                 :src="image(item)"
                 class="column"
@@ -20,10 +78,15 @@
               />
             </div>
             <div class="column, title" style="width: 100%">
+              <v-row>
               <p style="margin: 10px">{{ title(item) }} {{ release(item) }}</p>
               <p style="margin: 10px" class="moviedesc">{{ item.overview }}</p>
 
-<v-row
+              </v-row>
+
+  <v-container fill-height>
+    <v-row
+
     align="center"
     justify="space-around"
     style="margin-top: 50px"
@@ -42,11 +105,13 @@
                     <v-icon right >play_circle_outline</v-icon>
                   </v-btn>
                   </v-row>
+  </v-container>
+
                 </div>
             </div>
 
         </v-card>
-      </v-flex>
+      </v-flex> -->
     </v-layout>
   </v-dialog>
 </template>
@@ -137,83 +202,11 @@ export default {
 }
 </script>
 <style scoped >
-.title {
-  background: #337ab7;
-  color: white;
-  margin: 20px;
-}
-
-.cast {
-  cursor: pointer;
-  width: 30%;
-  float: left;
-  color: #337ab7;
-}
-
-.v-dialog {
-  position: absolute;
-  top: 20px;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: white;
-}
-
-.choice-row {
-  display: flex;
-  flex-direction: row;
-  margin-left: 10px;
-}
-
-.rowsmall {
-  display: flex;
-  flex-direction: row;
-}
-
-.column {
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  margin: 20px;
-}
-
-.coldetail {
-  display: flex;
-  flex-direction: column;
-  width: 20%;
-  background: #337ab7;
-  color: white;
-  margin-left: 10px;
-  margin-block-end: 10px;
-  padding-block-start: 8px;
-  padding-left: 10px;
-}
-
-.crew {
-  background: #337ab7;
-  color: white;
-  font-size: large;
-  margin: 10px;
-  text-align: center;
-}
-
-.crewlist {
-  background: white;
-}
-
-.detail {
-  background: #e0e0e0;
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-  margin-left: 10px;
-  margin-block-end: 10px;
-  padding-block-start: 8px;
-}
 
 .close {
   position: absolute;
-  right: 15px;
-  top: 15px;
+  right: 0px;
+  top: 0px;
   background-color: white;
 }
 </style>
