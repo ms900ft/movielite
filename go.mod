@@ -6,7 +6,6 @@ require (
 	github.com/Bios-Marcel/wastebasket v0.0.0-20190304193457-ba788b19da79
 	github.com/PaesslerAG/gval v1.1.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/gammazero/workerpool v1.1.2
 	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19
