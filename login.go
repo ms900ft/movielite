@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/ms900ft/movielite/models"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
