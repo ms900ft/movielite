@@ -1,16 +1,16 @@
 <template>
-  <v-container v-if="loading">
-    <div class="text-xs-center">
-      <v-progress-circular
-        indeterminate
-        :size="150"
-        :width="8"
-        color="#0d47a1"
-      ></v-progress-circular>
-    </div>
-  </v-container>
+  <v-container grid-list-xl fluid>
+    <v-container v-show="loading">
+      <div class="center-screen">
+        <v-progress-circular
+          indeterminate
+          :size="150"
+          :width="8"
+          color="#0d47a1"
+        ></v-progress-circular>
+      </div>
+    </v-container>
 
-  <v-container v-else grid-list-xl fluid>
     <movieModal
       v-show="modalVisible"
       @close="modalVisible = false"
@@ -35,16 +35,13 @@
       :data="modalData"
       v-model="imageModalVisible"
     />
-
-    <v-layout wrap row style="margin: auto 40px;">
+    <v-layout wrap row style="margin: auto 40px">
       <v-flex
-style="flex: 0; "
+        style="flex: 0"
         v-for="(item, index) in wholeResponse"
         :key="index"
-
       >
         <v-card width="180px" height="100%">
-
           <image-overview
             v-on:openModal="openModal(item)"
             v-on:imageModal="openImageModal(item)"
@@ -53,22 +50,21 @@ style="flex: 0; "
             :index="index"
             :localHelper="playHelper"
           ></image-overview>
-
         </v-card>
-
       </v-flex>
       <infinite-loading @infinite="infiniteHandler">
         <div slot="no-more"></div>
         <div slot="no-results"></div>
         <span slot="spinner">
-     <div class="text-xs-center">
-      <v-progress-circular
-        indeterminate
-
-        color="#0d47a1"
-      ></v-progress-circular>
-    </div>
-  </span>
+          <div class="center-screen">
+            <v-progress-circular
+              indeterminate
+              :size="150"
+              :width="8"
+              color="#0d47a1"
+            ></v-progress-circular>
+          </div>
+        </span>
         <!-- <template slot="spinner"></template> -->
       </infinite-loading>
     </v-layout>
@@ -126,22 +122,22 @@ export default {
     this.getMovies()
     console.log(this.$vuetify.breakpoint)
 
-    EventBus.$on('DELETEMOVIE', (item) => {
+    EventBus.$on('DELETEMOVIE', item => {
       this.deleteMovie(item)
     })
-    EventBus.$on('TOGGLEWATCHLIST', (item) => {
+    EventBus.$on('TOGGLEWATCHLIST', item => {
       this.toggleWatchlist(item)
     })
-    EventBus.$on('ISTVSHOW', (item) => {
+    EventBus.$on('ISTVSHOW', item => {
       this.isTvShow(item)
     })
-    EventBus.$on('RESCAN', (item) => {
+    EventBus.$on('RESCAN', item => {
       console.log('------------------------------------')
       console.log('rescanxxx')
       console.log(item)
       this.rescanMovie(item)
     })
-    EventBus.$on('FULLIMAGE', (item) => {
+    EventBus.$on('FULLIMAGE', item => {
       this.imageModalVisible = !this.imageModalVisible
     })
     this.localHelper()
@@ -188,9 +184,7 @@ export default {
       return ret
     },
     changeList (item) {
-      const index = this.wholeResponse
-        .map((movie) => movie.id)
-        .indexOf(item.id)
+      const index = this.wholeResponse.map(movie => movie.id).indexOf(item.id)
 
       this.wholeResponse.splice(index, 1, item)
       this.modalData = item
@@ -251,7 +245,7 @@ export default {
       }
       movieApi
         .fetchMovieCollection(this, args)
-        .then((response) => {
+        .then(response => {
           this.wholeResponse.push(...response.data)
           this.$store.commit('setResultsFound', response.meta.total)
           this.total = response.meta.total
@@ -263,7 +257,7 @@ export default {
             $state.loaded()
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
       if ($state) {
@@ -301,10 +295,10 @@ export default {
     updateMovie (item, args) {
       movieApi
         .updateMovie(item)
-        .then((response) => {
+        .then(response => {
           this.loading = false
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
       if (args.isTvShow) {
@@ -318,10 +312,10 @@ export default {
     deleteMovie (item) {
       movieApi
         .deleteMovie(item)
-        .then((response) => {
+        .then(response => {
           this.loading = false
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
       this.wholeResponse.splice(this.wholeResponse.indexOf(item), 1)
@@ -341,14 +335,14 @@ export default {
     localHelper () {
       localApi
         .ping(this.$localViewURL)
-        .then((response) => {
+        .then(response => {
           if (response.data.alive === 'ok') {
             this.playHelper = true
           } else {
             this.playHelper = false
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     },
@@ -357,7 +351,7 @@ export default {
       // item.watchlist = false
       movieApi
         .addMeta(item, id)
-        .then((response) => {
+        .then(response => {
           this.loading = false
           if (response.meta.ID > 0) {
             this.movie = response
@@ -365,7 +359,7 @@ export default {
             // this.show = false;
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     }
@@ -421,4 +415,15 @@ export default {
 .moviedesc {
   padding-right: 20px;
 }
+
+.center-screen {
+position: fixed;
+top: 50%;
+left: 50%;
+margin-top: -50px;
+margin-left: -50px;
+width: 100px;
+height: 100px;
+}
+
 </style>
