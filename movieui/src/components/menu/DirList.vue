@@ -1,23 +1,22 @@
 <template>
-  <v-dialog v-model="showdirs" @close="showdirs(false)" width="350">
+  <v-dialog v-model="showdirs" @close="showdirs(false)" width="50%" scrollable>
     <v-layout row>
       <v-flex>
         <v-card>
-          <v-list two-line subheader>
-            <v-subheader class="headline">Move movie to:</v-subheader>
+          <v-list  subheader rounded >
+            <v-subheader class="justify-center headline">move movie to</v-subheader>
 
             <v-list-item
-              ripple
               v-for="(item) in orderedTargets"
               :key="item.name"
               v-on:click="move(item.name)"
             >
-              <v-list-item-avatar>
-                <v-icon class="blue lighten-1 white--text">folder</v-icon>
-              </v-list-item-avatar>
+              <v-list-item-icon>
+                <v-icon color="blue darken-4" large>mdi-folder</v-icon>
+              </v-list-item-icon>
 
               <v-list-item-content>
-                <v-list-item-title class="movietitle">{{ item.name }}</v-list-item-title>
+                <v-list-item-title class="dirlist">{{ item.name }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -81,4 +80,13 @@ export default {
 </script>
 
 <style scoped>
+.dirlist {
+  color: #337ab7;
+  font-size: 24px;
+  font-weight: 500;
+  cursor: pointer;
+  padding-left: 10px;
+
+}
+
 </style>
