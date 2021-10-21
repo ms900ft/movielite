@@ -3,8 +3,8 @@
     <v-layout row>
       <v-flex>
         <v-card>
-          <v-list  subheader rounded >
-            <v-subheader class="justify-center headline">move movie to</v-subheader>
+          <v-list   rounded >
+            <v-subheader class="justify-center headline">Move movie to</v-subheader>
 
             <v-list-item
               v-for="(item) in orderedTargets"
@@ -81,7 +81,7 @@ export default {
 
 <style scoped>
 .dirlist {
-  color: #337ab7;
+  color: #0D47A1;
   font-size: 24px;
   font-weight: 500;
   cursor: pointer;
@@ -89,4 +89,12 @@ export default {
 
 }
 
+.headline {
+  color: white;
+  background-color: #0D47A1;
+  font-size: 24px;
+  font-weight: 500;
+  cursor: pointer;
+  padding-top: 10px;
+}
 </style>
