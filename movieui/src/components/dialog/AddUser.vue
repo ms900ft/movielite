@@ -28,8 +28,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click="show = false">Close</v-btn>
-          <v-btn  color="blue darken-1" flat @click="addUser">Save</v-btn>
+          <v-btn color="#0d47a1" dark flat @click="show = false">Close</v-btn>
+          <v-btn  color="#0d47a1" dark flat @click="addUser">Save</v-btn>
         </v-card-actions>
         </form>
       </v-card>

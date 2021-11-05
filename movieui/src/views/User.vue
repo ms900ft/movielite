@@ -1,5 +1,5 @@
 <template>
-  <v-layout row>
+  <v-layout row class="pt-13 ">
 
     <add-user v-show="ShowAdd" v-model="ShowAdd" v-on:userAdded="userAdded"> </add-user>
     <v-flex xs12 sm6 offset-sm3>
@@ -7,10 +7,10 @@
         {{alert_message}}
       </v-alert>
       <v-form v-model="valid">
-        <v-card>
+        <v-card >
 
           <v-toolbar v-if="Admin.is_admin" color="white">
-            <v-toolbar-title>Users</v-toolbar-title>
+            <v-toolbar-title class="font-weight-black, ml-12">Users</v-toolbar-title>
 
             <v-spacer></v-spacer>
 

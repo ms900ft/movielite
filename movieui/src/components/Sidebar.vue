@@ -3,7 +3,9 @@
     <v-navigation-drawer
       v-model="visible"
       temporary
+      color="blue darken-4"
       dark
+      dense
       width="250px"
       style="position:fixed; top:0; left:0; overflow-y:scroll;"
     >
