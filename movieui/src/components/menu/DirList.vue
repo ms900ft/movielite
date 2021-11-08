@@ -1,9 +1,9 @@
 <template>
-  <v-dialog v-model="showdirs" @close="showdirs(false)" width="50%" scrollable>
+  <v-dialog v-model="showdirs" @close="showdirs(false)" max-width="50%"  scrollable>
     <v-layout row>
       <v-flex>
         <v-card>
-          <v-list   rounded >
+          <v-list    min-height="800">
             <v-subheader class="justify-center headline">Move movie to</v-subheader>
 
             <v-list-item
@@ -11,7 +11,7 @@
               :key="item.name"
               v-on:click="move(item.name)"
             >
-              <v-list-item-icon>
+              <v-list-item-icon class="ml-8">
                 <v-icon color="blue darken-4" large>mdi-folder</v-icon>
               </v-list-item-icon>
 

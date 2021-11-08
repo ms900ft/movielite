@@ -1,11 +1,14 @@
 
 <template>
-  <v-dialog v-if="dialog" v-model="dialog" persistent max-width="290">
+  <v-dialog v-if="dialog" v-model="dialog" persistent width="500px">
     <v-card>
       <v-card-title class="headline">
         Really delete:
-        <span class="movietitle">{{movie.title}}</span>
+
       </v-card-title>
+       <v-card-text>
+<span class="movietitle">{{movie.title}}</span>
+       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="primary" flat @click="dialog = false">Cancel</v-btn>
