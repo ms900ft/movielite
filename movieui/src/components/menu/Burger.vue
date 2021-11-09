@@ -11,8 +11,8 @@
        </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" flat @click="dialog = false">Cancel</v-btn>
-        <v-btn color="primary" falt @click="deleteMovie(getMovieItem)">Delete</v-btn>
+        <v-btn color="primary"  @click="dialog = false">Cancel</v-btn>
+        <v-btn color="primary"  @click="deleteMovie(getMovieItem)">Delete</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -130,9 +130,6 @@ export default {
     },
     openMenu () {},
     isTvShow (item) {
-      console.log('------------------------------------')
-      console.log(item)
-      console.log('------------------------------------')
       item.is_tv = true
       EventBus.$emit('ISTVSHOW', item)
     },

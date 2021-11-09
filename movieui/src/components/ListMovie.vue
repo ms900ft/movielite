@@ -322,6 +322,8 @@ export default {
         .catch(error => {
           console.log(error)
         })
+      this.$store.commit('setResultsFound', this.total - 1)
+      this.total = this.total - 1
       this.wholeResponse.splice(this.wholeResponse.indexOf(item), 1)
     },
     multipleChoice (item) {
