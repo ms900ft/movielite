@@ -140,6 +140,7 @@ export default {
     EventBus.$on('FULLIMAGE', item => {
       this.imageModalVisible = !this.imageModalVisible
     })
+
     this.localHelper()
     // this.descLength();
     // this.searchboxVisible = false;
@@ -231,7 +232,7 @@ export default {
       // $state.loaded;
     },
     getMovies ($state) {
-      // this.loading = true
+      this.loading = true
       let args = {
         page: this.page,
         show: this.show,
