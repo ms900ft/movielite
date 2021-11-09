@@ -233,6 +233,9 @@ export default {
     },
     getMovies ($state) {
       this.loading = true
+      if (!$state) {
+        this.$store.state.resultsFound = 0
+      }
       let args = {
         page: this.page,
         show: this.show,
