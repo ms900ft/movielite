@@ -1,17 +1,25 @@
 
 <template>
-  <v-list-group prepend-icon="account_circle" :value="false">
-    <template v-slot:activator>
-        <v-list-item-title v-text="User"></v-list-item-title>
-    </template>
+  <!-- <v-list-group prepend-icon="account_circle" :value="false"> -->
+    <!-- <template v-slot:activator> -->
+        <v-list-item >
+          <v-list-item-action>
+            <v-icon>account_circle</v-icon>
+          </v-list-item-action>
 
-    <v-list>
+          <v-list-item-content>
+            <v-list-item-title>{{User}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+    <!-- </template> -->
+
+    <!-- <v-list>
       <v-list-item v-for="(item, index) in items" :key="index" @click="gotoItem(item)">
         <v-list-item-action></v-list-item-action>
         <v-list-item-title>{{ item.name }}</v-list-item-title>
       </v-list-item>
-    </v-list>
-  </v-list-group>
+    </v-list> -->
+  <!-- </v-list-group> -->
 </template>
 
 <script>
@@ -26,7 +34,7 @@ export default {
       Users: [],
       User: 'Users',
       items: [
-        { name: 'Show User', to: '/user' }
+        // { name: 'Show User', to: '/user' }
         // { name: 'No Title', to: '/?show=notitle' },
         // { name: 'Duplicates', to: '/?show=duplicate&orderby=name' }
       ]
