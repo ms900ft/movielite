@@ -160,12 +160,12 @@ func (s *Service) getMovies(c *gin.Context) {
 	tx = tx.Where("movies.is_tv = false")
 	//order
 	switch {
-	case q.Orderby == "name" || len(q.Alpha) > 0:
-		if fulltext && len(q.Qtitel) > 0 {
-			tx = tx.Order("bm25(fulltexts, 1.0, 50.0, 5.0, 10.0)")
-		} else {
-			tx = tx.Order("movies.title ASC")
-		}
+	case fulltext && len(q.Qtitel) > 0:
+		tx = tx.Order("bm25(fulltexts, 1.0, 50.0, 5.0, 10.0)")
+
+	case q.Orderby == "name" || len(q.Qtitel) > 0:
+		tx = tx.Order("movies.title ASC")
+
 	case q.Orderby == "recent":
 		tx = tx.Order("recentlies.last_played DESC")
 	case q.Orderby == "last_scanned":
