@@ -47,10 +47,10 @@ npminstall:
 	$(MAKE) -C movieui install
 
 deploy: build
-	 			scp "./${APP}" nudel:/Users/ms/movielite
+	 			scp "./${APP}" nudel2:/Users/ms/movielite
 	 			rm ./${APP}
-				ssh nudel  launchctl unload ~/Library/LaunchAgents/org.local.movielite.plist
-				ssh nudel  launchctl load ~/Library/LaunchAgents/org.local.movielite.plist
+				ssh nudel2  launchctl unload ~/Library/LaunchAgents/org.local.movielite.plist
+				ssh nudel2  launchctl load ~/Library/LaunchAgents/org.local.movielite.plist
 
 metalint:
 	if command -v gometalinter > /dev/null; then echo ''; else go get -u github.com/alecthomas/gometalinter; fi

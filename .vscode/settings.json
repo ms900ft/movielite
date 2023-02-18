@@ -33,5 +33,6 @@
     "esversion": 10,
     "asi": true
   },
+  "go.diagnostic.vulncheck": "Imports",
 
 }
