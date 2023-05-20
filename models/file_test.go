@@ -22,6 +22,7 @@ func TestTranslatename(t *testing.T) {
 		"Film_im_rbb-Der_König_von_Berlin-6f535ddd-d218-4488-b831-8eb362b22761_1800k.mp4":                                                                                        "Der König von Berlin",
 		"Freistatt.mp4": "Freistatt",
 		"Das_alte_Gewehr_-_Spielfilm,_Frankreich_BRD_1975.mp4": "Das alte Gewehr",
+		"Die_Chinesin_(Originalversion_mit_Untertitel).mp4":    "Die Chinesin",
 	}
 	regexes := map[string]string{}
 	for key, value := range files {
