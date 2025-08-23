@@ -17,7 +17,7 @@ const (
 	WATCHLIST = "watchlist"
 )
 
-//Service mal sehen
+// Service mal sehen
 type Service struct {
 	Router     *gin.Engine
 	DB         *gorm.DB
@@ -32,7 +32,7 @@ type meta struct {
 	Total int64 `json:"total"`
 }
 
-//Initialize mal sehen
+// Initialize mal sehen
 func (a *Service) Initialize() {
 	var err error
 	dbc := models.DBConfig{DBName: a.Config.DataBase, InitialAdminPassword: a.Config.InitialAdminPassword}
@@ -65,7 +65,7 @@ func (a *Service) Initialize() {
 	a.initializeRoutes()
 }
 
-//Run mal sehen
+// Run mal sehen
 func (a *Service) Run() error {
 	p := fmt.Sprintf(":%d", a.Config.Port)
 	log.Debug("running on port: " + p)

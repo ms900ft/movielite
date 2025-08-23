@@ -27,7 +27,7 @@
   "editor.formatOnSave": false,
   "vetur.validation.template": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "jshint.options": {
     "esversion": 10,

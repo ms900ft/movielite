@@ -3,17 +3,22 @@ package movielite
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
 	"strings"
+	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/fsnotify/fsnotify"
-	"github.com/ms900ft/movielite/models"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/ms900ft/movielite/models"
 )
 
 type Walker struct {
@@ -243,6 +248,7 @@ func (w *Walker) watchdirectory(dir string) error {
 	defer watcher.Close()
 
 	done := make(chan bool)
+	ticker := time.NewTicker(5000 * time.Millisecond)
 	go func() {
 		for {
 			select {
@@ -265,7 +271,31 @@ func (w *Walker) watchdirectory(dir string) error {
 			}
 		}
 	}()
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			case t := <-ticker.C:
+				fmt.Println("Tick at", t)
+				list := watcher.WatchList()
+				spew.Dump(list)
+				// slices.Contains(list, dir)
+				if !slices.Contains(list, dir) {
+					log.Debug("watcher not watching")
+					if _, err := os.Stat(dir); errors.Is(err, os.ErrNotExist) {
+						continue
+					} else {
+						err = watcher.Add(dir)
+						if err != nil {
+							log.Error(err)
+						}
+					}
+				}
+			}
+		}
 
+	}()
 	err = watcher.Add(dir)
 	if err != nil {
 		log.Error(err)

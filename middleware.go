@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//CORSMiddleware for gin
+// CORSMiddleware for gin
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 

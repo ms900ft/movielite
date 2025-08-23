@@ -9,3 +9,4 @@ jsconfig.json
 .vscode/settings.json
 cmd/server/__debug_bin
 workspace.code-workspace
+.vscode/settings.json
