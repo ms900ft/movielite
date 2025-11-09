@@ -36,7 +36,7 @@ type Movielist struct {
 	Meta meta           `json:"meta"`
 }
 
-//Query movie query parameter
+// Query movie query parameter
 type Query struct {
 	Orderby     string `form:"orderby"`
 	Qtitel      string `form:"title"`
@@ -52,6 +52,14 @@ type Query struct {
 	Show        string `form:"show"`
 }
 
+// getMovie godoc
+// @Summary Get a single movie
+// @Description get a movie by ID
+// @Tags movies
+// @Produce  json
+// @Param id path int true "Movie ID"
+// @Success 200 {object} models.Movie
+// @Router /api/movie/{id} [get]
 func (s *Service) getMovie(c *gin.Context) {
 	db := s.DB
 	id := c.Param("id")
@@ -66,6 +74,22 @@ func (s *Service) getMovie(c *gin.Context) {
 	c.JSON(http.StatusOK, movie)
 }
 
+// getMovies godoc
+// @Summary Get a list of movies
+// @Description get movies
+// @Tags movies
+// @Produce  json
+// @Param orderby query string false "Order by (name, recent, last_scanned)"
+// @Param title query string false "Title filter"
+// @Param alpha query string false "Alpha filter"
+// @Param genre query int false "Genre ID filter"
+// @Param crew query int false "Crew person ID filter"
+// @Param person query int false "Person (cast/crew) ID filter"
+// @Param cast query int false "Cast person ID filter"
+// @Param country query string false "Country code filter"
+// @Param show query string false "Show (multiple, unrated, duplicate, notitle, nodesc, watchlist)"
+// @Success 200 {object} Movielist
+// @Router /api/movie [get]
 func (s *Service) getMovies(c *gin.Context) {
 	var q Query
 	var fulltext = true
@@ -195,6 +219,14 @@ func (s *Service) getMovies(c *gin.Context) {
 	c.JSON(http.StatusOK, ml)
 }
 
+// deleteMovie godoc
+// @Summary Delete a movie
+// @Description delete a movie by ID
+// @Tags movies
+// @Produce  json
+// @Param id path int true "Movie ID"
+// @Success 200 {object} models.Movie
+// @Router /api/movie/{id} [delete]
 func (s *Service) deleteMovie(c *gin.Context) {
 	db := s.DB
 	var movie models.Movie
@@ -208,6 +240,15 @@ func (s *Service) deleteMovie(c *gin.Context) {
 	c.JSON(http.StatusOK, movie)
 }
 
+// createMovie godoc
+// @Summary Create a movie
+// @Description create a new movie entry
+// @Tags movies
+// @Accept  json
+// @Produce  json
+// @Param movie body models.Movie true "Movie object"
+// @Success 201 {object} models.Movie
+// @Router /api/movie [post]
 func (s *Service) createMovie(c *gin.Context) {
 	db := s.DB
 	var movie models.Movie
@@ -240,6 +281,16 @@ func (s *Service) createMovie(c *gin.Context) {
 	c.JSON(http.StatusCreated, movie)
 }
 
+// updateMovie godoc
+// @Summary Update a movie
+// @Description update a movie by ID
+// @Tags movies
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Movie ID"
+// @Param movie body models.Movie true "Movie object"
+// @Success 200 {object} models.Movie
+// @Router /api/movie/{id} [put]
 func (s *Service) updateMovie(c *gin.Context) {
 	db := s.DB
 	id := c.Param("id")
@@ -315,6 +366,14 @@ func (s *Service) updateMovie(c *gin.Context) {
 	c.JSON(http.StatusOK, movie)
 }
 
+// playMovie godoc
+// @Summary Play a movie
+// @Description play a movie file on the server
+// @Tags movies
+// @Produce  json
+// @Param id path int true "Movie ID"
+// @Param showdir query string false "Show directory in file manager instead of playing"
+// @Router /api/movie/{id}/play [put]
 func (s *Service) playMovie(c *gin.Context) {
 	db := s.DB
 	id := c.Param("id")
@@ -354,6 +413,15 @@ func (s *Service) playMovie(c *gin.Context) {
 	c.JSON(http.StatusNoContent, nil)
 }
 
+// addMeta godoc
+// @Summary Add/Update metadata for a movie
+// @Description Associates TMDB metadata with a movie
+// @Tags movies
+// @Produce  json
+// @Param id path int true "Movie ID"
+// @Param metaid path int true "TMDB Movie ID"
+// @Success 200 {object} models.Movie
+// @Router /api/movie/{id}/addMeta/{metaid} [put]
 func (s *Service) addMeta(c *gin.Context) {
 	db := s.DB
 	id := c.Param("id")

@@ -14,11 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/fsnotify/fsnotify"
-	log "github.com/sirupsen/logrus"
-
 	"github.com/ms900ft/movielite/models"
+	log "github.com/sirupsen/logrus"
 )
 
 type Walker struct {
@@ -276,10 +274,10 @@ func (w *Walker) watchdirectory(dir string) error {
 			select {
 			case <-done:
 				return
-			case t := <-ticker.C:
-				fmt.Println("Tick at", t)
+			case <-ticker.C:
+				// fmt.Println("Tick at", t)
 				list := watcher.WatchList()
-				spew.Dump(list)
+				// spew.Dump(list)
 				// slices.Contains(list, dir)
 				if !slices.Contains(list, dir) {
 					log.Debug("watcher not watching")

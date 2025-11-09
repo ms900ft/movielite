@@ -1,0 +1,688 @@
+definitions:
+  gin.H:
+    additionalProperties: {}
+    type: object
+  models.Cast:
+    properties:
+      ID:
+        description: |-
+          ID int64 `gorm:"primary_key"`
+          TMDBMovieMovieID uint  `gorm:"index"`
+          CreditsID        uint  `gorm:"index"`
+          CastID    int `json:"cast_id"`
+        type: integer
+      character:
+        type: string
+      credit_id:
+        type: string
+      gender:
+        type: integer
+      name:
+        type: string
+      order:
+        type: integer
+      profile_path:
+        type: string
+    type: object
+  models.Credits:
+    properties:
+      cast:
+        items:
+          $ref: '#/definitions/models.Cast'
+        type: array
+      crew:
+        items:
+          $ref: '#/definitions/models.Crew'
+        type: array
+      id:
+        type: integer
+      tmdbmovieID:
+        type: integer
+    type: object
+  models.Crew:
+    properties:
+      ID:
+        description: |-
+          ID int64 `gorm:"primary_key"`
+          TMDBMovieMovieID uint   `gorm:"index"`
+          CreditsID        uint   `gorm:"index"`
+        type: integer
+      credit_id:
+        type: string
+      department:
+        type: string
+      gender:
+        type: integer
+      job:
+        description: ID          int
+        type: string
+      name:
+        type: string
+      profile_path:
+        type: string
+    type: object
+  models.File:
+    properties:
+      FileName:
+        type: string
+      FullPath:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.Genres:
+    properties:
+      ID:
+        description: ID      int64 `gorm:"primary_key"`
+        type: integer
+      name:
+        type: string
+      tmdbmovieID:
+        type: integer
+    type: object
+  models.Movie:
+    properties:
+      File:
+        $ref: '#/definitions/models.File'
+      createdAt:
+        type: string
+      deleted:
+        type: boolean
+      deletedAt:
+        type: string
+      file_id:
+        type: integer
+      id:
+        type: integer
+      is_tv:
+        type: boolean
+      lastScanned:
+        type: string
+      meta:
+        $ref: '#/definitions/models.TMDBMovie'
+      movieSearchResultsID:
+        type: integer
+      multiplechoice:
+        $ref: '#/definitions/models.MovieSearchResults'
+      org_name:
+        type: string
+      rating:
+        type: integer
+      title:
+        type: string
+      tmdbmovieID:
+        type: integer
+      updatedAt:
+        type: string
+      watchlist:
+        type: boolean
+    required:
+    - File
+    - title
+    type: object
+  models.MovieSearchResults:
+    properties:
+      Results:
+        items:
+          $ref: '#/definitions/models.MovieShort'
+        type: array
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: integer
+      page:
+        type: integer
+      total_pages:
+        type: integer
+      total_results:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.MovieShort:
+    properties:
+      adult:
+        type: boolean
+      backdrop_path:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: integer
+      movieSearchResultsID:
+        type: integer
+      original_title:
+        description: ID                   int    `json:"id"`
+        type: string
+      overview:
+        type: string
+      popularity:
+        description: GenreIDs             []int32 `json:"genre_ids"`
+        type: number
+      poster_path:
+        type: string
+      release_date:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+      video:
+        type: boolean
+      vote_average:
+        type: number
+      vote_count:
+        type: integer
+    type: object
+  models.ProductionCompanies:
+    properties:
+      id:
+        type: integer
+      logo_path:
+        type: string
+      name:
+        type: string
+      origin_country:
+        type: string
+    type: object
+  models.ProductionCountries:
+    properties:
+      iso_3166_1:
+        description: TMDBMovieMovieID uint
+        type: string
+      name:
+        type: string
+    type: object
+  models.SpokenLanguages:
+    properties:
+      iso_639_1:
+        type: string
+      name:
+        type: string
+    type: object
+  models.TMDBMovie:
+    properties:
+      Genres:
+        items:
+          $ref: '#/definitions/models.Genres'
+        type: array
+      adult:
+        description: TMDBMovieID int        `json:"ID"`
+        type: boolean
+      backdrop_path:
+        description: MovieID      int64  `gorm:"primary_key" json:"id"`
+        type: string
+      budget:
+        description: |-
+          BelongsToCollection bool   `json:"belongs_to_collection"`
+          BelongsToCollection CollectionShort `json:"belongs_to_collection"`
+        format: int32
+        type: integer
+      createdAt:
+        type: string
+      credits:
+        allOf:
+        - $ref: '#/definitions/models.Credits'
+        description: AlternativeTitles *MovieAlternativeTitles `json:"alternative_titles,omitempty"`
+      deletedAt:
+        type: string
+      homepage:
+        type: string
+      id:
+        type: integer
+      imdb_id:
+        description: ID               int
+        type: string
+      original_language:
+        type: string
+      original_title:
+        type: string
+      overview:
+        type: string
+      popularity:
+        format: float32
+        type: number
+      poster_path:
+        type: string
+      production_companies:
+        items:
+          $ref: '#/definitions/models.ProductionCompanies'
+        type: array
+      production_countries:
+        items:
+          $ref: '#/definitions/models.ProductionCountries'
+        type: array
+      release_date:
+        type: string
+      revenue:
+        format: int32
+        type: integer
+      runtime:
+        format: int32
+        type: integer
+      spoken_languages:
+        items:
+          $ref: '#/definitions/models.SpokenLanguages'
+        type: array
+      status:
+        type: string
+      tagline:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+      video:
+        type: boolean
+      vote_average:
+        type: number
+      vote_count:
+        type: integer
+    type: object
+  movielite.FileInput:
+    properties:
+      file:
+        type: string
+      fullpath:
+        type: string
+    required:
+    - fullpath
+    type: object
+  movielite.Movielist:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Movie'
+        type: array
+      meta:
+        $ref: '#/definitions/movielite.meta'
+    type: object
+  movielite.input:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  movielite.meta:
+    properties:
+      total:
+        type: integer
+    type: object
+  movielite.token:
+    properties:
+      is_admin:
+        type: boolean
+      token:
+        type: string
+      user_name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/file:
+    get:
+      description: Get a list of all files, optionally filtered by filename.
+      parameters:
+      - description: filename to filter by
+        in: query
+        name: f
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.File'
+            type: array
+      summary: Get a list of files
+      tags:
+      - files
+    post:
+      consumes:
+      - application/json
+      description: Adds a new file to the database.
+      parameters:
+      - description: File to add
+        in: body
+        name: file
+        required: true
+        schema:
+          $ref: '#/definitions/movielite.FileInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.File'
+      summary: Add a new file
+      tags:
+      - files
+  /api/file/{id}:
+    delete:
+      description: Deletes a file by its ID.
+      parameters:
+      - description: File ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.File'
+      summary: Delete a file
+      tags:
+      - files
+    get:
+      description: Get a single file by its ID.
+      parameters:
+      - description: File ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.File'
+      summary: Get a single file
+      tags:
+      - files
+    put:
+      consumes:
+      - application/json
+      description: Updates a file's information.
+      parameters:
+      - description: File ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: File information to update
+        in: body
+        name: file
+        required: true
+        schema:
+          $ref: '#/definitions/movielite.FileInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.File'
+      summary: Update a file
+      tags:
+      - files
+  /api/file/{id}/download:
+    get:
+      description: Downloads a file by its ID.
+      parameters:
+      - description: File ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Optional download filename
+        in: path
+        name: name
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+      summary: Download a file
+      tags:
+      - files
+  /api/file/{id}/move/{dir}:
+    put:
+      description: Moves a file to a new directory.
+      parameters:
+      - description: File ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Target directory name
+        in: path
+        name: dir
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.File'
+      summary: Move a file
+      tags:
+      - files
+  /api/movie:
+    get:
+      description: get movies
+      parameters:
+      - description: Order by (name, recent, last_scanned)
+        in: query
+        name: orderby
+        type: string
+      - description: Title filter
+        in: query
+        name: title
+        type: string
+      - description: Alpha filter
+        in: query
+        name: alpha
+        type: string
+      - description: Genre ID filter
+        in: query
+        name: genre
+        type: integer
+      - description: Crew person ID filter
+        in: query
+        name: crew
+        type: integer
+      - description: Person (cast/crew) ID filter
+        in: query
+        name: person
+        type: integer
+      - description: Cast person ID filter
+        in: query
+        name: cast
+        type: integer
+      - description: Country code filter
+        in: query
+        name: country
+        type: string
+      - description: Show (multiple, unrated, duplicate, notitle, nodesc, watchlist)
+        in: query
+        name: show
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/movielite.Movielist'
+      summary: Get a list of movies
+      tags:
+      - movies
+    post:
+      consumes:
+      - application/json
+      description: create a new movie entry
+      parameters:
+      - description: Movie object
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/models.Movie'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Movie'
+      summary: Create a movie
+      tags:
+      - movies
+  /api/movie/{id}:
+    delete:
+      description: delete a movie by ID
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Movie'
+      summary: Delete a movie
+      tags:
+      - movies
+    get:
+      description: get a movie by ID
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Movie'
+      summary: Get a single movie
+      tags:
+      - movies
+    put:
+      consumes:
+      - application/json
+      description: update a movie by ID
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Movie object
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/models.Movie'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Movie'
+      summary: Update a movie
+      tags:
+      - movies
+  /api/movie/{id}/addMeta/{metaid}:
+    put:
+      description: Associates TMDB metadata with a movie
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: TMDB Movie ID
+        in: path
+        name: metaid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Movie'
+      summary: Add/Update metadata for a movie
+      tags:
+      - movies
+  /api/movie/{id}/play:
+    put:
+      description: play a movie file on the server
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Show directory in file manager instead of playing
+        in: query
+        name: showdir
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Play a movie
+      tags:
+      - movies
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Logs a user in and returns a JWT token.
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/movielite.input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/movielite.token'
+        "400":
+          description: Invalid credentials or request
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: User login
+      tags:
+      - auth
+swagger: "2.0"

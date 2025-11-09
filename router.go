@@ -6,11 +6,28 @@ import (
 	"path"
 
 	"github.com/gin-gonic/contrib/expvar"
+	_ "github.com/ms900ft/movielite/docs"
 	_ "github.com/ms900ft/movielite/statik"
 	"github.com/rakyll/statik/fs"
 	log "github.com/sirupsen/logrus"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Movielite API
+// @version 1.0
+// @description This is the API for the Movielite server.
+// @termsOfService http://swagger.io/terms/
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @host localhost:8001
+// @BasePath /
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func (a *Service) initializeRoutes() {
 	a.Router.Use(CORSMiddleware())
 	a.Router.POST("/login", a.login)
@@ -67,6 +84,7 @@ func (a *Service) initializeRoutes() {
 	a.Router.GET("/file/:id/download", a.downloadFile)
 	a.Router.GET("/file/:id/download/:name", a.downloadFile) //name im pfad
 	a.Router.StaticFS("/movie2", &indexWrapper{statikFS})
+	a.Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	a.Router.GET("/debug/vars", expvar.Handler())
 }
 

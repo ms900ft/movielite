@@ -29,6 +29,16 @@ var (
 	NoSecretFound      = fmt.Errorf("no secret found")
 )
 
+// login godoc
+// @Summary User login
+// @Description Logs a user in and returns a JWT token.
+// @Tags auth
+// @Accept  json
+// @Produce  json
+// @Param   credentials     body    input  true        "Login credentials"
+// @Success 200 {object} token
+// @Failure 400 {object} gin.H "Invalid credentials or request"
+// @Router /login [post]
 func (s *Service) login(c *gin.Context) {
 	in := input{}
 	err := json.NewDecoder(c.Request.Body).Decode(&in)

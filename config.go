@@ -77,7 +77,7 @@ func GetConfig(path string) *Config {
 	c.Watchdirectory = viper.GetString("WatchDir")
 	c.ServerURL = viper.GetString("MovieServerUrl")
 	c.Player = viper.GetString("Player")
-	c.Secret = viper.GetString("Secret")
+	c.Secret = "tetstet" //sviper.GetString("Secret")
 	c.UseAuthentication = viper.GetBool("UseAuthentication")
 	c.InitialAdminPassword = viper.GetString("InitialAdminPassword")
 
