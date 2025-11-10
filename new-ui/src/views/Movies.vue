@@ -9,7 +9,7 @@
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
       <div class="movies-grid">
-        <div v-for="movie in movies" :key="movie.id" class="movie-item">
+        <div v-for="movie in movies" :key="movie.id" class="movie-item" @click="goToMovieDetail(movie.id)">
           <div class="movie-poster">
             <img
               v-if="movie.meta && movie.meta.poster_path"
@@ -31,9 +31,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { debounce } from 'lodash-es';
 import { moviesService } from '../services/movies.js';
+
+const router = useRouter();
+const route = useRoute();
 
 const movies = ref([]);
 const loading = ref(true);
@@ -55,6 +59,10 @@ const fetchMovies = async (offset = 0) => {
     const params = { limit, offset };
     if (searchQuery.value) {
       params.title = searchQuery.value;
+    }
+    // Check for person query parameter
+    if (route.query.person) {
+      params.person = route.query.person;
     }
     const response = await moviesService.getMovies(params);
     const newMovies = response.data || [];
@@ -83,6 +91,8 @@ const loadMore = () => {
 const searchMovies = () => {
   currentOffset.value = 0;
   hasMore.value = true;
+  // Clear person filter when searching
+  router.replace({ query: {} });
   fetchMovies(0);
 };
 
@@ -94,6 +104,12 @@ const debouncedSearch = debounce(() => {
 
 const onSearchInput = () => {
   debouncedSearch();
+};
+
+const goToMovieDetail = (movieId) => {
+  // Store current scroll position before navigating to detail
+  sessionStorage.setItem('moviesScrollY', window.scrollY.toString());
+  router.push(`/movie/${movieId}`);
 };
 
 const handleScroll = () => {
@@ -113,6 +129,15 @@ const handleImageError = (event) => {
 onMounted(() => {
   fetchMovies();
   window.addEventListener('scroll', handleScroll);
+
+  // Restore scroll position if coming back from movie detail
+  const savedScrollY = sessionStorage.getItem('moviesScrollY');
+  if (savedScrollY) {
+    nextTick(() => {
+      window.scrollTo(0, parseInt(savedScrollY));
+      sessionStorage.removeItem('moviesScrollY');
+    });
+  }
 });
 
 onUnmounted(() => {
