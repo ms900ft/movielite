@@ -3,9 +3,94 @@ import { RouterView } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from './services/auth.js';
+import { moviesService } from './services/movies.js';
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
+import InputText from 'primevue/inputtext';
+import Menubar from 'primevue/menubar';
 
 const router = useRouter();
 const isAuthenticated = ref(false);
+const searchQuery = ref('');
+const genres = ref([]);
+const countries = ref([]);
+
+const menuItems = ref([
+  {
+    label: 'Movies',
+    icon: 'pi pi-video',
+    to: '/'
+  },
+  {
+    label: 'Genres',
+    icon: 'pi pi-tags',
+    items: genres
+  },
+  {
+    label: 'Countries',
+    icon: 'pi pi-globe',
+    items: countries
+  },
+  {
+    label: 'Settings',
+    icon: 'pi pi-cog'
+  }
+]);
+
+// Update menu items when genres and countries change
+import { watch } from 'vue';
+watch(genres, () => {
+  menuItems.value[1].items = genres.value;
+}, { deep: true });
+
+watch(countries, () => {
+  menuItems.value[2].items = countries.value;
+}, { deep: true });
+
+const fetchGenres = async () => {
+  try {
+    const response = await moviesService.getGenres();
+    const data = response.data || response || [];
+    genres.value = data.map(genre => ({
+      label: genre.name,
+      icon: 'pi pi-tag',
+      command: () => {
+        router.push({ path: '/', query: { genre: genre.tmdb_id, country: '', orderby: 'name' } });
+      }
+    }));
+  } catch (error) {
+    console.error('Error fetching genres:', error);
+  }
+};
+
+const fetchCountries = async () => {
+  try {
+    const response = await moviesService.getCountries();
+    const data = response.data || response || [];
+    countries.value = data.map(country => ({
+      label: country.name,
+      icon: 'pi pi-map-marker',
+      command: () => {
+        router.push({ path: '/', query: { country: country.iso_id, orderby: 'name' } });
+      }
+    }));
+  } catch (error) {
+    console.error('Error fetching countries:', error);
+  }
+};
+
+const onSearchInput = () => {
+  // Only search if 3+ characters or empty (clear search)
+  if (searchQuery.value.length >= 3 || searchQuery.value.length === 0) {
+    router.push({ path: '/', query: { q: searchQuery.value } });
+  }
+};
+
+const onSearchKeyup = (event) => {
+  if (event.key === 'Enter') {
+    router.push({ path: '/', query: { q: searchQuery.value } });
+  }
+};
 
 const checkAuth = () => {
   isAuthenticated.value = authService.isAuthenticated();
@@ -19,20 +104,29 @@ const logout = () => {
 
 onMounted(() => {
   checkAuth();
+  fetchGenres();
+  fetchCountries();
 });
 </script>
 
 <template>
   <div id="app">
-    <header v-if="isAuthenticated">
-      <h1>Movie Database</h1>
-      <nav>
-        <router-link to="/">Movies</router-link>
-        <button @click="logout" class="logout-btn">Logout</button>
-      </nav>
-    </header>
-
     <main>
+    <div v-if="isAuthenticated" class="w-full">
+      <Menubar :model="menuItems" class="w-full mb-2">
+        <template #end>
+          <IconField>
+            <InputIcon>
+              <i class="pi pi-search" />
+            </InputIcon>
+            <InputText v-model="searchQuery" placeholder="Search movies..." @input="onSearchInput" @keyup="onSearchKeyup" />
+          </IconField>
+        </template>
+      </Menubar>
+
+    </div>
+
+
       <RouterView />
     </main>
   </div>

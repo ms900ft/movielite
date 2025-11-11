@@ -159,6 +159,8 @@ const searchPersonMovies = (personId) => {
 };
 
 const goBack = () => {
+  // Store current scroll position before going back
+  sessionStorage.setItem('movieDetailScrollY', window.scrollY.toString());
   router.go(-1);
 };
 

@@ -1,10 +1,6 @@
 <template>
   <div class="movies-container">
     <h1>Movies</h1>
-    <div class="toolbar">
-      <input v-model="searchQuery" type="text" placeholder="Search movies..." @input="onSearchInput" />
-      <button @click="searchMovies">Search</button>
-    </div>
     <div v-if="loading" class="loading">Loading movies...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
@@ -46,7 +42,7 @@ const currentOffset = ref(0);
 const hasMore = ref(true);
 const loadingMore = ref(false);
 const limit = 20;
-const searchQuery = ref('');
+const searchQuery = ref(route.query.q || '');
 
 const fetchMovies = async (offset = 0) => {
   try {
@@ -57,12 +53,25 @@ const fetchMovies = async (offset = 0) => {
       loadingMore.value = true;
     }
     const params = { limit, offset };
-    if (searchQuery.value) {
-      params.title = searchQuery.value;
-    }
-    // Check for person query parameter
-    if (route.query.person) {
-      params.person = route.query.person;
+
+    // Set default ordering when country or genre is selected
+    if (route.query.country || route.query.genre) {
+      if (route.query.country) {
+        params.country = route.query.country;
+      }
+      if (route.query.genre) {
+        params.genre = route.query.genre;
+      }
+      params.orderby = route.query.orderby || 'name';
+    } else {
+      // Normal pagination for other cases
+      if (searchQuery.value) {
+        params.title = searchQuery.value;
+      }
+      // Check for person query parameter
+      if (route.query.person) {
+        params.person = route.query.person;
+      }
     }
     const response = await moviesService.getMovies(params);
     const newMovies = response.data || [];
@@ -97,7 +106,8 @@ const searchMovies = () => {
 };
 
 const debouncedSearch = debounce(() => {
-  if (searchQuery.value.length >= 3 || searchQuery.value.length === 0) {
+  // Debounced search only triggers for 3+ characters, but immediate search for clearing
+  if (searchQuery.value.length === 0) {
     searchMovies();
   }
 }, 300);
@@ -106,9 +116,26 @@ const onSearchInput = () => {
   debouncedSearch();
 };
 
+// Watch for query parameter changes
+import { watch } from 'vue';
+watch(() => route.query.q, (newQuery) => {
+  if (newQuery !== searchQuery.value) {
+    searchQuery.value = newQuery || '';
+    fetchMovies(0);
+  }
+});
+
+watch(() => route.query.genre, (newGenre) => {
+  // Filter by genre - always reload
+  fetchMovies(0);
+});
+
+watch(() => route.query.country, (newCountry) => {
+  // Filter by country - always reload
+  fetchMovies(0);
+});
+
 const goToMovieDetail = (movieId) => {
-  // Store current scroll position before navigating to detail
-  sessionStorage.setItem('moviesScrollY', window.scrollY.toString());
   router.push(`/movie/${movieId}`);
 };
 
@@ -131,11 +158,11 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll);
 
   // Restore scroll position if coming back from movie detail
-  const savedScrollY = sessionStorage.getItem('moviesScrollY');
+  const savedScrollY = sessionStorage.getItem('movieDetailScrollY');
   if (savedScrollY) {
     nextTick(() => {
       window.scrollTo(0, parseInt(savedScrollY));
-      sessionStorage.removeItem('moviesScrollY');
+      sessionStorage.removeItem('movieDetailScrollY');
     });
   }
 });

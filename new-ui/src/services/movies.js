@@ -49,5 +49,25 @@ export const moviesService = {
       console.error('Error playing movie:', error);
       throw error;
     }
+  },
+
+  async getGenres() {
+    try {
+      const response = await api.get('/genre');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching genres:', error);
+      throw error;
+    }
+  },
+
+  async getCountries() {
+    try {
+      const response = await api.get('/country');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching countries:', error);
+      throw error;
+    }
   }
 };
