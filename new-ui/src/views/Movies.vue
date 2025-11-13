@@ -1,6 +1,7 @@
 <template>
   <div class="movies-container">
     <h1>Movies</h1>
+    <div v-if="currentSearch" class="current-search">{{ currentSearch }}</div>
     <div v-if="loading" class="loading">Loading movies...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
@@ -43,8 +44,36 @@ const hasMore = ref(true);
 const loadingMore = ref(false);
 const limit = 20;
 const searchQuery = ref(route.query.q || '');
+const currentSearch = ref('');
+
+const setCurrentSearch = async () => {
+  if (route.query.country) {
+    try {
+      const countries = await moviesService.getCountries();
+      const country = countries.find(c => c.iso_id === route.query.country);
+      currentSearch.value = `Country: ${country ? country.name : route.query.country}`;
+    } catch (e) {
+      currentSearch.value = `Country: ${route.query.country}`;
+    }
+  } else if (route.query.genre) {
+    try {
+      const genres = await moviesService.getGenres();
+      const genre = genres.find(g => g.tmdb_id == route.query.genre);
+      currentSearch.value = `Genre: ${genre ? genre.name : route.query.genre}`;
+    } catch (e) {
+      currentSearch.value = `Genre: ${route.query.genre}`;
+    }
+  } else if (route.query.person) {
+    currentSearch.value = `Person: ${route.query.person}`;
+  } else if (searchQuery.value) {
+    currentSearch.value = `Search: "${searchQuery.value}"`;
+  } else {
+    currentSearch.value = '';
+  }
+};
 
 const fetchMovies = async (offset = 0) => {
+  await setCurrentSearch();
   try {
     if (offset === 0) {
       loading.value = true;
@@ -118,20 +147,23 @@ const onSearchInput = () => {
 
 // Watch for query parameter changes
 import { watch } from 'vue';
-watch(() => route.query.q, (newQuery) => {
+watch(() => route.query.q, async (newQuery) => {
   if (newQuery !== searchQuery.value) {
     searchQuery.value = newQuery || '';
+    await setCurrentSearch();
     fetchMovies(0);
   }
 });
 
-watch(() => route.query.genre, (newGenre) => {
+watch(() => route.query.genre, async (newGenre) => {
   // Filter by genre - always reload
+  await setCurrentSearch();
   fetchMovies(0);
 });
 
-watch(() => route.query.country, (newCountry) => {
+watch(() => route.query.country, async (newCountry) => {
   // Filter by country - always reload
+  await setCurrentSearch();
   fetchMovies(0);
 });
 
@@ -177,6 +209,13 @@ onUnmounted(() => {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.current-search {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
 }
 
 .toolbar {
