@@ -86,6 +86,16 @@ func (m *MockTMDBClient) GetMovieInfo(id int, opts map[string]string) (*tmdb.Mov
 	return &movie, nil
 }
 
+func (m *MockTMDBClient) GetPersonInfo(id int, opts map[string]string) (*tmdb.Person, error) {
+	log.Debug("person info")
+	// For mock, return a dummy person
+	person := &tmdb.Person{
+		ID:   id,
+		Name: "Test Person",
+	}
+	return person, nil
+}
+
 func (m *MockHttpClient) Do(req *http.Request) (*http.Response, error) {
 	return GetDoFunc(req)
 }
