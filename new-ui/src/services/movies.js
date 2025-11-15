@@ -69,5 +69,15 @@ export const moviesService = {
       console.error('Error fetching countries:', error);
       throw error;
     }
+  },
+
+  async getPerson(id) {
+    try {
+      const response = await api.get(`/person/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching person:', error);
+      throw error;
+    }
   }
 };

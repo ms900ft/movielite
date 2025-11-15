@@ -45,8 +45,10 @@ const loadingMore = ref(false);
 const limit = 20;
 const searchQuery = ref(route.query.q || '');
 const currentSearch = ref('');
+const currentPerson = ref(null);
 
 const setCurrentSearch = async () => {
+  currentPerson.value = null;
   if (route.query.country) {
     try {
       const countries = await moviesService.getCountries();
@@ -64,7 +66,13 @@ const setCurrentSearch = async () => {
       currentSearch.value = `Genre: ${route.query.genre}`;
     }
   } else if (route.query.person) {
-    currentSearch.value = `Person: ${route.query.person}`;
+    try {
+      const person = await moviesService.getPerson(route.query.person);
+      currentSearch.value = `Person: ${person.Name}`;
+      currentPerson.value = person;
+    } catch (e) {
+      currentSearch.value = `Person: ${route.query.person}`;
+    }
   } else if (searchQuery.value) {
     currentSearch.value = `Search: "${searchQuery.value}"`;
   } else {

@@ -27,11 +27,9 @@ func (s *Service) getPerson(c *gin.Context) {
 	}
 
 	var crew models.Crew
-	if err := s.DB.Where("person_id = ?", id).First(&crew).Error; err != nil {
-		if err == nil {
-			c.JSON(http.StatusOK, crew)
-			return
-		}
+	if err := s.DB.Where("person_id = ?", id).First(&crew).Error; err == nil {
+		c.JSON(http.StatusOK, crew)
+		return
 	}
 	var cast models.Cast
 	if err := s.DB.Where("person_id = ?", id).First(&cast).Error; err != nil {
@@ -45,5 +43,5 @@ func (s *Service) getPerson(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, crew)
+	c.JSON(http.StatusOK, cast)
 }
