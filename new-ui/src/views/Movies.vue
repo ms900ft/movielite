@@ -219,6 +219,21 @@ onUnmounted(() => {
   margin: 0 auto;
 }
 
+.nav-bar {
+  margin-bottom: 20px;
+}
+
+.nav-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
 .current-search {
   margin-bottom: 20px;
   font-size: 18px;

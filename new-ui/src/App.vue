@@ -19,7 +19,9 @@ const menuItems = ref([
   {
     label: 'Movies',
     icon: 'pi pi-video',
-    to: '/'
+    command: () => {
+      router.push('/');
+    }
   },
   {
     label: 'Genres',
