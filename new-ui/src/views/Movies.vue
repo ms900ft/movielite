@@ -16,7 +16,7 @@
             />
             <div v-else class="no-poster">{{ movie.title }}</div>
             <div class="play-button-overlay" @click.stop="playMovie(movie.id)">
-              <img src="https://www.freeiconspng.com/uploads/play-button-icon-png-0.png" alt="play" style="width: 20px; height: 20px;" />
+              <img src="https://www.freeiconspng.com/uploads/play-button-icon-png-0.png" alt="play" style="width: 40px; height: 40px;" />
             </div>
             <div class="movie-title-overlay">{{ movie.title }}</div>
           </div>
@@ -76,6 +76,8 @@ const setCurrentSearch = async () => {
     } catch (e) {
       currentSearch.value = `Person: ${route.query.person}`;
     }
+  } else if (route.query.show === 'watchlist') {
+    currentSearch.value = 'Watchlist';
   } else if (searchQuery.value) {
     currentSearch.value = `Search: "${searchQuery.value}"`;
   } else {
@@ -111,6 +113,10 @@ const fetchMovies = async (offset = 0) => {
       // Check for person query parameter
       if (route.query.person) {
         params.person = route.query.person;
+      }
+      // Check for show query parameter
+      if (route.query.show === 'watchlist') {
+        params.watchlist = true;
       }
     }
     const response = await moviesService.getMovies(params);
@@ -174,6 +180,12 @@ watch(() => route.query.genre, async (newGenre) => {
 
 watch(() => route.query.country, async (newCountry) => {
   // Filter by country - always reload
+  await setCurrentSearch();
+  fetchMovies(0);
+});
+
+watch(() => route.query.show, async (newShow) => {
+  // Filter by show - always reload
   await setCurrentSearch();
   fetchMovies(0);
 });
@@ -386,10 +398,10 @@ onUnmounted(() => {
   transform: translate(-50%, -50%);
   opacity: 0;
   transition: opacity 0.3s ease;
-  background: lightgrey;
+  background: transparent;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;

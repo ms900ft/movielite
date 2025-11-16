@@ -23,6 +23,7 @@ const menuItems = ref([
       router.push('/');
     }
   },
+
   {
     label: 'Genres',
     icon: 'pi pi-tags',
@@ -33,10 +34,17 @@ const menuItems = ref([
     icon: 'pi pi-globe',
     items: countries
   },
+   {
+    label: 'Watchlist',
+    command: () => {
+      router.push({ path: '/', query: { show: 'watchlist' } });
+    }
+  },
   {
     label: 'Settings',
     icon: 'pi pi-cog'
   }
+
 ]);
 
 // Update menu items when genres and countries change
