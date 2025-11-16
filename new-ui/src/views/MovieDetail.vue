@@ -66,6 +66,7 @@
             <h3>Cast</h3>
             <div class="cast-list">
               <div v-for="actor in movie.meta.Credits.Cast.slice(0, 10)" :key="actor.ID" class="cast-member">
+                <img :src="actor.profile_path ? `http://localhost:8001/images/w185${actor.profile_path}` : '/person-placeholder.svg'" :alt="actor.Name" class="person-image" @click="openModal(actor.profile_path ? `http://localhost:8001/images/w500${actor.profile_path}` : '/person-placeholder.svg')" />
                 <strong @click="searchPersonMovies(actor.ID)" class="person-link">{{ actor.Name }}</strong> as {{ actor.Character }}
               </div>
             </div>
@@ -75,6 +76,7 @@
             <h3>Crew</h3>
             <div class="crew-list">
               <div v-for="crew in movie.meta.Credits.Crew.slice(0, 10)" :key="crew.ID" class="crew-member">
+                <img :src="crew.profile_path ? `http://localhost:8001/images/w185${crew.profile_path}` : '/person-placeholder.svg'" :alt="crew.Name" class="person-image" @click="openModal(crew.profile_path ? `http://localhost:8001/images/w500${crew.profile_path}` : '/person-placeholder.svg')" />
                 <strong @click="searchPersonMovies(crew.ID)" class="person-link">{{ crew.Name }}</strong> - {{ crew.Job }}
               </div>
             </div>
@@ -102,6 +104,13 @@
         </div>
       </div>
     </div>
+
+    <!-- Image Modal -->
+    <div v-if="modalVisible" class="image-modal" @click="closeModal">
+      <div class="modal-content" @click.stop>
+        <img :src="modalImage" :alt="modalImage" class="modal-image" @click="closeModal" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -116,6 +125,8 @@ const route = useRoute();
 const movie = ref(null);
 const loading = ref(true);
 const error = ref(null);
+const modalVisible = ref(false);
+const modalImage = ref('');
 
 const fetchMovie = async () => {
   try {
@@ -156,6 +167,15 @@ const formatFileSize = (bytes) => {
 
 const searchPersonMovies = (personId) => {
   router.push(`/movies?person=${personId}`);
+};
+
+const openModal = (imageSrc) => {
+  modalImage.value = imageSrc;
+  modalVisible.value = true;
+};
+
+const closeModal = () => {
+  modalVisible.value = false;
 };
 
 const goBack = () => {
@@ -305,6 +325,16 @@ onMounted(() => {
   font-size: 14px;
 }
 
+.person-image {
+  width: 50px;
+  height: 75px;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 4px;
+  float: left;
+  cursor: pointer;
+}
+
 .cast-member strong, .crew-member strong {
   color: #007bff;
   cursor: pointer;
@@ -344,5 +374,42 @@ onMounted(() => {
     max-width: 300px;
     align-self: center;
   }
+}
+
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.close-button {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  padding: 5px 10px;
 }
 </style>
