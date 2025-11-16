@@ -15,6 +15,9 @@
               @error="handleImageError"
             />
             <div v-else class="no-poster">{{ movie.title }}</div>
+            <div class="play-button-overlay" @click.stop="playMovie(movie.id)">
+              <img src="https://www.freeiconspng.com/uploads/play-button-icon-png-0.png" alt="play" style="width: 20px; height: 20px;" />
+            </div>
             <div class="movie-title-overlay">{{ movie.title }}</div>
           </div>
         </div>
@@ -177,6 +180,16 @@ watch(() => route.query.country, async (newCountry) => {
 
 const goToMovieDetail = (movieId) => {
   router.push(`/movie/${movieId}`);
+};
+
+const playMovie = async (movieId) => {
+  try {
+    await moviesService.playMovie(movieId);
+    alert('Movie playback started!');
+  } catch (err) {
+    console.error('Error playing movie:', err);
+    alert('Failed to start movie playback.');
+  }
 };
 
 const handleScroll = () => {
@@ -366,6 +379,28 @@ onUnmounted(() => {
   line-height: 1.2;
 }
 
+.play-button-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: lightgrey;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.movie-item:hover .play-button-overlay {
+  opacity: 1;
+}
 
 .no-movies {
   text-align: center;
