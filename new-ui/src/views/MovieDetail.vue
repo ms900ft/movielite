@@ -100,6 +100,7 @@
 
           <div class="movie-actions">
             <button @click="playMovie" class="play-button">Play Movie</button>
+            <button v-if="movie.File" @click="showMoveDialog" class="move-button">Move Movie</button>
           </div>
         </div>
       </div>
@@ -111,6 +112,16 @@
         <img :src="modalImage" :alt="modalImage" class="modal-image" @click="closeModal" />
       </div>
     </div>
+
+    <!-- Move Movie Dialog -->
+    <Dialog v-model:visible="moveDialogVisible" modal header="Move Movie" :style="{ width: '50rem' }">
+      <p>Select a directory to move the movie to:</p>
+      <div class="target-list">
+        <button v-for="target in targets" :key="target.name" @click="moveMovie(target.name)" class="target-button">
+          {{ target.name }}
+        </button>
+      </div>
+    </Dialog>
   </div>
 </template>
 
@@ -118,6 +129,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { moviesService } from '../services/movies.js';
+import Dialog from 'primevue/dialog';
 
 const router = useRouter();
 
@@ -127,6 +139,8 @@ const loading = ref(true);
 const error = ref(null);
 const modalVisible = ref(false);
 const modalImage = ref('');
+const targets = ref([]);
+const moveDialogVisible = ref(false);
 
 const fetchMovie = async () => {
   try {
@@ -142,6 +156,15 @@ const fetchMovie = async () => {
   }
 };
 
+const fetchTargets = async () => {
+  try {
+    const response = await moviesService.getTargets();
+    targets.value = response.data || response || [];
+  } catch (error) {
+    console.error('Error fetching targets:', error);
+  }
+};
+
 const playMovie = async () => {
   try {
     await moviesService.playMovie(movie.value.id);
@@ -150,6 +173,26 @@ const playMovie = async () => {
     console.error('Error playing movie:', err);
     alert('Failed to start movie playback.');
   }
+};
+
+const moveMovie = async (targetDir) => {
+  if (!movie.value.File || !movie.value.File.id) {
+    alert('File information not available for this movie.');
+    return;
+  }
+  try {
+    await moviesService.moveFile(movie.value.File.id, targetDir);
+    alert(`Movie moved to ${targetDir}`);
+    goBack();
+    moveDialogVisible.value = false;
+  } catch (err) {
+    console.error('Error moving movie:', err);
+    alert('Failed to move movie.');
+  }
+};
+
+const showMoveDialog = () => {
+  moveDialogVisible.value = true;
 };
 
 const formatDate = (dateString) => {
@@ -186,6 +229,7 @@ const goBack = () => {
 
 onMounted(() => {
   fetchMovie();
+  fetchTargets();
 });
 </script>
 
@@ -362,6 +406,42 @@ onMounted(() => {
 
 .play-button:hover {
   background-color: #0056b3;
+}
+
+.move-button {
+  padding: 12px 24px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.move-button:hover {
+  background-color: #218838;
+}
+
+.target-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.target-button {
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+}
+
+.target-button:hover {
+  background-color: #e9ecef;
 }
 
 @media (max-width: 768px) {

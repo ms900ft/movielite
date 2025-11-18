@@ -79,5 +79,25 @@ export const moviesService = {
       console.error('Error fetching person:', error);
       throw error;
     }
+  },
+
+  async getTargets() {
+    try {
+      const response = await api.get('/targets');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching targets:', error);
+      throw error;
+    }
+  },
+
+  async moveFile(id, dir) {
+    try {
+      const response = await api.put(`/file/${id}/move/${encodeURIComponent(dir)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error moving file:', error);
+      throw error;
+    }
   }
 };

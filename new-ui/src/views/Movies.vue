@@ -34,6 +34,16 @@
 
     <!-- Menu component -->
     <Menu ref="movieMenu" :model="menuItems" :popup="true" />
+
+    <!-- Move Movie Dialog -->
+    <Dialog v-model:visible="moveDialogVisible" modal header="Move Movie" :style="{ width: '50rem' }">
+      <p>Select a directory to move the movie to:</p>
+      <div class="target-list">
+        <button v-for="target in targets" :key="target.name" @click="moveMovie(selectedMovie, target.name)" class="target-button">
+          {{ target.name }}
+        </button>
+      </div>
+    </Dialog>
   </div>
 </template>
 
@@ -43,6 +53,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { debounce } from 'lodash-es';
 import { moviesService } from '../services/movies.js';
 import Menu from 'primevue/menu';
+import Dialog from 'primevue/dialog';
 
 const router = useRouter();
 const route = useRoute();
@@ -61,6 +72,8 @@ const currentPerson = ref(null);
 // Menu related
 const movieMenu = ref();
 const selectedMovie = ref(null);
+const targets = ref([]);
+const moveDialogVisible = ref(false);
 
 // Define menu items (dynamic based on the selected movie)
 const menuItems = computed(() => [
@@ -73,6 +86,11 @@ const menuItems = computed(() => [
     label: selectedMovie.value?.watchlist ? 'Remove from Watchlist' : 'Add to Watchlist',
     icon: 'pi pi-star',
     command: () => toggleWatchlist(selectedMovie.value)
+  },
+  {
+    label: 'Move Movie',
+    icon: 'pi pi-folder',
+    command: () => showMoveDialog(selectedMovie.value)
   },
   {
     label: 'View Details',
@@ -113,6 +131,15 @@ const setCurrentSearch = async () => {
     currentSearch.value = `Search: "${searchQuery.value}"`;
   } else {
     currentSearch.value = '';
+  }
+};
+
+const fetchTargets = async () => {
+  try {
+    const response = await moviesService.getTargets();
+    targets.value = response.data || response || [];
+  } catch (error) {
+    console.error('Error fetching targets:', error);
   }
 };
 
@@ -245,10 +272,28 @@ const toggleWatchlist = async (movie) => {
   }
 };
 
+const moveMovie = async (movie, targetDir) => {
+  try {
+    await moviesService.moveFile(movie.file_id, targetDir);
+    alert(`Movie moved to ${targetDir}`);
+    // Optionally refresh the list or remove the movie from the list
+    movies.value = movies.value.filter(m => m.id !== movie.id);
+    moveDialogVisible.value = false;
+  } catch (err) {
+    console.error('Error moving movie:', err);
+    alert('Failed to move movie.');
+  }
+};
+
 // Method to toggle the menu
 const toggleMenu = (event, movie) => {
   selectedMovie.value = movie;
   movieMenu.value.toggle(event);
+};
+
+const showMoveDialog = (movie) => {
+  selectedMovie.value = movie;
+  moveDialogVisible.value = true;
 };
 
 const handleScroll = () => {
@@ -267,6 +312,7 @@ const handleImageError = (event) => {
 
 onMounted(() => {
   fetchMovies();
+  fetchTargets();
   window.addEventListener('scroll', handleScroll);
 
   // Restore scroll position if coming back from movie detail
@@ -503,5 +549,25 @@ onUnmounted(() => {
   padding: 40px;
   color: #666;
   font-size: 18px;
+}
+
+.target-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.target-button {
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+}
+
+.target-button:hover {
+  background-color: #e9ecef;
 }
 </style>
