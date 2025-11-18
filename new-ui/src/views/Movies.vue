@@ -15,6 +15,7 @@
               @error="handleImageError"
             />
             <div v-else class="no-poster">{{ movie.title }}</div>
+            <div class="star-icon" :class="{ 'watchlist-star': movie.watchlist }" @click.stop="toggleWatchlist(movie)">★</div>
             <div class="play-button-overlay" @click.stop="playMovie(movie.id)">
               <img src="https://www.freeiconspng.com/uploads/play-button-icon-png-0.png" alt="play" style="width: 40px; height: 40px;" />
             </div>
@@ -201,6 +202,16 @@ const playMovie = async (movieId) => {
   } catch (err) {
     console.error('Error playing movie:', err);
     alert('Failed to start movie playback.');
+  }
+};
+
+const toggleWatchlist = async (movie) => {
+  try {
+    const updatedMovie = { ...movie, watch_list: !movie.watchlist };
+    await moviesService.updateMovie(movie.id, updatedMovie);
+    movie.watchlist = !movie.watchlist;
+  } catch (err) {
+    console.error('Error toggling watchlist:', err);
   }
 };
 
@@ -412,6 +423,19 @@ onUnmounted(() => {
 
 .movie-item:hover .play-button-overlay {
   opacity: 1;
+}
+
+.star-icon {
+  position: absolute;
+  top: 0px;
+  left: 5px;
+  color: gray;
+  font-size: 26px;
+  z-index: 10;
+}
+
+.watchlist-star {
+  color: #ffd700;
 }
 
 .no-movies {
