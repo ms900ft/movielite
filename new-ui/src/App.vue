@@ -37,7 +37,7 @@ const menuItems = ref([
    {
      label: 'Watchlist',
      command: () => {
-       router.push({ path: '/', query: { search: 'watchlist' } });
+       router.push({ path: '/', query: { show: 'watchlist' } });
      }
    },
   {

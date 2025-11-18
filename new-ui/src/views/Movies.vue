@@ -77,7 +77,7 @@ const setCurrentSearch = async () => {
     } catch (e) {
       currentSearch.value = `Person: ${route.query.person}`;
     }
-  } else if (route.query.search === 'watchlist') {
+  } else if (route.query.show === 'watchlist') {
     currentSearch.value = 'Watchlist';
   } else if (searchQuery.value) {
     currentSearch.value = `Search: "${searchQuery.value}"`;
@@ -115,9 +115,9 @@ const fetchMovies = async (offset = 0) => {
       if (route.query.person) {
         params.person = route.query.person;
       }
-      // Check for search query parameter
-      if (route.query.search === 'watchlist') {
-        params.search = 'watchlist';
+      // Check for show query parameter
+      if (route.query.show === 'watchlist') {
+        params.show = 'watchlist';
       }
     }
     const response = await moviesService.getMovies(params);
@@ -185,8 +185,8 @@ watch(() => route.query.country, async (newCountry) => {
   fetchMovies(0);
 });
 
-watch(() => route.query.search, async () => {
-  // Filter by search - always reload
+watch(() => route.query.show, async () => {
+  // Filter by show - always reload
   await setCurrentSearch();
   fetchMovies(0);
 });
@@ -207,7 +207,7 @@ const playMovie = async (movieId) => {
 
 const toggleWatchlist = async (movie) => {
   try {
-    const updatedMovie = { ...movie, watch_list: !movie.watchlist };
+    const updatedMovie = { ...movie, watchlist: !movie.watchlist };
     await moviesService.updateMovie(movie.id, updatedMovie);
     movie.watchlist = !movie.watchlist;
   } catch (err) {
