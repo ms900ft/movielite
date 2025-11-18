@@ -16,6 +16,9 @@
             />
             <div v-else class="no-poster">{{ movie.title }}</div>
             <div class="star-icon" :class="{ 'watchlist-star': movie.watchlist }" @click.stop="toggleWatchlist(movie)">★</div>
+            <button class="menu-button" @click.stop="toggleMenu($event, movie)">
+              <i class="pi pi-bars"></i>
+            </button>
             <div class="play-button-overlay" @click.stop="playMovie(movie.id)">
               <img src="https://www.freeiconspng.com/uploads/play-button-icon-png-0.png" alt="play" style="width: 40px; height: 40px;" />
             </div>
@@ -28,14 +31,18 @@
         No movies found.
       </div>
     </div>
+
+    <!-- Menu component -->
+    <Menu ref="movieMenu" :model="menuItems" :popup="true" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { debounce } from 'lodash-es';
 import { moviesService } from '../services/movies.js';
+import Menu from 'primevue/menu';
 
 const router = useRouter();
 const route = useRoute();
@@ -50,6 +57,29 @@ const limit = 20;
 const searchQuery = ref(route.query.q || '');
 const currentSearch = ref('');
 const currentPerson = ref(null);
+
+// Menu related
+const movieMenu = ref();
+const selectedMovie = ref(null);
+
+// Define menu items (dynamic based on the selected movie)
+const menuItems = computed(() => [
+  {
+    label: 'Play',
+    icon: 'pi pi-play',
+    command: () => playMovie(selectedMovie.value.id)
+  },
+  {
+    label: selectedMovie.value?.watchlist ? 'Remove from Watchlist' : 'Add to Watchlist',
+    icon: 'pi pi-star',
+    command: () => toggleWatchlist(selectedMovie.value)
+  },
+  {
+    label: 'View Details',
+    icon: 'pi pi-info-circle',
+    command: () => goToMovieDetail(selectedMovie.value.id)
+  }
+]);
 
 const setCurrentSearch = async () => {
   currentPerson.value = null;
@@ -215,6 +245,12 @@ const toggleWatchlist = async (movie) => {
   }
 };
 
+// Method to toggle the menu
+const toggleMenu = (event, movie) => {
+  selectedMovie.value = movie;
+  movieMenu.value.toggle(event);
+};
+
 const handleScroll = () => {
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
   const windowHeight = window.innerHeight;
@@ -352,6 +388,10 @@ onUnmounted(() => {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
+.movie-item:hover .movie-poster img {
+  opacity: 0.7;
+}
+
 .movie-poster {
   height: 225px;
   overflow: hidden;
@@ -436,6 +476,26 @@ onUnmounted(() => {
 
 .watchlist-star {
   color: #ffd700;
+}
+
+.menu-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: transparent;
+  color: black;
+  border: none;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+}
+
+.menu-button:hover {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .no-movies {
