@@ -274,7 +274,7 @@ const toggleWatchlist = async (movie) => {
 
 const moveMovie = async (movie, targetDir) => {
   try {
-    await moviesService.moveFile(movie.file_id, targetDir);
+    await moviesService.moveFile(movie.File.id, targetDir);
     alert(`Movie moved to ${targetDir}`);
     // Optionally refresh the list or remove the movie from the list
     movies.value = movies.value.filter(m => m.id !== movie.id);
