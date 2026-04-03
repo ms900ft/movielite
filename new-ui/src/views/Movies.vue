@@ -178,6 +178,10 @@ const fetchMovies = async (offset = 0) => {
       if (route.query.show === 'watchlist') {
         params.show = 'watchlist';
       }
+      // Check for orderby parameter
+      if (route.query.orderby) {
+        params.orderby = route.query.orderby;
+      }
     }
     const response = await moviesService.getMovies(params);
     const newMovies = response.data || [];
@@ -250,6 +254,12 @@ watch(() => route.query.show, async () => {
   fetchMovies(0);
 });
 
+watch(() => route.query.orderby, async () => {
+  // Filter by orderby - always reload
+  await setCurrentSearch();
+  fetchMovies(0);
+});
+
 const goToMovieDetail = (movieId) => {
   router.push(`/movie/${movieId}`);
 };
@@ -265,10 +275,15 @@ const playMovie = async (movieId) => {
 };
 
 const toggleWatchlist = async (movie) => {
+  const wasInWatchlist = movie.watchlist;
   try {
     const updatedMovie = { ...movie, watchlist: !movie.watchlist };
     await moviesService.updateMovie(movie.id, updatedMovie);
     movie.watchlist = !movie.watchlist;
+    // Remove from view if removed from watchlist and on watchlist page
+    if (wasInWatchlist && route.query.show === 'watchlist') {
+      movies.value = movies.value.filter(m => m.id !== movie.id);
+    }
   } catch (err) {
     console.error('Error toggling watchlist:', err);
   }

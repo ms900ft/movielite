@@ -35,11 +35,19 @@ const menuItems = ref([
     items: countries
   },
    {
-     label: 'Watchlist',
-     command: () => {
-       router.push({ path: '/', query: { show: 'watchlist' } });
-     }
-   },
+      label: 'Watchlist',
+      icon: 'pi pi-heart',
+      command: () => {
+        router.push({ path: '/', query: { show: 'watchlist' } });
+      }
+    },
+   {
+      label: 'Recently',
+      icon: 'pi pi-clock',
+      command: () => {
+        router.push({ path: '/', query: { orderby: 'recent' } });
+      }
+    },
   {
     label: 'Settings',
     icon: 'pi pi-cog'
