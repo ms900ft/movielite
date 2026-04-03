@@ -15,8 +15,8 @@
               @error="handleImageError"
             />
             <div v-else class="no-poster">{{ movie.title }}</div>
-            <div class="star-icon" :class="{ 'watchlist-star': movie.watchlist }" @click.stop="toggleWatchlist(movie)">★</div>
-            <button class="menu-button" @click.stop="toggleMenu($event, movie)">
+            <div v-if="openMenuMovieID !== movie.id" class="star-icon" :class="{ 'watchlist-star': movie.watchlist }" @click.stop="toggleWatchlist(movie)" aria-label="watchlist" title="Toggle watchlist">★</div>
+            <button v-if="openMenuMovieID !== movie.id" class="menu-button" @click.stop="toggleMenu($event, movie)">
               <i class="pi pi-bars"></i>
             </button>
             <div class="play-button-overlay" @click.stop="playMovie(movie.id)">
@@ -71,6 +71,8 @@ const currentPerson = ref(null);
 
 // Menu related
 const movieMenu = ref();
+// Track which movie's popup menu is currently open to avoid overlay conflicts
+const openMenuMovieID = ref(null);
 const selectedMovie = ref(null);
 const targets = ref([]);
 const moveDialogVisible = ref(false);
@@ -288,7 +290,21 @@ const moveMovie = async (movie, targetDir) => {
 // Method to toggle the menu
 const toggleMenu = (event, movie) => {
   selectedMovie.value = movie;
+  openMenuMovieID.value = movie.id;
   movieMenu.value.toggle(event);
+};
+
+// Close menu when clicking outside the movie item
+const handleDocumentClick = (e) => {
+  if (openMenuMovieID.value != null) {
+    const inside = e.target.closest('.movie-item') != null;
+    if (!inside) {
+      openMenuMovieID.value = null;
+      if (movieMenu.value && typeof movieMenu.value.hide === 'function') {
+        movieMenu.value.hide();
+      }
+    }
+  }
 };
 
 const showMoveDialog = (movie) => {
@@ -315,6 +331,8 @@ onMounted(() => {
   fetchTargets();
   window.addEventListener('scroll', handleScroll);
 
+  document.addEventListener('click', handleDocumentClick);
+
   // Restore scroll position if coming back from movie detail
   const savedScrollY = sessionStorage.getItem('movieDetailScrollY');
   if (savedScrollY) {
@@ -327,6 +345,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
+  document.removeEventListener('click', handleDocumentClick);
 });
 </script>
 
@@ -511,17 +530,24 @@ onUnmounted(() => {
   opacity: 1;
 }
 
+/* star-icon overlay for per-movie watchlist */
 .star-icon {
   position: absolute;
-  top: 0px;
-  left: 5px;
+  top: 6px;
+  left: 6px;
   color: gray;
   font-size: 26px;
-  z-index: 10;
+  z-index: 0;
+  cursor: pointer;
 }
 
 .watchlist-star {
   color: #ffd700;
+}
+
+/* Force PrimeVue popup menu above all card overlays */
+:global(.p-menu-overlay) {
+  z-index: 9999 !important;
 }
 
 .menu-button {
@@ -537,7 +563,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 15;
+  z-index: 0;
 }
 
 .menu-button:hover {
@@ -570,4 +596,6 @@ onUnmounted(() => {
 .target-button:hover {
   background-color: #e9ecef;
 }
+
+
 </style>

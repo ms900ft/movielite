@@ -189,4 +189,10 @@ main {
   min-height: calc(100vh - 120px);
   background-color: #f8f9fa;
 }
+
+/* Ensure PrimeVue menubar dropdowns are above all card overlays */
+.p-menubar-sublist {
+  z-index: 9999 !important;
+}
+
 </style>
