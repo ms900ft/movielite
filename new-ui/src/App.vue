@@ -122,8 +122,8 @@ onMounted(() => {
 <template>
   <div id="app">
     <main>
-    <div v-if="isAuthenticated" class="w-full">
-      <Menubar :model="menuItems" class="w-full mb-2">
+    <div v-if="isAuthenticated" class="menubar-container">
+      <Menubar :model="menuItems" class="mb-2">
         <template #end>
           <IconField>
             <InputIcon>
@@ -193,6 +193,14 @@ main {
 /* Ensure PrimeVue menubar dropdowns are above all card overlays */
 .p-menubar-sublist {
   z-index: 9999 !important;
+}
+
+.menubar-container {
+  width: 100%;
+}
+
+.menubar-container .p-menubar {
+  width: 100%;
 }
 
 </style>
