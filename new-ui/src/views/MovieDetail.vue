@@ -62,22 +62,26 @@
             <p>{{ movie.meta.Overview }}</p>
           </div>
 
-          <div v-if="movie.meta && movie.meta.Credits && movie.meta.Credits.Cast && movie.meta.Credits.Cast.length" class="movie-cast">
-            <h3>Cast</h3>
-            <div class="cast-list">
-              <div v-for="actor in movie.meta.Credits.Cast.slice(0, 10)" :key="actor.ID" class="cast-member">
-                <img :src="actor.profile_path ? `http://localhost:8001/images/w185${actor.profile_path}` : '/person-placeholder.svg'" :alt="actor.Name" class="person-image" @click="openModal(actor.profile_path ? `http://localhost:8001/images/w500${actor.profile_path}` : '/person-placeholder.svg')" />
-                <strong @click="searchPersonMovies(actor.ID)" class="person-link">{{ actor.Name }}</strong> as {{ actor.Character }}
+          <div class="movie-credits">
+            <div v-if="movie.meta && movie.meta.Credits && movie.meta.Credits.Cast && movie.meta.Credits.Cast.length" class="movie-cast">
+              <h3>Cast</h3>
+              <div class="cast-list">
+                <div v-for="actor in movie.meta.Credits.Cast" :key="actor.ID" class="cast-member">
+                  <img v-if="actor.profile_path" :src="`http://localhost:8001/images/w185${actor.profile_path}`" :alt="actor.Name" class="person-image" @click="openModal(`http://localhost:8001/images/w500${actor.profile_path}`)" />
+                  <div v-else class="person-image-placeholder"></div>
+                  <strong @click="searchPersonMovies(actor.ID)" class="person-link">{{ actor.Name }}</strong> as {{ actor.Character }}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div v-if="movie.meta && movie.meta.Credits && movie.meta.Credits.Crew && movie.meta.Credits.Crew.length" class="movie-crew">
-            <h3>Crew</h3>
-            <div class="crew-list">
-              <div v-for="crew in movie.meta.Credits.Crew.slice(0, 10)" :key="crew.ID" class="crew-member">
-                <img :src="crew.profile_path ? `http://localhost:8001/images/w185${crew.profile_path}` : '/person-placeholder.svg'" :alt="crew.Name" class="person-image" @click="openModal(crew.profile_path ? `http://localhost:8001/images/w500${crew.profile_path}` : '/person-placeholder.svg')" />
-                <strong @click="searchPersonMovies(crew.ID)" class="person-link">{{ crew.Name }}</strong> - {{ crew.Job }}
+            <div v-if="movie.meta && movie.meta.Credits && movie.meta.Credits.Crew && movie.meta.Credits.Crew.length" class="movie-crew">
+              <h3>Crew</h3>
+              <div class="crew-list">
+                <div v-for="crew in movie.meta.Credits.Crew" :key="crew.ID" class="crew-member">
+                  <img v-if="crew.profile_path" :src="`http://localhost:8001/images/w185${crew.profile_path}`" :alt="crew.Name" class="person-image" @click="openModal(`http://localhost:8001/images/w500${crew.profile_path}`)" />
+                  <div v-else class="person-image-placeholder"></div>
+                  <strong @click="searchPersonMovies(crew.ID)" class="person-link">{{ crew.Name }}</strong> - {{ crew.Job }}
+                </div>
               </div>
             </div>
           </div>
@@ -347,8 +351,14 @@ onMounted(() => {
   color: #666;
 }
 
-.movie-cast, .movie-crew, .movie-production, .movie-file {
+.movie-credits {
+  display: flex;
+  gap: 30px;
   margin-bottom: 30px;
+}
+
+.movie-cast, .movie-crew {
+  flex: 1;
 }
 
 .movie-cast h3, .movie-crew h3, .movie-production h3, .movie-file h3 {
@@ -377,6 +387,24 @@ onMounted(() => {
   border-radius: 4px;
   float: left;
   cursor: pointer;
+}
+
+.person-image-placeholder {
+  width: 50px;
+  height: 75px;
+  margin-right: 10px;
+  border-radius: 4px;
+  float: left;
+  background-color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.person-image-placeholder::after {
+  content: '👤';
+  font-size: 24px;
+  opacity: 0.5;
 }
 
 .cast-member strong, .crew-member strong {
