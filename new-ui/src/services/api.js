@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8001/api', // All API endpoints are under /api
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -18,7 +18,7 @@ api.interceptors.request.use((config) => {
 
 // Create separate instance for login (not under /api)
 const loginApi = axios.create({
-  baseURL: 'http://localhost:8001',
+  baseURL: '',
   headers: {
     'Content-Type': 'application/json',
   },

@@ -20,7 +20,7 @@
         <div class="movie-poster">
           <img
             v-if="movie.meta && movie.meta.poster_path"
-            :src="`http://localhost:8001/images/w500${movie.meta.poster_path}`"
+            :src="`/images/w500${movie.meta.poster_path}`"
             :alt="movie.title"
           />
           <div v-else class="no-poster">{{ movie.title }}</div>
@@ -87,7 +87,7 @@
               <h3>Cast</h3>
               <div class="cast-list">
                 <div v-for="actor in movie.meta.Credits.Cast" :key="actor.ID" class="cast-member">
-                  <img v-if="actor.profile_path" :src="`http://localhost:8001/images/w185${actor.profile_path}`" :alt="actor.Name" class="person-image" @click="openModal(`http://localhost:8001/images/w500${actor.profile_path}`)" />
+                  <img v-if="actor.profile_path" :src="`/images/w185${actor.profile_path}`" :alt="actor.Name" class="person-image" @click="openModal(`/images/w500${actor.profile_path}`)" />
                   <div v-else class="person-image-placeholder"></div>
                   <strong @click="searchPersonMovies(actor.ID)" class="person-link">{{ actor.Name }}</strong> as {{ actor.Character }}
                 </div>
@@ -98,7 +98,7 @@
               <h3>Crew</h3>
               <div class="crew-list">
                 <div v-for="crew in movie.meta.Credits.Crew" :key="crew.ID" class="crew-member">
-                  <img v-if="crew.profile_path" :src="`http://localhost:8001/images/w185${crew.profile_path}`" :alt="crew.Name" class="person-image" @click="openModal(`http://localhost:8001/images/w500${crew.profile_path}`)" />
+                  <img v-if="crew.profile_path" :src="`/images/w185${crew.profile_path}`" :alt="crew.Name" class="person-image" @click="openModal(`/images/w500${crew.profile_path}`)" />
                   <div v-else class="person-image-placeholder"></div>
                   <strong @click="searchPersonMovies(crew.ID)" class="person-link">{{ crew.Name }}</strong> - {{ crew.Job }}
                 </div>

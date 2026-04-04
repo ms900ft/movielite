@@ -10,7 +10,7 @@
           <div class="movie-poster">
             <img
               v-if="movie.meta && movie.meta.poster_path"
-              :src="`http://localhost:8001/images/w342${movie.meta.poster_path}`"
+              :src="`/images/w342${movie.meta.poster_path}`"
               :alt="movie.title"
               @error="handleImageError"
             />
@@ -52,7 +52,7 @@
     <Dialog v-model:visible="multipleChoiceVisible" modal header="Select the correct movie" :style="{ width: '60rem' }">
       <div class="multiple-choice-grid">
         <div v-for="result in selectedMovie?.multiplechoice?.Results" :key="result.ID" class="multiple-choice-item" @click="selectMultipleChoice(result)">
-          <img v-if="result.poster_path" :src="`http://localhost:8001/images/w185${result.poster_path}`" :alt="result.title" @error="result.poster_path = null" />
+          <img v-if="result.poster_path" :src="`/images/w185${result.poster_path}`" :alt="result.title" @error="result.poster_path = null" />
           <div v-if="!result.poster_path" class="no-poster-small">
             <i class="pi pi-image" style="font-size: 40px; opacity: 0.5;"></i>
           </div>
