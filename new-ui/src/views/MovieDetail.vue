@@ -22,6 +22,8 @@
             v-if="movie.meta && movie.meta.poster_path"
             :src="`/images/w500${movie.meta.poster_path}`"
             :alt="movie.title"
+            class="poster-clickable"
+            @click="openModal(`/images/original${movie.meta.poster_path}`)"
           />
           <div v-else class="no-poster">{{ movie.title }}</div>
         </div>
@@ -660,23 +662,27 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.9);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 10000;
 }
 
 .modal-content {
   position: relative;
-  max-width: 90%;
-  max-height: 90%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-image {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 90vw;
+  max-height: 90vh;
   object-fit: contain;
+  cursor: pointer;
 }
 
 .close-button {

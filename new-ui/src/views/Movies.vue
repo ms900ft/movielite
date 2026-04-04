@@ -125,11 +125,16 @@ const updateMenuItems = () => {
       icon: 'pi pi-info-circle',
       command: () => goToMovieDetail(selectedMovie.value.id)
     },
-  {
-    label: 'Rescan',
-    icon: 'pi pi-refresh',
-    command: () => rescanMovieMeta(selectedMovie.value)
-  }
+    {
+      label: 'Show',
+      icon: 'pi pi-folder-open',
+      command: () => showMovie(selectedMovie.value.id)
+    },
+    {
+      label: 'Rescan',
+      icon: 'pi pi-refresh',
+      command: () => rescanMovieMeta(selectedMovie.value)
+    }
   ];
 };
 
@@ -307,6 +312,16 @@ const playMovie = async (movieId) => {
   }
 };
 
+const showMovie = async (movieId) => {
+  try {
+    await moviesService.showMovie(movieId);
+    alert('Movie folder opened!');
+  } catch (err) {
+    console.error('Error showing movie:', err);
+    alert('Failed to open movie folder.');
+  }
+};
+
 const toggleWatchlist = async (movie) => {
   const wasInWatchlist = movie.watchlist;
   try {
@@ -440,7 +455,7 @@ onUnmounted(() => {
 
 <style scoped>
 .movies-container {
-  padding: 20px;
+  padding: 20px 60px;
   width: 100%;
   box-sizing: border-box;
 }

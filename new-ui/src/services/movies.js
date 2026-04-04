@@ -51,6 +51,16 @@ export const moviesService = {
     }
   },
 
+  async showMovie(id) {
+    try {
+      const response = await api.put(`/movie/${id}/play`, null, { params: { showdir: 1 } });
+      return response.data;
+    } catch (error) {
+      console.error('Error showing movie:', error);
+      throw error;
+    }
+  },
+
   async getGenres() {
     try {
       const response = await api.get('/genre');
