@@ -64,6 +64,8 @@ func (a *Service) initializeRoutes() {
 
 	api.GET("/movie/:id/images", a.getMovieImages)
 
+	api.GET("/person/:id", a.getPerson)
+
 	api.GET("/genre", a.getGenres)
 	api.GET("/country", a.getCountries)
 	api.GET("/targets", a.getTargets)

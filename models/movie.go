@@ -55,8 +55,8 @@ type MovieShort struct {
 	MovieSearchResultsID uint
 	Adult                bool   `json:"adult"`
 	BackdropPath         string `json:"backdrop_path"`
-	//ID                   int    `json:"id"`
-	OriginalTitle string `json:"original_title"`
+	ID                   int    `json:"id"`
+	OriginalTitle        string `json:"original_title"`
 	//GenreIDs             []int32 `json:"genre_ids"`
 	Popularity  float32 `json:"popularity"`
 	PosterPath  string  `json:"poster_path"`

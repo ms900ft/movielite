@@ -1,9 +1,8 @@
 # movielite
 
-**movielite** is a simple **personal movie database**, written in golang and VUE.js.
+**movielite** is a simple **personal movie database**, written in Go and Vue.js.
 
-
-You can specify local directories watched for new movies. If new movies found metadata and images added form TMDB. [TMDB](https://www.themoviedb.org).
+You can specify local directories watched for new movies. If new movies are found, metadata and images are added from TMDB. [TMDB](https://www.themoviedb.org).
 
 ![](./docs/images/screencapture-main.png)
 
@@ -11,37 +10,61 @@ You can specify local directories watched for new movies. If new movies found me
 
 * List your movies with metadata
 * Search movies by title, description and persons
-* Play movies with you local player
-* View detail movie info
-* Automatically add new movies and add the metadata
-* Uses sqlite no db server required
-* Wachtlist
+* Play movies with your local player
+* View detailed movie info
+* Automatically add new movies and metadata
+* Uses SQLite — no DB server required
+* Watchlist
 * Download movies
 * Move movies to desired directory
+* User management with admin roles
+* Multiple choice movie selection for ambiguous titles
+* On-screen keyboard for search
+* Genre, country, and person filtering
+* Recently added sorting
 
 ## Getting Started (Demo)
+
 - Clone the Repository
-- Run in this directory: docker-compose up
+- Run in this directory: `docker-compose up`
 - Goto http://localhost:8000/movie2/
 - Login with admin/password
+
 You will see some example data without media files.
+
 ## Installation
+
 - Get the API Key from https://developers.themoviedb.org/3/
 
-- Clone Repository ```git clone https://github.com/ms900ft/movielite.git ```
-- Genarte
+- Clone Repository: `git clone https://github.com/ms900ft/movielite.git`
 
+### Build
+
+```bash
+# install npm packages
+make npminstall
+# build single binary (includes frontend)
+make
 ```
-    # install npm packages
-    make npminstall
-    # build single binary
-    make
+
+You find the binary `movielite` in the root directory.
+
+### Frontend Development
+
+For frontend development, use the Vite dev server with API proxy:
+
+```bash
+cd new-ui
+npm run dev
 ```
-You find the binary "movelite" in the directory root
 
-The main configuration file is movielite.yaml, but it is not included by default. Simply make a copy of movielite.yaml.tmpl and rename it to movielite.yaml. See example_movielite.yaml for more information about configurations.
+The dev server proxies `/api`, `/images`, and `/login` to `http://localhost:8001`.
 
-````
+## Configuration
+
+The main configuration file is `movielite.yaml`, but it is not included by default. Simply make a copy of `movielite.yaml.tmpl` and rename it to `movielite.yaml`. See `example_movielite.yaml` for more information about configurations.
+
+```yaml
 # devel, prod
 Mode: prod
 # Port to run
@@ -60,7 +83,6 @@ InitialAdminPassword: "password"
 # Player to play movies default is vlc (optional)
 # Player: "QuickTime Player"
 
-
 TMDB:
   # Your API key. Without API key you can't get metadata from tmdb
   ApiKey: #add your api key
@@ -76,7 +98,7 @@ MovieServerUrl: http://localhost:8000
 # Use system trash instead of delete
 TrashCan: true
 
-#Watch here for new movies
+# Watch here for new movies
 WatchDir: "./movies/new"
 
 # Additional regex's to find movie name in filename
@@ -90,20 +112,28 @@ FilterRegEx:
 
 # enable webdav (admin/test123)
 WebDav: true
-````
+```
+
 ### Start server
 
-````
+```bash
 ./movielite start
-````
- Now browse to the app at http://localhost:8000/movie2 .
- Login with admin/password
+```
 
- If you use the default config a watcher is set on the directory **./example/movies**.
- To add a new movie copy the movie in the watched folder.
+Now browse to the app at http://localhost:8000/movie2/.
+Login with admin/password.
+
+If you use the default config a watcher is set on the directory **./example/movies**.
+To add a new movie, copy the movie into the watched folder.
 
 ### Add your library
-The server must be running. To add you existing movies to movielite type
-`````
+
+The server must be running. To add your existing movies to movielite type:
+
+```bash
 movielite scan -d [directory to scan]
-`````
+```
+
+## API
+
+The API is documented with Swagger. When the server is running, browse to http://localhost:8000/swagger/ for the interactive API documentation.

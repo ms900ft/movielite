@@ -18,8 +18,10 @@ helper:
 	go build -o ${HELPER}   ./cmd/helper
 
 static:
-	$(MAKE) -C movieui
-	statik  -src=$(shell pwd)/movieui/dist
+	cd new-ui && node node_modules/vite/bin/vite.js build
+	statik -src=$(shell pwd)/new-ui/dist -dest=./statik -f
+	mv statik/statik/statik.go statik/statik.go 2>/dev/null || true
+	rm -rf statik/statik 2>/dev/null || true
 
 serve:
 	$(MAKE) -C movieui serve
