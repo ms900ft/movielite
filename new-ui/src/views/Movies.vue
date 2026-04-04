@@ -305,20 +305,16 @@ const goToMovieDetail = (movieId) => {
 const playMovie = async (movieId) => {
   try {
     await moviesService.playMovie(movieId);
-    alert('Movie playback started!');
   } catch (err) {
     console.error('Error playing movie:', err);
-    alert('Failed to start movie playback.');
   }
 };
 
 const showMovie = async (movieId) => {
   try {
     await moviesService.showMovie(movieId);
-    alert('Movie folder opened!');
   } catch (err) {
     console.error('Error showing movie:', err);
-    alert('Failed to open movie folder.');
   }
 };
 
