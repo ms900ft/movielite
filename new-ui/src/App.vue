@@ -62,6 +62,24 @@ const menuItems = ref([
         }
       }
     ]
+  },
+  {
+    label: 'User',
+    icon: 'pi pi-user',
+    items: [
+      {
+        label: () => `Logged in as: ${currentUser.value?.name || ''}`,
+        disabled: true
+      },
+      {
+        separator: true
+      },
+      {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        command: () => logout()
+      }
+    ]
   }
 
 ]);
@@ -123,13 +141,31 @@ const onSearchKeyup = (event) => {
 
 const checkAuth = () => {
   isAuthenticated.value = authService.isAuthenticated();
+  if (isAuthenticated.value) {
+    const user = authService.getUser();
+    currentUser.value = user;
+  }
 };
+
+const currentUser = ref(null);
 
 const logout = () => {
   authService.logout();
   isAuthenticated.value = false;
+  currentUser.value = null;
   router.push('/login');
 };
+
+// Re-check auth on route changes (e.g. after login redirect)
+watch(() => router.currentRoute.value, () => {
+  checkAuth();
+});
+
+// Check auth immediately on component setup
+checkAuth();
+
+// Check auth immediately on component setup
+checkAuth();
 
 const keyboardVisible = ref(false);
 const shiftActive = ref(false);
@@ -290,6 +326,16 @@ main {
 
 .menubar-container .p-menubar {
   width: 100%;
+}
+
+.user-info {
+  padding: 4px 12px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.user-info strong {
+  color: #334155;
 }
 
 .end-slot {
