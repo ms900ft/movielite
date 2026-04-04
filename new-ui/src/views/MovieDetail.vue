@@ -5,7 +5,15 @@
     <div v-else-if="movie" class="movie-content">
       <div class="movie-header">
         <button @click="goBack" class="back-button">← Back</button>
-        <h1>{{ movie.title }}</h1>
+        <template v-if="editingTitle">
+          <input v-model="editTitle" @keyup.enter="saveTitle" @keyup.escape="cancelEditTitle" class="title-input" />
+          <button @click="saveTitle" class="save-button">Save</button>
+          <button @click="cancelEditTitle" class="cancel-button">Cancel</button>
+        </template>
+        <template v-else>
+          <h1>{{ movie.title }}</h1>
+          <button @click="startEditTitle" class="edit-title-button" title="Edit title">✏️</button>
+        </template>
       </div>
 
       <div class="movie-main">
@@ -20,6 +28,18 @@
 
         <div class="movie-info">
           <div class="movie-meta">
+            <div class="meta-row">
+              <span class="meta-label">TMDB ID:</span>
+              <template v-if="editingTmdbId">
+                <input v-model="editTmdbId" @keyup.enter="saveTmdbId" @keyup.escape="cancelEditTmdbId" class="tmdb-input" />
+                <button @click="saveTmdbId" class="save-button">Save</button>
+                <button @click="cancelEditTmdbId" class="cancel-button">Cancel</button>
+              </template>
+              <template v-else>
+                <span class="meta-value">{{ movie.TMDBMovieID || 'N/A' }}</span>
+                <button @click="startEditTmdbId" class="edit-tmdb-button" title="Edit TMDB ID">✏️</button>
+              </template>
+            </div>
             <p v-if="movie.meta && movie.meta.release_date">
               <strong>Release Date:</strong> {{ formatDate(movie.meta.release_date) }}
             </p>
@@ -145,6 +165,10 @@ const modalVisible = ref(false);
 const modalImage = ref('');
 const targets = ref([]);
 const moveDialogVisible = ref(false);
+const editingTitle = ref(false);
+const editTitle = ref('');
+const editingTmdbId = ref(false);
+const editTmdbId = ref('');
 
 const fetchMovie = async () => {
   try {
@@ -225,6 +249,62 @@ const closeModal = () => {
   modalVisible.value = false;
 };
 
+const startEditTitle = () => {
+  editingTitle.value = true;
+  editTitle.value = movie.value.title;
+};
+
+const saveTitle = async () => {
+  if (!editTitle.value.trim()) return;
+  try {
+    const updatedMovie = { ...movie.value, title: editTitle.value.trim() };
+    await moviesService.updateMovie(movie.value.id, updatedMovie);
+    movie.value.title = editTitle.value.trim();
+    editingTitle.value = false;
+  } catch (err) {
+    console.error('Error updating title:', err);
+    alert('Failed to update title.');
+  }
+};
+
+const cancelEditTitle = () => {
+  editingTitle.value = false;
+  editTitle.value = '';
+};
+
+const startEditTmdbId = () => {
+  editingTmdbId.value = true;
+  editTmdbId.value = movie.value.TMDBMovieID || '';
+};
+
+const saveTmdbId = async () => {
+  const metaId = parseInt(editTmdbId.value.trim(), 10);
+  if (!metaId) {
+    movie.value.TMDBMovieID = 0;
+    movie.value.meta = null;
+    editingTmdbId.value = false;
+    try {
+      await moviesService.updateMovie(movie.value.id, { title: movie.value.title });
+    } catch (err) {
+      console.error('Error updating movie:', err);
+    }
+    return;
+  }
+  try {
+    const updatedMovie = await moviesService.rescanMovie(movie.value.id, metaId);
+    movie.value = updatedMovie;
+    editingTmdbId.value = false;
+  } catch (err) {
+    console.error('Error updating TMDB ID:', err);
+    alert('Failed to update TMDB metadata.');
+  }
+};
+
+const cancelEditTmdbId = () => {
+  editingTmdbId.value = false;
+  editTmdbId.value = '';
+};
+
 const goBack = () => {
   // Store current scroll position before going back
   sessionStorage.setItem('movieDetailScrollY', window.scrollY.toString());
@@ -259,6 +339,60 @@ onMounted(() => {
   align-items: center;
   gap: 20px;
   margin-bottom: 30px;
+}
+
+.movie-header h1 {
+  margin: 0;
+}
+
+.edit-title-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  filter: grayscale(100%);
+}
+
+.edit-title-button:hover {
+  opacity: 1;
+}
+
+.title-input {
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  border: 2px solid #007bff;
+  border-radius: 4px;
+  flex: 1;
+  max-width: 400px;
+}
+
+.save-button {
+  padding: 6px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  background-color: #218838;
+}
+
+.cancel-button {
+  padding: 6px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #5a6268;
 }
 
 .back-button {
@@ -313,8 +447,44 @@ onMounted(() => {
   flex: 1;
 }
 
-.movie-meta {
-  margin-bottom: 20px;
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.meta-label {
+  font-weight: bold;
+  min-width: 100px;
+}
+
+.meta-value {
+  color: #333;
+}
+
+.edit-tmdb-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  filter: grayscale(100%);
+}
+
+.edit-tmdb-button:hover {
+  opacity: 1;
+}
+
+.tmdb-input {
+  font-size: 14px;
+  padding: 4px 8px;
+  border: 2px solid #007bff;
+  border-radius: 4px;
+  width: 120px;
 }
 
 .movie-meta p {
