@@ -52,11 +52,13 @@ import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { debounce } from 'lodash-es';
 import { moviesService } from '../services/movies.js';
+import { useMovieStore } from '../stores/movie.js';
 import Menu from 'primevue/menu';
 import Dialog from 'primevue/dialog';
 
 const router = useRouter();
 const route = useRoute();
+const movieStore = useMovieStore();
 
 const movies = ref([]);
 const loading = ref(true);
@@ -77,29 +79,38 @@ const selectedMovie = ref(null);
 const targets = ref([]);
 const moveDialogVisible = ref(false);
 
-// Define menu items (dynamic based on the selected movie)
-const menuItems = computed(() => [
+// Menu items ref (updated dynamically when menu opens)
+const menuItems = ref([]);
+
+const updateMenuItems = () => {
+  menuItems.value = [
+    {
+      label: 'Play',
+      icon: 'pi pi-play',
+      command: () => playMovie(selectedMovie.value.id)
+    },
+    {
+      label: selectedMovie.value?.watchlist ? 'Remove from Watchlist' : 'Add to Watchlist',
+      icon: 'pi pi-star',
+      command: () => toggleWatchlist(selectedMovie.value)
+    },
+    {
+      label: 'Move Movie',
+      icon: 'pi pi-folder',
+      command: () => showMoveDialog(selectedMovie.value)
+    },
+    {
+      label: 'View Details',
+      icon: 'pi pi-info-circle',
+      command: () => goToMovieDetail(selectedMovie.value.id)
+    },
   {
-    label: 'Play',
-    icon: 'pi pi-play',
-    command: () => playMovie(selectedMovie.value.id)
-  },
-  {
-    label: selectedMovie.value?.watchlist ? 'Remove from Watchlist' : 'Add to Watchlist',
-    icon: 'pi pi-star',
-    command: () => toggleWatchlist(selectedMovie.value)
-  },
-  {
-    label: 'Move Movie',
-    icon: 'pi pi-folder',
-    command: () => showMoveDialog(selectedMovie.value)
-  },
-  {
-    label: 'View Details',
-    icon: 'pi pi-info-circle',
-    command: () => goToMovieDetail(selectedMovie.value.id)
+    label: 'Rescan',
+    icon: 'pi pi-refresh',
+    command: () => rescanMovieMeta(selectedMovie.value)
   }
-]);
+  ];
+};
 
 const setCurrentSearch = async () => {
   currentPerson.value = null;
@@ -185,6 +196,7 @@ const fetchMovies = async (offset = 0) => {
     }
     const response = await moviesService.getMovies(params);
     const newMovies = response.data || [];
+    movieStore.setTotalResults(response.meta?.total || 0);
     if (offset === 0) {
       movies.value = newMovies;
     } else {
@@ -306,6 +318,7 @@ const moveMovie = async (movie, targetDir) => {
 const toggleMenu = (event, movie) => {
   selectedMovie.value = movie;
   openMenuMovieID.value = movie.id;
+  updateMenuItems();
   movieMenu.value.toggle(event);
 };
 
@@ -325,6 +338,30 @@ const handleDocumentClick = (e) => {
 const showMoveDialog = (movie) => {
   selectedMovie.value = movie;
   moveDialogVisible.value = true;
+};
+
+const rescanMovies = async () => {
+  console.log('Rescan triggered');
+  try {
+    await moviesService.rescan();
+    fetchMovies(0);
+  } catch (err) {
+    console.error('Error rescanning:', err);
+  }
+};
+
+const rescanMovieMeta = async (movie) => {
+  try {
+    const metaId = movie.meta?.ID || movie.TMDBMovieID;
+    if (!metaId) {
+      alert('No TMDB metadata found for this movie');
+      return;
+    }
+    await moviesService.rescanMovie(movie.id, metaId);
+    fetchMovies(0);
+  } catch (err) {
+    console.error('Error rescanning movie metadata:', err);
+  }
 };
 
 const handleScroll = () => {

@@ -99,5 +99,25 @@ export const moviesService = {
       console.error('Error moving file:', error);
       throw error;
     }
+  },
+
+  async rescan() {
+    try {
+      const response = await api.post('/file/rescan');
+      return response.data;
+    } catch (error) {
+      console.error('Error rescanning:', error);
+      throw error;
+    }
+  },
+
+  async rescanMovie(id, metaId) {
+    try {
+      const response = await api.put(`/movie/${id}/addMeta/${metaId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error rescanning movie:', error);
+      throw error;
+    }
   }
 };

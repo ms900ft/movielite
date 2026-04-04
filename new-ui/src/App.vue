@@ -4,12 +4,14 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from './services/auth.js';
 import { moviesService } from './services/movies.js';
+import { useMovieStore } from './stores/movie.js';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
 import Menubar from 'primevue/menubar';
 
 const router = useRouter();
+const movieStore = useMovieStore();
 const isAuthenticated = ref(false);
 const searchQuery = ref('');
 const genres = ref([]);
@@ -133,12 +135,15 @@ onMounted(() => {
     <div v-if="isAuthenticated" class="menubar-container">
       <Menubar :model="menuItems" class="mb-2">
         <template #end>
-          <IconField>
-            <InputIcon>
-              <i class="pi pi-search" />
-            </InputIcon>
-            <InputText v-model="searchQuery" placeholder="Search movies..." @input="onSearchInput" @keyup="onSearchKeyup" />
-          </IconField>
+          <div class="end-slot">
+            <IconField>
+              <InputIcon>
+                <i class="pi pi-search" />
+              </InputIcon>
+              <InputText v-model="searchQuery" placeholder="Search movies..." @input="onSearchInput" @keyup="onSearchKeyup" />
+            </IconField>
+            <span v-if="movieStore.totalResults > 0" class="results-count">{{ movieStore.totalResults }} results</span>
+          </div>
         </template>
       </Menubar>
 
@@ -209,6 +214,19 @@ main {
 
 .menubar-container .p-menubar {
   width: 100%;
+}
+
+.end-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.results-count {
+  margin-left: 0;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
 }
 
 </style>
