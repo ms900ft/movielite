@@ -152,7 +152,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'searchPerson']);
 
 const movie = ref(null);
 const loading = ref(true);
@@ -229,7 +229,7 @@ const formatFileSize = (bytes) => {
 };
 
 const searchPersonMovies = (personId) => {
-  window.location.href = `/movies?person=${personId}`;
+  emit('searchPerson', personId);
 };
 
 const openModal = (imageSrc) => {

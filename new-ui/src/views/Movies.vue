@@ -77,7 +77,7 @@
       <div v-if="selectedDetailMovieId" class="detail-overlay" @click="closeDetail">
         <div class="detail-panel" @click.stop>
           <button @click="closeDetail" class="close-detail">✕</button>
-          <MovieDetailOverlay :movie-id="selectedDetailMovieId" @close="closeDetail" />
+          <MovieDetailOverlay :movie-id="selectedDetailMovieId" @close="closeDetail" @searchPerson="handleSearchPerson" />
         </div>
       </div>
     </Transition>
@@ -326,6 +326,12 @@ watch(() => route.query.country, async (newCountry) => {
   fetchMovies(0);
 });
 
+watch(() => route.query.person, async () => {
+  // Filter by person - always reload
+  await setCurrentSearch();
+  fetchMovies(0);
+});
+
 watch(() => route.query.show, async () => {
   // Filter by show - always reload
   await setCurrentSearch();
@@ -344,6 +350,11 @@ const goToMovieDetail = (movieId) => {
 
 const closeDetail = () => {
   selectedDetailMovieId.value = null;
+};
+
+const handleSearchPerson = (personId) => {
+  closeDetail();
+  router.push({ path: '/', query: { person: personId } });
 };
 
 const playMovie = async (movieId, forceServerPlay = false) => {

@@ -530,6 +530,20 @@ func (s *Service) addMeta(c *gin.Context) {
 		return
 	}
 	old := movie
+
+	// Clear multiplechoice and its MovieShort records before updating meta
+	if movie.Multiplechoice != nil && len(movie.Multiplechoice.Results) > 0 {
+		if err := db.Model(&old).Association("Multiplechoice").Clear(); err != nil {
+			log.Errorf("clear multiplechoice error: %s", err)
+		}
+		// Delete the orphaned MovieShort records
+		for _, ms := range movie.Multiplechoice.Results {
+			db.Where("id = ?", ms.ID).Delete(&models.MovieShort{})
+		}
+		// Delete the MovieSearchResults record
+		db.Where("id = ?", movie.Multiplechoice.ID).Delete(&models.MovieSearchResults{})
+	}
+
 	if metaID == 0 {
 		movie.Meta = nil
 		movie.TMDBMovieID = 0
@@ -556,11 +570,25 @@ func (s *Service) addMeta(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	//	if err := db.Debug().Model(&old).Association("TMDBMovie").Append(movie.Meta).Error; err != nil {
-	if err := db.Model(&old).Update(movie).Error; err != nil {
+	// First save the Meta (TMDBMovie) - GORM will update existing or insert new
+	if err := db.Save(movie.Meta).Error; err != nil {
+		log.Errorf("Meta save error: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Meta save error"})
+		return
+	}
+	movie.TMDBMovieID = uint(movie.Meta.ID)
+	// Now update the movie with the new TMDBMovieID
+	if err := db.Model(&old).Updates(map[string]interface{}{
+		"title":         movie.Title,
+		"tmdb_movie_id": movie.TMDBMovieID,
+	}).Error; err != nil {
 		log.Errorf("Movie update error: %s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
 		return
+	}
+	if err := db.Model(&old).Association("Meta").
+		Append(movie.Meta).Error; err != nil {
+		log.Errorf("append meta error: %v", err)
 	}
 	if err := db.Model(&old).Association("Multiplechoice").
 		Clear().Error; err != nil {
