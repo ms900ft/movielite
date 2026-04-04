@@ -15,6 +15,12 @@ type UserInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type UserUpdateInput struct {
+	UserName string `json:"username"`
+	Password string `json:"password"`
+	IsAdmin  bool   `json:"isadmin"`
+}
+
 func (s *Service) getUsers(c *gin.Context) {
 	db := s.DB
 
@@ -64,16 +70,11 @@ func (s *Service) createUser(c *gin.Context) {
 
 func (s *Service) updateUser(c *gin.Context) {
 	db := s.DB
-	var input UserInput
+	var input UserUpdateInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		log.Errorf("user binding input: %s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	}
-	pass, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, err)
 	}
 	var user models.User
 	if err := db.Where("id = ?", c.Param("id")).First(&user).Error; err != nil {
@@ -82,9 +83,22 @@ func (s *Service) updateUser(c *gin.Context) {
 		return
 	}
 
-	// Validate input
-	input.Password = string(pass)
-	if err := db.Model(&user).Updates(input).Error; err != nil {
+	updates := map[string]interface{}{
+		"user_name": input.UserName,
+		"is_admin":  input.IsAdmin,
+	}
+
+	if input.Password != "" {
+		pass, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+		if err != nil {
+			log.Error(err)
+			c.JSON(http.StatusBadRequest, err)
+			return
+		}
+		updates["password"] = string(pass)
+	}
+
+	if err := db.Model(&user).Updates(updates).Error; err != nil {
 		log.Errorf("user update error: %s", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Update error"})
 		return

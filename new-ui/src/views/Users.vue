@@ -122,7 +122,7 @@ const saveUser = async () => {
         payload.password = formData.value.password;
       }
       payload.isadmin = formData.value.isAdmin;
-      await moviesService.updateUser(selectedUser.value.ID, payload);
+      await moviesService.updateUser(selectedUser.value.id, payload);
     } else {
       await moviesService.createUser({
         username: formData.value.username,
