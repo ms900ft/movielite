@@ -341,8 +341,44 @@ main {
 .end-slot {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  position: relative;
+  gap: 0.25rem;
+}
+
+.results-count {
+  margin-left: 0;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.menubar-container .p-menubar {
+  width: 100%;
+  flex-wrap: nowrap !important;
+}
+
+.menubar-container .p-menubar .p-menubar-root-list {
+  flex-wrap: nowrap !important;
+  gap: 0 !important;
+  margin: 0 !important;
+}
+
+.menubar-container .p-menubar .p-menubar-root-list > .p-menubar-item {
+  margin: 0 !important;
+}
+
+.menubar-container .p-menubar .p-menubar-root-list > .p-menubar-item > .p-menubar-item-content {
+  padding: 0.2rem 0.25rem !important;
+}
+
+.menubar-container .p-menubar .p-menubar-item-label {
+  font-size: 15px;
+}
+
+.menubar-container .p-menubar .p-menubar-end {
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
 }
 
 .results-count {
