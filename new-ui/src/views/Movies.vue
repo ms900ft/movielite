@@ -66,12 +66,14 @@
     </Dialog>
 
     <!-- Movie Detail Overlay -->
-    <div v-if="selectedDetailMovieId" class="detail-overlay" @click="closeDetail">
-      <div class="detail-panel" @click.stop>
-        <button @click="closeDetail" class="close-detail">✕</button>
-        <MovieDetailOverlay :movie-id="selectedDetailMovieId" @close="closeDetail" />
+    <Transition name="overlay">
+      <div v-if="selectedDetailMovieId" class="detail-overlay" @click="closeDetail">
+        <div class="detail-panel" @click.stop>
+          <button @click="closeDetail" class="close-detail">✕</button>
+          <MovieDetailOverlay :movie-id="selectedDetailMovieId" @close="closeDetail" />
+        </div>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
 
@@ -809,6 +811,40 @@ onUnmounted(() => {
   align-items: flex-start;
   padding-top: 40px;
   overflow-y: auto;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.overlay-enter-active,
+.overlay-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.overlay-enter-active .detail-panel,
+.overlay-leave-active .detail-panel {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.overlay-enter-from {
+  opacity: 0;
+}
+
+.overlay-leave-to {
+  opacity: 0;
+}
+
+.overlay-enter-from .detail-panel {
+  transform: translateY(20px);
+  opacity: 0;
+}
+
+.overlay-leave-to .detail-panel {
+  transform: translateY(20px);
+  opacity: 0;
 }
 
 .detail-panel {
@@ -819,6 +855,12 @@ onUnmounted(() => {
   max-height: 90vh;
   position: relative;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .close-detail {
