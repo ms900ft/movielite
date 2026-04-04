@@ -198,7 +198,7 @@ main {
   background-color: #f8f9fa;
 }
 
-/* Ensure PrimeVue menubar dropdowns are above all card overlays */
+/* Ensure PrimeVue menubar dropdowns above card overlays */
 .p-menubar-sublist {
   z-index: 9999 !important;
 }

@@ -16,7 +16,7 @@
             />
             <div v-else class="no-poster">{{ movie.title }}</div>
             <div v-if="openMenuMovieID !== movie.id" class="star-icon" :class="{ 'watchlist-star': movie.watchlist }" @click.stop="toggleWatchlist(movie)" aria-label="watchlist" title="Toggle watchlist">★</div>
-            <button v-if="openMenuMovieID !== movie.id" class="menu-button" @click.stop="toggleMenu($event, movie)">
+            <button class="menu-button" @click.stop="toggleMenu($event, movie)">
               <i class="pi pi-bars"></i>
             </button>
             <div class="play-button-overlay" @click.stop="playMovie(movie.id)">
@@ -561,7 +561,7 @@ onUnmounted(() => {
 }
 
 /* Force PrimeVue popup menu above all card overlays */
-:global(.p-menu-overlay) {
+.p-menu-overlay {
   z-index: 9999 !important;
 }
 
