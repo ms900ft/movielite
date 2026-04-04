@@ -476,7 +476,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 15px;
-  width: 1000px;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
