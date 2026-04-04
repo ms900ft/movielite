@@ -86,7 +86,7 @@ const error = ref(null);
 const currentOffset = ref(0);
 const hasMore = ref(true);
 const loadingMore = ref(false);
-const limit = 20;
+const limit = 40;
 const searchQuery = ref(route.query.q || '');
 const currentSearch = ref('');
 const currentPerson = ref(null);
@@ -441,8 +441,8 @@ onUnmounted(() => {
 <style scoped>
 .movies-container {
   padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .nav-bar {
@@ -511,8 +511,8 @@ onUnmounted(() => {
 
 .movies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 40px;
   width: 100%;
 }
 
@@ -524,7 +524,7 @@ onUnmounted(() => {
 
 @media (min-width: 1200px) {
   .movies-grid {
-    gap: 20px;
+    gap: 40px;
   }
 }
 
@@ -547,7 +547,7 @@ onUnmounted(() => {
 }
 
 .movie-poster {
-  height: 225px;
+  height: 300px;
   overflow: hidden;
   position: relative;
   cursor: pointer;
