@@ -43,15 +43,11 @@ const router = createRouter({
 });
 
 // Navigation guard to check authentication
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!authService.isAuthenticated()) {
-      next('/login');
-    } else {
-      next();
+      return '/login';
     }
-  } else {
-    next();
   }
 });
 

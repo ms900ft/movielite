@@ -65,12 +65,13 @@
       </div>
     </Dialog>
 
-    <!-- Streaming Video Player Dialog -->
-    <Dialog v-model:visible="streamingVisible" modal header="Now Playing" :style="{ width: '80vw', maxWidth: '1200px' }" @hide="streamingSrc = ''">
-      <video v-if="streamingSrc" :src="streamingSrc" controls style="width: 100%; max-height: 70vh;">
-        Your browser does not support video playback.
-      </video>
-    </Dialog>
+    <!-- Movie Detail Overlay -->
+    <div v-if="selectedDetailMovieId" class="detail-overlay" @click="closeDetail">
+      <div class="detail-panel" @click.stop>
+        <button @click="closeDetail" class="close-detail">✕</button>
+        <MovieDetailOverlay :movie-id="selectedDetailMovieId" @close="closeDetail" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -82,6 +83,7 @@ import { moviesService } from '../services/movies.js';
 import { useMovieStore } from '../stores/movie.js';
 import Menu from 'primevue/menu';
 import Dialog from 'primevue/dialog';
+import MovieDetailOverlay from '../components/MovieDetailOverlay.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -108,6 +110,7 @@ const moveDialogVisible = ref(false);
 const multipleChoiceVisible = ref(false);
 const streamingVisible = ref(false);
 const streamingSrc = ref('');
+const selectedDetailMovieId = ref(null);
 
 // Menu items ref (updated dynamically when menu opens)
 const menuItems = ref([]);
@@ -327,7 +330,11 @@ watch(() => route.query.orderby, async () => {
 });
 
 const goToMovieDetail = (movieId) => {
-  router.push(`/movie/${movieId}`);
+  selectedDetailMovieId.value = movieId;
+};
+
+const closeDetail = () => {
+  selectedDetailMovieId.value = null;
 };
 
 const playMovie = async (movieId, forceServerPlay = false) => {
@@ -469,15 +476,6 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll);
 
   document.addEventListener('click', handleDocumentClick);
-
-  // Restore scroll position if coming back from movie detail
-  const savedScrollY = sessionStorage.getItem('movieDetailScrollY');
-  if (savedScrollY) {
-    nextTick(() => {
-      window.scrollTo(0, parseInt(savedScrollY));
-      sessionStorage.removeItem('movieDetailScrollY');
-    });
-  }
 });
 
 onUnmounted(() => {
@@ -780,6 +778,69 @@ onUnmounted(() => {
   font-size: 12px;
   color: #64748b;
   text-align: center;
+}
+
+.tmdb-link {
+  display: block;
+  padding: 6px 8px 8px;
+  text-align: center;
+  color: #3b82f6;
+  font-size: 12px;
+  text-decoration: none;
+  border-top: 1px solid #e2e8f0;
+  transition: background 0.2s;
+}
+
+.tmdb-link:hover {
+  background: #f1f5f9;
+  text-decoration: underline;
+}
+
+.detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+  overflow-y: auto;
+}
+
+.detail-panel {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.close-detail {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-detail:hover {
+  background: rgba(0, 0, 0, 0.9);
 }
 
 .tmdb-link {
