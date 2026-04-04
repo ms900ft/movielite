@@ -16,6 +16,9 @@
             />
             <div v-else class="no-poster">{{ movie.title }}</div>
             <div v-if="openMenuMovieID !== movie.id" class="star-icon" :class="{ 'watchlist-star': movie.watchlist }" @click.stop="toggleWatchlist(movie)" aria-label="watchlist" title="Toggle watchlist">★</div>
+            <button v-if="movie.multiplechoice" class="multiple-choice-button" @click.stop="showMultipleChoice(movie)" title="Choose correct movie">
+              <i class="pi pi-search"></i> Find
+            </button>
             <button class="menu-button" @click.stop="toggleMenu($event, movie)">
               <i class="pi pi-bars"></i>
             </button>
@@ -42,6 +45,23 @@
         <button v-for="target in targets" :key="target.name" @click="moveMovie(selectedMovie, target.name)" class="target-button">
           {{ target.name }}
         </button>
+      </div>
+    </Dialog>
+
+    <!-- Multiple Choice Dialog -->
+    <Dialog v-model:visible="multipleChoiceVisible" modal header="Select the correct movie" :style="{ width: '60rem' }">
+      <div class="multiple-choice-grid">
+        <div v-for="result in selectedMovie?.multiplechoice?.Results" :key="result.ID" class="multiple-choice-item" @click="selectMultipleChoice(result)">
+          <img v-if="result.poster_path" :src="`http://localhost:8001/images/w185${result.poster_path}`" :alt="result.title" @error="result.poster_path = null" />
+          <div v-if="!result.poster_path" class="no-poster-small">
+            <i class="pi pi-image" style="font-size: 40px; opacity: 0.5;"></i>
+          </div>
+          <div class="multiple-choice-title">{{ result.title }}</div>
+          <div class="multiple-choice-date">{{ result.release_date }}</div>
+          <a :href="`https://www.themoviedb.org/movie/${result.ID}`" target="_blank" rel="noopener" class="tmdb-link" @click.stop>
+            <i class="pi pi-external-link"></i> View on TMDB
+          </a>
+        </div>
       </div>
     </Dialog>
   </div>
@@ -78,6 +98,7 @@ const openMenuMovieID = ref(null);
 const selectedMovie = ref(null);
 const targets = ref([]);
 const moveDialogVisible = ref(false);
+const multipleChoiceVisible = ref(false);
 
 // Menu items ref (updated dynamically when menu opens)
 const menuItems = ref([]);
@@ -338,6 +359,22 @@ const handleDocumentClick = (e) => {
 const showMoveDialog = (movie) => {
   selectedMovie.value = movie;
   moveDialogVisible.value = true;
+};
+
+const showMultipleChoice = (movie) => {
+  selectedMovie.value = movie;
+  multipleChoiceVisible.value = true;
+};
+
+const selectMultipleChoice = async (result) => {
+  try {
+    await moviesService.rescanMovie(selectedMovie.value.id, result.ID);
+    fetchMovies(0);
+    multipleChoiceVisible.value = false;
+  } catch (err) {
+    console.error('Error selecting movie:', err);
+    alert('Failed to update movie metadata.');
+  }
 };
 
 const rescanMovies = async () => {
@@ -620,6 +657,97 @@ onUnmounted(() => {
 
 .menu-button:hover {
   background: rgba(0, 0, 0, 0.1);
+}
+
+.multiple-choice-button {
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  z-index: 2;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.multiple-choice-button:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.multiple-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.multiple-choice-item {
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: white;
+}
+
+.multiple-choice-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.multiple-choice-item img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+
+.no-poster-small {
+  width: 100%;
+  height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-sizing: border-box;
+}
+
+.multiple-choice-title {
+  padding: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.multiple-choice-date {
+  padding: 0 8px 8px;
+  font-size: 12px;
+  color: #64748b;
+  text-align: center;
+}
+
+.tmdb-link {
+  display: block;
+  padding: 6px 8px 8px;
+  text-align: center;
+  color: #3b82f6;
+  font-size: 12px;
+  text-decoration: none;
+  border-top: 1px solid #e2e8f0;
+  transition: background 0.2s;
+}
+
+.tmdb-link:hover {
+  background: #f1f5f9;
+  text-decoration: underline;
 }
 
 .no-movies {
