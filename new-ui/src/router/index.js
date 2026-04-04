@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Movies from '../views/Movies.vue';
 import MovieDetail from '../views/MovieDetail.vue';
 import Login from '../views/Login.vue';
+import Users from '../views/Users.vue';
 import { authService } from '../services/auth.js';
 
 const routes = [
@@ -26,6 +27,12 @@ const routes = [
     path: '/movie/:id',
     name: 'MovieDetail',
     component: MovieDetail,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: Users,
     meta: { requiresAuth: true }
   }
 ];

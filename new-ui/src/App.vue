@@ -52,7 +52,16 @@ const menuItems = ref([
     },
   {
     label: 'Settings',
-    icon: 'pi pi-cog'
+    icon: 'pi pi-cog',
+    items: [
+      {
+        label: 'Users',
+        icon: 'pi pi-users',
+        command: () => {
+          router.push('/users');
+        }
+      }
+    ]
   }
 
 ]);

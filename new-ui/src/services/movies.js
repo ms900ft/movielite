@@ -119,5 +119,45 @@ export const moviesService = {
       console.error('Error rescanning movie:', error);
       throw error;
     }
+  },
+
+  async getUsers() {
+    try {
+      const response = await api.get('/user');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw error;
+    }
+  },
+
+  async createUser(userData) {
+    try {
+      const response = await api.post('/user', userData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
+  },
+
+  async updateUser(id, userData) {
+    try {
+      const response = await api.put(`/user/${id}`, userData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
+  },
+
+  async deleteUser(id) {
+    try {
+      const response = await api.delete(`/user/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
   }
 };
