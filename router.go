@@ -43,8 +43,8 @@ func (a *Service) initializeRoutes() {
 	api.PUT("/file/:id", a.updateFile)
 	api.PUT("/file/:id/move/:dir", a.moveFile) //update file
 	api.DELETE("/file/:id", a.deleteFile)
-	api.GET("/file/:id/download", a.downloadFile)
-	api.GET("/file/:id/download/:name", a.downloadFile) //name im pfad
+	// api.GET("/file/:id/download", a.downloadFile) - moved to root router for public access
+	// api.GET("/file/:id/download/:name", a.downloadFile)
 
 	api.GET("/movie", a.getMovies)
 	api.GET("/movie/:id", a.getMovie)
@@ -71,6 +71,7 @@ func (a *Service) initializeRoutes() {
 	api.GET("/targets", a.getTargets)
 
 	a.Router.GET("/images/:size/:image", a.getImage)
+	a.Router.GET("/movie/:id/stream", a.streamMovie)
 	//staticDir := viper.GetString("Frontend.Path")
 	//movie2Dir := viper.GetString("Frontend.Path2")
 	//	a.Router.Use(favicon.New(staticDir + "/favicon.ico"))
@@ -85,6 +86,7 @@ func (a *Service) initializeRoutes() {
 	// a.Router.Static("/html", staticDir)
 	a.Router.GET("/file/:id/download", a.downloadFile)
 	a.Router.GET("/file/:id/download/:name", a.downloadFile) //name im pfad
+	a.Router.GET("/api/movie/:id/download", a.downloadMovie)
 	a.Router.StaticFS("/movie2", &indexWrapper{statikFS})
 	a.Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	a.Router.GET("/debug/vars", expvar.Handler())

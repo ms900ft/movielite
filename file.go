@@ -175,6 +175,22 @@ func (s *Service) downloadFile(c *gin.Context) {
 	c.File(file.FullPath)
 }
 
+func (s *Service) downloadMovie(c *gin.Context) {
+	db := s.DB
+	id := c.Param("id")
+
+	var movie models.Movie
+	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&movie).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		return
+	}
+	c.Header("Content-Description", "File Transfer")
+	c.Header("Content-Transfer-Encoding", "binary")
+	c.Header("Content-Disposition", "attachment; filename="+movie.File.FileName)
+	c.Header("Content-Type", "application/octet-stream")
+	c.File(movie.File.FullPath)
+}
+
 // moveFile godoc
 // @Summary Move a file
 // @Description Moves a file to a new directory.

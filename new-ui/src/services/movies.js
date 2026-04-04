@@ -51,6 +51,14 @@ export const moviesService = {
     }
   },
 
+  getStreamUrl(id) {
+    return `/movie/${id}/stream`
+  },
+
+  getDownloadUrl(movieId) {
+    return `/api/movie/${movieId}/download`
+  },
+
   async showMovie(id) {
     try {
       const response = await api.put(`/movie/${id}/play`, null, { params: { showdir: 1 } });

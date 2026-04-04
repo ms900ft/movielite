@@ -64,6 +64,13 @@
         </div>
       </div>
     </Dialog>
+
+    <!-- Streaming Video Player Dialog -->
+    <Dialog v-model:visible="streamingVisible" modal header="Now Playing" :style="{ width: '80vw', maxWidth: '1200px' }" @hide="streamingSrc = ''">
+      <video v-if="streamingSrc" :src="streamingSrc" controls style="width: 100%; max-height: 70vh;">
+        Your browser does not support video playback.
+      </video>
+    </Dialog>
   </div>
 </template>
 
@@ -99,6 +106,8 @@ const selectedMovie = ref(null);
 const targets = ref([]);
 const moveDialogVisible = ref(false);
 const multipleChoiceVisible = ref(false);
+const streamingVisible = ref(false);
+const streamingSrc = ref('');
 
 // Menu items ref (updated dynamically when menu opens)
 const menuItems = ref([]);
@@ -106,9 +115,28 @@ const menuItems = ref([]);
 const updateMenuItems = () => {
   menuItems.value = [
     {
-      label: 'Play',
+      label: 'Stream',
       icon: 'pi pi-play',
-      command: () => playMovie(selectedMovie.value.id)
+      command: () => {
+        const streamUrl = moviesService.getStreamUrl(selectedMovie.value.id);
+        streamingSrc.value = streamUrl;
+        streamingVisible.value = true;
+      }
+    },
+    {
+      label: 'Play (Server)',
+      icon: 'pi pi-desktop',
+      command: () => playMovie(selectedMovie.value.id, true)
+    },
+    {
+      label: 'Download',
+      icon: 'pi pi-download',
+      command: async () => {
+        const movie = selectedMovie.value;
+        const token = localStorage.getItem('authToken');
+        const url = moviesService.getDownloadUrl(movie.id);
+        window.open(`${url}?token=${token}`, '_blank');
+      }
     },
     {
       label: selectedMovie.value?.watchlist ? 'Remove from Watchlist' : 'Add to Watchlist',
@@ -302,11 +330,20 @@ const goToMovieDetail = (movieId) => {
   router.push(`/movie/${movieId}`);
 };
 
-const playMovie = async (movieId) => {
-  try {
-    await moviesService.playMovie(movieId);
-  } catch (err) {
-    console.error('Error playing movie:', err);
+const playMovie = async (movieId, forceServerPlay = false) => {
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const shouldServerPlay = forceServerPlay || isLocalhost;
+  
+  if (shouldServerPlay) {
+    try {
+      await moviesService.playMovie(movieId);
+    } catch (err) {
+      console.error('Error playing movie:', err);
+    }
+  } else {
+    const streamUrl = moviesService.getStreamUrl(movieId);
+    streamingSrc.value = streamUrl;
+    streamingVisible.value = true;
   }
 };
 

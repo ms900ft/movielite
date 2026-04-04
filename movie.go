@@ -3,7 +3,10 @@ package movielite
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -411,6 +414,93 @@ func (s *Service) playMovie(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusNoContent, nil)
+}
+
+// streamMovie godoc
+// @Summary Stream a movie file
+// @Description Streams a movie file with Range header support for seeking
+// @Tags movies
+// @Produce video/*
+// @Param id path int true "Movie ID"
+// @Router /api/movie/{id}/stream [get]
+func (s *Service) streamMovie(c *gin.Context) {
+	db := s.DB
+	id := c.Param("id")
+
+	var movie models.Movie
+	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&movie).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	filePath := movie.File.FullPath
+	videoFile, err := os.Open(filePath)
+	if err != nil {
+		log.Errorf("Failed to open video file: %s", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot open file"})
+		return
+	}
+	defer videoFile.Close()
+
+	stat, err := videoFile.Stat()
+	if err != nil {
+		log.Errorf("Failed to stat video file: %s", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot access file"})
+		return
+	}
+	fileSize := stat.Size()
+
+	contentType := getContentType(filePath)
+	c.Header("Content-Type", contentType)
+	c.Header("Accept-Ranges", "bytes")
+
+	rangeHeader := c.GetHeader("Range")
+	if rangeHeader == "" {
+		c.Header("Content-Length", strconv.FormatInt(fileSize, 10))
+		c.Header("Content-Disposition", "inline; filename="+movie.File.FileName)
+		c.File(filePath)
+		return
+	}
+
+	rangePart := strings.TrimPrefix(rangeHeader, "bytes=")
+	parts := strings.Split(rangePart, "-")
+	start, _ := strconv.ParseInt(parts[0], 10, 64)
+	end := fileSize - 1
+	if len(parts) > 1 && parts[1] != "" {
+		end, _ = strconv.ParseInt(parts[1], 10, 64)
+	}
+	if end >= fileSize {
+		end = fileSize - 1
+	}
+
+	contentLength := end - start + 1
+	c.Header("Content-Length", strconv.FormatInt(contentLength, 10))
+	c.Header("Content-Range", fmt.Sprintf("bytes %d-%d/%d", start, end, fileSize))
+	c.Header("Content-Disposition", "inline")
+	c.Status(http.StatusPartialContent)
+	http.ServeContent(c.Writer, c.Request, movie.File.FileName, stat.ModTime(), videoFile)
+}
+
+func getContentType(filePath string) string {
+	ext := strings.ToLower(filepath.Ext(filePath))
+	switch ext {
+	case ".mp4":
+		return "video/mp4"
+	case ".mkv":
+		return "video/x-matroska"
+	case ".webm":
+		return "video/webm"
+	case ".avi":
+		return "video/x-msvideo"
+	case ".mov":
+		return "video/quicktime"
+	case ".wmv":
+		return "video/x-ms-wmv"
+	case ".flv":
+		return "video/x-flv"
+	default:
+		return "application/octet-stream"
+	}
 }
 
 // addMeta godoc
