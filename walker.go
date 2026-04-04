@@ -246,7 +246,7 @@ func (w *Walker) watchdirectory(dir string) error {
 	defer watcher.Close()
 
 	done := make(chan bool)
-	ticker := time.NewTicker(5000 * time.Millisecond)
+	ticker := time.NewTicker(3 * time.Second)
 	go func() {
 		for {
 			select {
@@ -265,7 +265,26 @@ func (w *Walker) watchdirectory(dir string) error {
 
 				// }
 			case err = <-watcher.Errors:
-				log.Error("error:", err)
+				log.Errorf("watcher error: %v, attempting to recover...", err)
+				watcher.Close()
+				for retries := 0; retries < 10; retries++ {
+					time.Sleep(2 * time.Second)
+					log.Debugf("reattempting to create watcher (attempt %d/10)...", retries+1)
+					var newWatcher *fsnotify.Watcher
+					newWatcher, err = fsnotify.NewWatcher()
+					if err == nil {
+						err = newWatcher.Add(dir)
+						if err == nil {
+							watcher = newWatcher
+							log.Infof("watcher recovered successfully")
+							break
+						}
+						newWatcher.Close()
+					}
+				}
+				if err != nil {
+					log.Errorf("failed to recover watcher after 10 attempts: %v", err)
+				}
 			}
 		}
 	}()

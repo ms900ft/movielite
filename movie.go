@@ -424,6 +424,7 @@ func (s *Service) playMovie(c *gin.Context) {
 // @Param id path int true "Movie ID"
 // @Router /api/movie/{id}/stream [get]
 func (s *Service) streamMovie(c *gin.Context) {
+	log.Infof("streamMovie called with id: %s", c.Param("id"))
 	db := s.DB
 	id := c.Param("id")
 

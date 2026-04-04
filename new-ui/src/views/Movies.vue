@@ -65,6 +65,13 @@
       </div>
     </Dialog>
 
+    <!-- Streaming Video Player Dialog -->
+    <Dialog v-model:visible="streamingVisible" modal header="Now Playing" :style="{ width: '80vw', maxWidth: '1200px' }" @hide="streamingSrc = ''">
+      <video v-if="streamingSrc" :src="streamingSrc" controls style="width: 100%; max-height: 70vh;">
+        Your browser does not support video playback.
+      </video>
+    </Dialog>
+
     <!-- Movie Detail Overlay -->
     <Transition name="overlay">
       <div v-if="selectedDetailMovieId" class="detail-overlay" @click="closeDetail">
@@ -343,6 +350,8 @@ const playMovie = async (movieId, forceServerPlay = false) => {
   const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   const shouldServerPlay = forceServerPlay || isLocalhost;
   
+  console.log('playMovie called:', { movieId, isLocalhost, shouldServerPlay });
+  
   if (shouldServerPlay) {
     try {
       await moviesService.playMovie(movieId);
@@ -351,6 +360,7 @@ const playMovie = async (movieId, forceServerPlay = false) => {
     }
   } else {
     const streamUrl = moviesService.getStreamUrl(movieId);
+    console.log('Streaming URL:', streamUrl);
     streamingSrc.value = streamUrl;
     streamingVisible.value = true;
   }
