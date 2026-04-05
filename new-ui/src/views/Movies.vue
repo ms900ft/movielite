@@ -107,10 +107,9 @@ const error = ref(null);
 const currentOffset = ref(0);
 const hasMore = ref(true);
 const loadingMore = ref(false);
-const limit = 40;
+const limit = 21;
 const searchQuery = ref(route.query.q || '');
 const currentSearch = ref('');
-const currentPerson = ref(null);
 
 // Menu related
 const movieMenu = ref();
@@ -181,41 +180,6 @@ const updateMenuItems = () => {
   ];
 };
 
-const setCurrentSearch = async () => {
-  currentPerson.value = null;
-  if (route.query.country) {
-    try {
-      const countries = await moviesService.getCountries();
-      const country = countries.find(c => c.iso_id === route.query.country);
-      currentSearch.value = `Country: ${country ? country.name : route.query.country}`;
-    } catch (e) {
-      currentSearch.value = `Country: ${route.query.country}`;
-    }
-  } else if (route.query.genre) {
-    try {
-      const genres = await moviesService.getGenres();
-      const genre = genres.find(g => g.tmdb_id == route.query.genre);
-      currentSearch.value = `Genre: ${genre ? genre.name : route.query.genre}`;
-    } catch (e) {
-      currentSearch.value = `Genre: ${route.query.genre}`;
-    }
-  } else if (route.query.person) {
-    try {
-      const person = await moviesService.getPerson(route.query.person);
-      currentSearch.value = `Person: ${person.Name}`;
-      currentPerson.value = person;
-    } catch (e) {
-      currentSearch.value = `Person: ${route.query.person}`;
-    }
-  } else if (route.query.show === 'watchlist') {
-    currentSearch.value = 'Watchlist';
-  } else if (searchQuery.value) {
-    currentSearch.value = `Search: "${searchQuery.value}"`;
-  } else {
-    currentSearch.value = '';
-  }
-};
-
 const fetchTargets = async () => {
   try {
     const response = await moviesService.getTargets();
@@ -226,43 +190,64 @@ const fetchTargets = async () => {
 };
 
 const fetchMovies = async (offset = 0) => {
-  await setCurrentSearch();
-  try {
-    if (offset === 0) {
-      loading.value = true;
-      error.value = null;
-    } else {
-      loadingMore.value = true;
-    }
-    const params = { limit, offset };
+  if (offset === 0) {
+    loading.value = true;
+    error.value = null;
+  } else {
+    loadingMore.value = true;
+  }
+  const params = { limit, offset };
 
-    // Set default ordering when country or genre is selected
-    if (route.query.country || route.query.genre) {
-      if (route.query.country) {
-        params.country = route.query.country;
-      }
-      if (route.query.genre) {
-        params.genre = route.query.genre;
-      }
-      params.orderby = route.query.orderby || 'name';
-    } else {
-      // Normal pagination for other cases
-      if (searchQuery.value) {
-        params.title = searchQuery.value;
-      }
-      // Check for person query parameter
-      if (route.query.person) {
-        params.person = route.query.person;
-      }
-      // Check for show query parameter
-      if (route.query.show === 'watchlist') {
-        params.show = 'watchlist';
-      }
-      // Check for orderby parameter
-      if (route.query.orderby) {
-        params.orderby = route.query.orderby;
-      }
+  // Set default ordering when country or genre is selected
+  if (route.query.country || route.query.genre) {
+    if (route.query.country) {
+      params.country = route.query.country;
     }
+    if (route.query.genre) {
+      params.genre = route.query.genre;
+    }
+    params.orderby = route.query.orderby || 'name';
+  } else {
+    // Normal pagination for other cases
+    const q = route.query.q || '';
+    if (q) {
+      params.title = q;
+    }
+    // Check for person query parameter
+    if (route.query.person) {
+      params.person = route.query.person;
+    }
+    // Check for show query parameter
+    if (route.query.show === 'watchlist') {
+      params.show = 'watchlist';
+    }
+    // Check for orderby parameter
+    if (route.query.orderby) {
+      params.orderby = route.query.orderby;
+    }
+  }
+
+  // Update search display text
+  if (route.query.person) {
+    try {
+      const person = await moviesService.getPerson(route.query.person);
+      if (person?.name) {
+        currentSearch.value = `Person: ${person.name}`;
+      } else {
+        currentSearch.value = `Person: ${route.query.person}`;
+      }
+    } catch {
+      currentSearch.value = `Person: ${route.query.person}`;
+    }
+  } else if (route.query.show === 'watchlist') {
+    currentSearch.value = 'Watchlist';
+  } else if (route.query.q) {
+    currentSearch.value = `Search: "${route.query.q}"`;
+  } else {
+    currentSearch.value = '';
+  }
+
+  try {
     const response = await moviesService.getMovies(params);
     const newMovies = response.data || [];
     movieStore.setTotalResults(response.meta?.total || 0);
@@ -312,38 +297,27 @@ import { watch } from 'vue';
 watch(() => route.query.q, async (newQuery) => {
   if (newQuery !== searchQuery.value) {
     searchQuery.value = newQuery || '';
-    await setCurrentSearch();
     fetchMovies(0);
   }
 });
 
-watch(() => route.query.genre, async (newGenre) => {
-  // Filter by genre - always reload
-  await setCurrentSearch();
+watch(() => route.query.genre, async () => {
   fetchMovies(0);
 });
 
-watch(() => route.query.country, async (newCountry) => {
-  // Filter by country - always reload
-  await setCurrentSearch();
+watch(() => route.query.country, async () => {
   fetchMovies(0);
 });
 
 watch(() => route.query.person, async () => {
-  // Filter by person - always reload
-  await setCurrentSearch();
   fetchMovies(0);
 });
 
 watch(() => route.query.show, async () => {
-  // Filter by show - always reload
-  await setCurrentSearch();
   fetchMovies(0);
 });
 
 watch(() => route.query.orderby, async () => {
-  // Filter by orderby - always reload
-  await setCurrentSearch();
   fetchMovies(0);
 });
 
@@ -363,9 +337,9 @@ const handleSearchPerson = (personId) => {
 const playMovie = async (movieId, forceServerPlay = false) => {
   const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   const shouldServerPlay = forceServerPlay || isLocalhost;
-  
+
   console.log('playMovie called:', { movieId, isLocalhost, shouldServerPlay });
-  
+
   if (shouldServerPlay) {
     try {
       await moviesService.playMovie(movieId);

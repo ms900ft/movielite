@@ -1,6 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from './services/auth.js';
 import { moviesService } from './services/movies.js';
@@ -16,6 +16,18 @@ const isAuthenticated = ref(false);
 const searchQuery = ref('');
 const genres = ref([]);
 const countries = ref([]);
+const currentUser = ref(null);
+const searchDebounceTimer = ref(null);
+const keyboardVisible = ref(false);
+const shiftActive = ref(false);
+const searchInput = ref();
+
+const logout = () => {
+  authService.logout();
+  isAuthenticated.value = false;
+  currentUser.value = null;
+  router.push('/login');
+};
 
 const menuItems = ref([
   {
@@ -25,7 +37,6 @@ const menuItems = ref([
       router.push('/');
     }
   },
-
   {
     label: 'Genres',
     icon: 'pi pi-tags',
@@ -36,20 +47,20 @@ const menuItems = ref([
     icon: 'pi pi-globe',
     items: countries
   },
-   {
-      label: 'Watchlist',
-      icon: 'pi pi-heart',
-      command: () => {
-        router.push({ path: '/', query: { show: 'watchlist' } });
-      }
-    },
-   {
-      label: 'Recently',
-      icon: 'pi pi-clock',
-      command: () => {
-        router.push({ path: '/', query: { orderby: 'recent' } });
-      }
-    },
+  {
+    label: 'Watchlist',
+    icon: 'pi pi-heart',
+    command: () => {
+      router.push({ path: '/', query: { show: 'watchlist' } });
+    }
+  },
+  {
+    label: 'Recently',
+    icon: 'pi pi-clock',
+    command: () => {
+      router.push({ path: '/', query: { orderby: 'recent' } });
+    }
+  },
   {
     label: 'Settings',
     icon: 'pi pi-cog',
@@ -81,11 +92,9 @@ const menuItems = ref([
       }
     ]
   }
-
 ]);
 
 // Update menu items when genres and countries change
-import { watch } from 'vue';
 watch(genres, () => {
   menuItems.value[1].items = genres.value;
 }, { deep: true });
@@ -93,6 +102,11 @@ watch(genres, () => {
 watch(countries, () => {
   menuItems.value[2].items = countries.value;
 }, { deep: true });
+
+// Re-check auth on route changes
+watch(() => router.currentRoute.value, () => {
+  checkAuth();
+});
 
 const fetchGenres = async () => {
   try {
@@ -127,7 +141,6 @@ const fetchCountries = async () => {
 };
 
 const onSearchInput = () => {
-  // Debounce search input by 500ms
   if (searchDebounceTimer.value) {
     clearTimeout(searchDebounceTimer.value);
   }
@@ -151,31 +164,6 @@ const checkAuth = () => {
     currentUser.value = user;
   }
 };
-
-const currentUser = ref(null);
-const searchDebounceTimer = ref(null);
-
-const logout = () => {
-  authService.logout();
-  isAuthenticated.value = false;
-  currentUser.value = null;
-  router.push('/login');
-};
-
-// Re-check auth on route changes (e.g. after login redirect)
-watch(() => router.currentRoute.value, () => {
-  checkAuth();
-});
-
-// Check auth immediately on component setup
-checkAuth();
-
-// Check auth immediately on component setup
-checkAuth();
-
-const keyboardVisible = ref(false);
-const shiftActive = ref(false);
-const searchInput = ref();
 
 const toggleKeyboard = () => {
   keyboardVisible.value = !keyboardVisible.value;
@@ -207,8 +195,11 @@ const searchFromKeyboard = () => {
   keyboardVisible.value = false;
 };
 
-const onSearchFocus = () => {
-  // keyboard stays visible on focus
+const onSearchFocus = () => {};
+
+const clearSearch = () => {
+  searchQuery.value = '';
+  router.push({ path: '/', query: { q: '' } });
 };
 
 onMounted(() => {
@@ -225,6 +216,7 @@ onMounted(() => {
       <Menubar :model="menuItems" class="mb-2">
         <template #end>
           <div class="end-slot">
+          <div class="search-wrapper">
             <IconField>
               <InputIcon>
                 <i class="pi pi-search" />
@@ -234,6 +226,10 @@ onMounted(() => {
                 <i class="pi pi-desktop" />
               </InputIcon>
             </IconField>
+            <button v-if="searchQuery" class="clear-search-btn" @click="clearSearch" title="Clear search">
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
             <span v-if="movieStore.totalResults > 0" class="results-count">{{ movieStore.totalResults }} results</span>
           </div>
         </template>
@@ -321,41 +317,12 @@ main {
   background-color: #f8f9fa;
 }
 
-/* Ensure PrimeVue menubar dropdowns above card overlays */
 .p-menubar-sublist {
   z-index: 9999 !important;
 }
 
 .menubar-container {
   width: 100%;
-}
-
-.menubar-container .p-menubar {
-  width: 100%;
-}
-
-.user-info {
-  padding: 4px 12px;
-  font-size: 13px;
-  color: #64748b;
-}
-
-.user-info strong {
-  color: #334155;
-}
-
-.end-slot {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.results-count {
-  margin-left: 0;
-  font-weight: 600;
-  color: #64748b;
-  white-space: nowrap;
-  font-size: 13px;
 }
 
 .menubar-container .p-menubar {
@@ -387,11 +354,45 @@ main {
   white-space: nowrap !important;
 }
 
+.end-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.clear-search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.clear-search-btn:hover {
+  background: #cbd5e1;
+  color: #334155;
+}
+
 .results-count {
   margin-left: 0;
   font-weight: 600;
   color: #64748b;
   white-space: nowrap;
+  font-size: 13px;
 }
 
 .keyboard-toggle {
@@ -402,6 +403,32 @@ main {
 
 .keyboard-toggle:hover {
   opacity: 1;
+}
+
+.clear-search {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.clear-search:hover {
+  opacity: 1;
+}
+
+.p-iconfield .p-inputtext {
+  padding-right: 70px !important;
+}
+
+.p-iconfield {
+  position: relative;
+}
+
+.p-iconfield .clear-search {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
 }
 
 .keyboard-overlay {
