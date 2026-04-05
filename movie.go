@@ -105,19 +105,16 @@ func (s *Service) getMovies(c *gin.Context) {
 	var movies []models.Movie
 	var count int64
 
-	tx := db.Set("gorm:auto_preload", true).Model(&models.Movie{}).
+	tx := db.Model(&models.Movie{}).
+		Preload("Meta").
+		Preload("Multiplechoice.Results").
 		Select(`movies.id, movies.file_id,movies.tmdb_movie_id,movies.movie_search_results_id,
 		movies.title,movies.is_tv,movies.rating,
 		CASE WHEN watchlists.movie_id is not null then true else false  end as watchlist`)
 	if len(q.Qtitel) > 0 && fulltext {
-		//	tx = tx.Joins("JOIN fulltexts on fulltexts.movie_id = movies.id").
-		//		Where("fulltexts = ?", fmt.Sprintf("%s*", q.Qtitel))
-		//	tx = tx.Where("movies.id IN (SELECT movie_id FROM fulltexts WHERE fulltexts MATCH ? order by bm25(fulltexts, 10.0, 5.0) )",
-		//
-		//		fmt.Sprintf("%s*", q.Qtitel))
-		tx = tx.Joins("JOIN fulltexts on fulltexts.movie_id =movies.id ")
-		tx = tx.Where("fulltexts match ?", fmt.Sprintf("%s*", q.Qtitel))
-		//	strings.Replace(q.Qtitel, " ", "&", -1)+":*")
+		// Subquery is much faster than JOIN for FTS5
+		tx = tx.Where("movies.id IN (SELECT movie_id FROM fulltexts WHERE fulltexts MATCH ?)",
+			fmt.Sprintf("%s*", q.Qtitel))
 	}
 
 	tx = tx.Joins("JOIN files on files.id=movies.file_id").
@@ -188,7 +185,9 @@ func (s *Service) getMovies(c *gin.Context) {
 	//order
 	switch {
 	case fulltext && len(q.Qtitel) > 0:
-		tx = tx.Order("bm25(fulltexts, 1.0, 50.0, 5.0, 10.0)")
+		// Relevance-based ordering via subquery
+		searchTerm := fmt.Sprintf("%s*", q.Qtitel)
+		tx = tx.Order(fmt.Sprintf("(SELECT rank FROM fulltexts WHERE fulltexts.movie_id = movies.id AND fulltexts MATCH '%s')", searchTerm))
 
 	case q.Orderby == "name" || len(q.Qtitel) > 0:
 		tx = tx.Order("movies.title ASC")
