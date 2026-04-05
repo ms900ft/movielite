@@ -127,10 +127,15 @@ const fetchCountries = async () => {
 };
 
 const onSearchInput = () => {
-  // Only search if 3+ characters or empty (clear search)
-  if (searchQuery.value.length >= 3 || searchQuery.value.length === 0) {
-    router.push({ path: '/', query: { q: searchQuery.value } });
+  // Debounce search input by 500ms
+  if (searchDebounceTimer.value) {
+    clearTimeout(searchDebounceTimer.value);
   }
+  searchDebounceTimer.value = setTimeout(() => {
+    if (searchQuery.value.length >= 3 || searchQuery.value.length === 0) {
+      router.push({ path: '/', query: { q: searchQuery.value } });
+    }
+  }, 500);
 };
 
 const onSearchKeyup = (event) => {
@@ -148,6 +153,7 @@ const checkAuth = () => {
 };
 
 const currentUser = ref(null);
+const searchDebounceTimer = ref(null);
 
 const logout = () => {
   authService.logout();

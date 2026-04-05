@@ -16,7 +16,16 @@
         </div>
 
         <div class="movie-info">
-          <h1>{{ movie.title }}</h1>
+          <template v-if="editingTitle">
+            <div class="title-edit-row">
+              <input v-model="editTitle" @keyup.enter="saveTitle" @keyup.escape="cancelEditTitle" class="title-input" />
+              <button @click="saveTitle" class="save-button">Save</button>
+              <button @click="cancelEditTitle" class="cancel-button">Cancel</button>
+            </div>
+          </template>
+          <template v-else>
+            <h1>{{ movie.title }} <button @click="startEditTitle" class="edit-title-button" title="Edit title">✏️</button></h1>
+          </template>
 
           <div class="movie-meta">
             <div class="meta-row">
@@ -112,11 +121,6 @@
             <p><strong>Path:</strong> {{ movie.File.FullPath }}</p>
             <p><strong>Size:</strong> {{ formatFileSize(movie.File.Size) }}</p>
           </div>
-
-          <div class="movie-actions">
-            <button @click="playMovie" class="play-button">Play Movie</button>
-            <button v-if="movie.File" @click="showMoveDialog" class="move-button">Move Movie</button>
-          </div>
         </div>
       </div>
     </div>
@@ -163,6 +167,8 @@ const targets = ref([]);
 const moveDialogVisible = ref(false);
 const editingTmdbId = ref(false);
 const editTmdbId = ref('');
+const editingTitle = ref(false);
+const editTitle = ref('');
 
 const fetchMovie = async () => {
   try {
@@ -196,12 +202,13 @@ const playMovie = async () => {
 };
 
 const moveMovie = async (targetDir) => {
-  if (!movie.value.File || !movie.value.File.id) {
+  const fileId = movie.value.File?.ID;
+  if (!fileId) {
     alert('File information not available for this movie.');
     return;
   }
   try {
-    await moviesService.moveFile(movie.value.File.id, targetDir);
+    await moviesService.moveFile(fileId, targetDir);
     alert(`Movie moved to ${targetDir}`);
     emit('close');
     moveDialogVisible.value = false;
@@ -239,6 +246,28 @@ const openModal = (imageSrc) => {
 
 const closeModal = () => {
   modalVisible.value = false;
+};
+
+const startEditTitle = () => {
+  editingTitle.value = true;
+  editTitle.value = movie.value.title;
+};
+
+const saveTitle = async () => {
+  if (!editTitle.value.trim()) return;
+  try {
+    await moviesService.updateMovie(movie.value.id, { title: editTitle.value.trim() });
+    movie.value.title = editTitle.value.trim();
+    editingTitle.value = false;
+  } catch (err) {
+    console.error('Error updating title:', err);
+    alert('Failed to update title.');
+  }
+};
+
+const cancelEditTitle = () => {
+  editingTitle.value = false;
+  editTitle.value = '';
 };
 
 const startEditTmdbId = () => {
@@ -340,6 +369,36 @@ onMounted(() => {
 .movie-info h1 {
   margin: 0 0 20px 0;
   font-size: 2rem;
+}
+
+.movie-info h1 .edit-title-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  filter: grayscale(100%);
+}
+
+.movie-info h1 .edit-title-button:hover {
+  opacity: 1;
+}
+
+.title-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.title-edit-row .title-input {
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  border: 2px solid #007bff;
+  border-radius: 4px;
+  flex: 1;
 }
 
 .movie-meta {

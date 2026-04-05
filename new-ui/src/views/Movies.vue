@@ -2,7 +2,10 @@
   <div class="movies-container">
     <h1>Movies</h1>
     <div v-if="currentSearch" class="current-search">{{ currentSearch }}</div>
-    <div v-if="loading" class="loading">Loading movies...</div>
+    <div v-if="loading" class="loading">
+      <i class="pi pi-spinner pi-spin" style="font-size: 2rem;"></i>
+      <p>Loading movies...</p>
+    </div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
       <div class="movies-grid">
@@ -402,9 +405,8 @@ const toggleWatchlist = async (movie) => {
 
 const moveMovie = async (movie, targetDir) => {
   try {
-    await moviesService.moveFile(movie.File.id, targetDir);
+    await moviesService.moveFile(movie.file_id, targetDir);
     alert(`Movie moved to ${targetDir}`);
-    // Optionally refresh the list or remove the movie from the list
     movies.value = movies.value.filter(m => m.id !== movie.id);
     moveDialogVisible.value = false;
   } catch (err) {
