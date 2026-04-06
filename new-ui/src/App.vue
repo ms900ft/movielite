@@ -120,8 +120,11 @@ const fetchGenres = async () => {
     const response = await moviesService.getGenres();
     const data = response.data || response || [];
     genres.value = data.map(genre => ({
-      name: genre.name,
-      tmdb_id: genre.tmdb_id
+      label: genre.name,
+      icon: 'pi pi-tag',
+      command: () => {
+        router.push({ path: '/', query: { genre: genre.tmdb_id, country: '', orderby: 'name' } });
+      }
     }));
   } catch (error) {
     console.error('Error fetching genres:', error);
@@ -133,24 +136,14 @@ const fetchCountries = async () => {
     const response = await moviesService.getCountries();
     const data = response.data || response || [];
     countries.value = data.map(country => ({
-      name: country.name,
-      iso_id: country.iso_id
+      label: country.name,
+      icon: 'pi pi-map-marker',
+      command: () => {
+        router.push({ path: '/', query: { country: country.iso_id, orderby: 'name' } });
+      }
     }));
   } catch (error) {
     console.error('Error fetching countries:', error);
-  }
-};
-
-const selectedGenre = ref(null);
-const selectedCountry = ref(null);
-const onGenreChange = (value) => {
-  if (value) {
-    router.push({ path: '/', query: { genre: value.tmdb_id, country: '', orderby: 'name' } });
-  }
-};
-const onCountryChange = (value) => {
-  if (value) {
-    router.push({ path: '/', query: { country: value.iso_id, orderby: 'name' } });
   }
 };
 
@@ -228,12 +221,6 @@ onMounted(() => {
     <main>
     <div v-if="isAuthenticated" class="menubar-container">
       <Menubar :model="menuItems" class="mb-2">
-        <template #start>
-          <div class="filter-selects-inline">
-            <Select v-model="selectedGenre" :options="genres" optionLabel="name" placeholder="Genre" showClear filter @change="onGenreChange" class="filter-select" />
-            <Select v-model="selectedCountry" :options="countries" optionLabel="name" placeholder="Country" showClear filter @change="onCountryChange" class="filter-select" />
-          </div>
-        </template>
         <template #end>
           <div class="end-slot">
           <div class="search-wrapper">
@@ -339,14 +326,6 @@ main {
 
 .p-menubar-sublist {
   z-index: 9999 !important;
-}
-
-/* Center the start slot content (genres/countries selects) in the menu bar */
-.p-menubar-start {
-  flex: 1 1 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .menubar-container {
