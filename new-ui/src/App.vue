@@ -324,8 +324,27 @@ main {
   background-color: #f8f9fa;
 }
 
-.p-menubar-sublist {
+.p-menubar-sublist,
+.p-menubar-submenu,
+.p-overlay-panel,
+[class*="p-menubar-panel"] {
   z-index: 9999 !important;
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+}
+
+/* Hide submenu by default */
+.p-menubar-submenu {
+  display: none !important;
+}
+
+/* Show when parent expanded */
+.p-menubar-item[aria-expanded="true"] > .p-menubar-submenu {
+  display: flex !important;
 }
 
 .menubar-container {
