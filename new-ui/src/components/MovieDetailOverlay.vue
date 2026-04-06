@@ -49,9 +49,6 @@
             <p v-if="movie.meta && movie.meta.Genres && movie.meta.Genres.length">
               <strong>Genres:</strong> {{ movie.meta.Genres.map(g => g.Name).join(', ') }}
             </p>
-            <p v-if="movie.meta && movie.meta.vote_average">
-              <strong>Rating:</strong> {{ movie.meta.vote_average }}/10 ({{ movie.meta.vote_count }} votes)
-            </p>
             <p v-if="movie.meta && movie.meta.spoken_languages && movie.meta.spoken_languages.length">
               <strong>Languages:</strong> {{ movie.meta.spoken_languages.map(l => l.name).join(', ') }}
             </p>
@@ -63,12 +60,6 @@
             </p>
             <p v-if="movie.meta && movie.meta.revenue">
               <strong>Revenue:</strong> ${{ movie.meta.revenue.toLocaleString() }}
-            </p>
-            <p v-if="movie.rating !== undefined">
-              <strong>User Rating:</strong> {{ movie.rating }}/10
-            </p>
-            <p>
-              <strong>Watchlist:</strong> {{ movie.watchlist ? 'Yes' : 'No' }}
             </p>
           </div>
 
