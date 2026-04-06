@@ -218,8 +218,8 @@ const fetchMovies = async (offset = 0) => {
       params.person = route.query.person;
     }
     // Check for show query parameter
-    if (route.query.show === 'watchlist') {
-      params.show = 'watchlist';
+    if (route.query.show) {
+      params.show = route.query.show;
     }
     // Check for orderby parameter
     if (route.query.orderby) {
@@ -241,6 +241,8 @@ const fetchMovies = async (offset = 0) => {
     }
   } else if (route.query.show === 'watchlist') {
     currentSearch.value = 'Watchlist';
+  } else if (route.query.show === 'duplicate') {
+    currentSearch.value = 'Duplicates';
   } else if (route.query.q) {
     currentSearch.value = `Search: "${route.query.q}"`;
   } else {

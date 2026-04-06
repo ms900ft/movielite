@@ -66,6 +66,13 @@ const menuItems = ref([
     icon: 'pi pi-cog',
     items: [
       {
+        label: 'Duplicates',
+        icon: 'pi pi-copy',
+        command: () => {
+          router.push({ path: '/', query: { show: 'duplicate' } });
+        }
+      },
+      {
         label: 'Users',
         icon: 'pi pi-users',
         command: () => {
