@@ -176,6 +176,11 @@ const updateMenuItems = () => {
       label: 'Rescan',
       icon: 'pi pi-refresh',
       command: () => rescanMovieMeta(selectedMovie.value)
+    },
+    {
+      label: 'Delete',
+      icon: 'pi pi-trash',
+      command: () => deleteMovie(selectedMovie.value.id)
     }
   ];
 };
@@ -454,6 +459,18 @@ const rescanMovieMeta = async (movie) => {
     fetchMovies(0);
   } catch (err) {
     console.error('Error rescanning movie metadata:', err);
+  }
+};
+
+const deleteMovie = async (movieId) => {
+  if (!confirm('Are you sure you want to delete this movie?')) {
+    return;
+  }
+  try {
+    await moviesService.deleteMovie(movieId);
+    fetchMovies(0);
+  } catch (err) {
+    console.error('Error deleting movie:', err);
   }
 };
 
