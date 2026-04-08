@@ -322,6 +322,7 @@ nav a.router-link-active {
 main {
   min-height: calc(100vh - 120px);
   background-color: #f8f9fa;
+  padding-top: 60px;
 }
 
 .p-menubar-sublist,
@@ -349,6 +350,10 @@ main {
 
 .menubar-container {
   width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
 .menubar-container .p-menubar {
