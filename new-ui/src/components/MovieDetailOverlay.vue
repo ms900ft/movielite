@@ -43,6 +43,9 @@
             <p v-if="movie.meta && movie.meta.release_date">
               <strong>Release Date:</strong> {{ formatDate(movie.meta.release_date) }}
             </p>
+            <p v-if="movie.File && movie.File.FullPath">
+              <strong>Folder:</strong> {{ getFolderFromPath(movie.File.FullPath) }}
+            </p>
             <p v-if="movie.meta && movie.meta.Runtime">
               <strong>Runtime:</strong> {{ movie.meta.Runtime }} minutes
             </p>
@@ -216,6 +219,12 @@ const showMoveDialog = () => {
 const formatDate = (dateString) => {
   if (!dateString) return '';
   return new Date(dateString).toLocaleDateString();
+};
+
+const getFolderFromPath = (fullPath) => {
+  if (!fullPath) return '';
+  const parts = fullPath.split(/[/\\]/);
+  return parts.slice(-2, -1)[0] || '';
 };
 
 const formatFileSize = (bytes) => {

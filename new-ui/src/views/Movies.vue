@@ -454,12 +454,8 @@ const rescanMovieMeta = async (movie) => {
       alert('No TMDB metadata found for this movie');
       return;
     }
-    const scrollY = window.scrollY;
     await moviesService.rescanMovie(movie.id, metaId);
-    
-    // Refetch movies but restore scroll position
-    await fetchMovies(0);
-    window.scrollTo(0, scrollY);
+    fetchMovies(0);
   } catch (err) {
     console.error('Error rescanning movie metadata:', err);
   }
