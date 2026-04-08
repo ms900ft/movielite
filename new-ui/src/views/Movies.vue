@@ -455,8 +455,15 @@ const rescanMovieMeta = async (movie) => {
       alert('No TMDB metadata found for this movie');
       return;
     }
+    const scrollY = window.scrollY;
     await moviesService.rescanMovie(movie.id, metaId);
-    fetchMovies(0);
+    const response = await moviesService.getMovie(movie.id);
+    const updatedMovie = response;
+    const index = movies.value.findIndex(m => m.id === movie.id);
+    if (index !== -1) {
+      movies.value[index] = updatedMovie;
+    }
+    window.scrollTo(0, scrollY);
   } catch (err) {
     console.error('Error rescanning movie metadata:', err);
   }
