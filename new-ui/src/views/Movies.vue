@@ -236,8 +236,8 @@ const fetchMovies = async (offset = 0) => {
   if (route.query.person) {
     try {
       const person = await moviesService.getPerson(route.query.person);
-      if (person?.name) {
-        currentSearch.value = `Person: ${person.name}`;
+      if (person?.Name) {
+        currentSearch.value = `Person: ${person.Name}`;
       } else {
         currentSearch.value = `Person: ${route.query.person}`;
       }
