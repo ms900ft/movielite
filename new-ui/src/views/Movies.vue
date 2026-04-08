@@ -1,6 +1,5 @@
 <template>
   <div class="movies-container">
-    <h1>Movies</h1>
     <div v-if="currentSearch" class="current-search">{{ currentSearch }}</div>
     <div v-if="loading" class="loading">
       <i class="pi pi-spinner pi-spin" style="font-size: 2rem;"></i>
