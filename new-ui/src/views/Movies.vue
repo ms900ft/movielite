@@ -87,7 +87,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick, computed, shallowRef } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { debounce } from 'lodash-es';
 import { moviesService } from '../services/movies.js';
@@ -100,7 +100,7 @@ const router = useRouter();
 const route = useRoute();
 const movieStore = useMovieStore();
 
-const movies = ref([]);
+const movies = shallowRef([]);
 const loading = ref(true);
 const error = ref(null);
 const currentOffset = ref(0);
@@ -260,7 +260,7 @@ const fetchMovies = async (offset = 0) => {
     if (offset === 0) {
       movies.value = newMovies;
     } else {
-      movies.value.push(...newMovies);
+      movies.value = [...movies.value, ...newMovies];
     }
     hasMore.value = newMovies.length === limit;
     currentOffset.value = offset;
@@ -376,7 +376,7 @@ const toggleWatchlist = async (movie) => {
     movie.watchlist = !movie.watchlist;
     // Remove from view if removed from watchlist and on watchlist page
     if (wasInWatchlist && route.query.show === 'watchlist') {
-      movies.value = movies.value.filter(m => m.id !== movie.id);
+      movies.value = [...movies.value].filter(m => m.id !== movie.id);
     }
   } catch (err) {
     console.error('Error toggling watchlist:', err);
@@ -387,7 +387,7 @@ const moveMovie = async (movie, targetDir) => {
   try {
     await moviesService.moveFile(movie.file_id, targetDir);
     alert(`Movie moved to ${targetDir}`);
-    movies.value = movies.value.filter(m => m.id !== movie.id);
+    movies.value = [...movies.value].filter(m => m.id !== movie.id);
     moveDialogVisible.value = false;
   } catch (err) {
     console.error('Error moving movie:', err);
@@ -456,12 +456,9 @@ const rescanMovieMeta = async (movie) => {
     }
     const scrollY = window.scrollY;
     await moviesService.rescanMovie(movie.id, metaId);
-    const response = await moviesService.getMovie(movie.id);
-    const updatedMovie = response;
-    const index = movies.value.findIndex(m => m.id === movie.id);
-    if (index !== -1) {
-      movies.value[index] = updatedMovie;
-    }
+    
+    // Refetch movies but restore scroll position
+    await fetchMovies(0);
     window.scrollTo(0, scrollY);
   } catch (err) {
     console.error('Error rescanning movie metadata:', err);
@@ -474,7 +471,7 @@ const deleteMovie = async (movieId) => {
   }
   try {
     await moviesService.deleteMovie(movieId);
-    fetchMovies(0);
+    movies.value = [...movies.value].filter(m => m.id !== movieId);
   } catch (err) {
     console.error('Error deleting movie:', err);
   }
@@ -584,6 +581,7 @@ onUnmounted(() => {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 40px;
   width: 100%;
+  contain: layout style;
 }
 
 @media (max-width: 768px) {
@@ -605,6 +603,9 @@ onUnmounted(() => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s, box-shadow 0.2s;
   background: white;
+  content-visibility: auto;
+  contain-intrinsic-size: 300px;
+  will-change: transform;
 }
 
 .movie-item:hover {
