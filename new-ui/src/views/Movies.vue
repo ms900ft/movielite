@@ -471,8 +471,14 @@ const rescanMovieMeta = async (movie) => {
       alert('No TMDB metadata found for this movie');
       return;
     }
-    await moviesService.rescanMovie(movie.id, metaId);
-    fetchMovies(0);
+    const updatedMovie = await moviesService.rescanMovie(movie.id, metaId);
+    // Update only that one movie in the list, preserving watchlist status
+    const newMovies = [...movies.value];
+    const idx = newMovies.findIndex(m => m.id === movie.id);
+    if (idx !== -1) {
+      newMovies[idx] = { ...updatedMovie, watchlist: movie.watchlist };
+      movies.value = newMovies;
+    }
   } catch (err) {
     console.error('Error rescanning movie metadata:', err);
   }
