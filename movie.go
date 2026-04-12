@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -53,6 +54,7 @@ type Query struct {
 	Limit       int64  `form:"limit,default=30"`
 	Offset      int64  `form:"offset,default=0"`
 	Show        string `form:"show"`
+	ID          int64  `form:"id"`
 }
 
 // getMovie godoc
@@ -111,20 +113,23 @@ func (s *Service) getMovies(c *gin.Context) {
 		Select(`movies.id, movies.file_id,movies.tmdb_movie_id,movies.movie_search_results_id,
 		movies.title,movies.is_tv,movies.rating,
 		CASE WHEN watchlists.movie_id is not null then true else false  end as watchlist`)
-	if len(q.Qtitel) > 0 && fulltext {
-		// Subquery is much faster than JOIN for FTS5
-		tx = tx.Where("movies.id IN (SELECT movie_id FROM fulltexts WHERE fulltexts MATCH ?)",
-			fmt.Sprintf("%s*", q.Qtitel))
+
+	if q.ID > 0 {
+		tx = tx.Where("movies.id = ?", q.ID)
+	} else if len(q.Qtitel) > 0 && fulltext {
+		re := regexp.MustCompile(`[+\-():*"']`)
+		escapedQtitel := re.ReplaceAllString(q.Qtitel, " ")
+		escapedQtitel = strings.Join(strings.Fields(escapedQtitel), " ")
+
+		if escapedQtitel != "" {
+			tx = tx.Where("movies.id IN (SELECT movie_id FROM fulltexts WHERE fulltexts MATCH ?)",
+				fmt.Sprintf(`"%s"*`, escapedQtitel))
+		}
 	}
 
 	tx = tx.Joins("JOIN files on files.id=movies.file_id").
 		Joins("Left Join watchlists ON (movies.id = watchlists.movie_id AND watchlists.user_id = ?)", s.Token.UserID).
-		//Where("watchlists.user_id = ?", s.User.ID).
 		Where("is_tv = false")
-
-	if len(q.Qtitel) > 0 && !fulltext {
-		tx = tx.Where("movies.title LIKE ?", fmt.Sprint("%", q.Qtitel, "%"))
-	}
 
 	//xxx not working, test join with other parameter
 	if q.LastScanned != "" {
@@ -185,11 +190,10 @@ func (s *Service) getMovies(c *gin.Context) {
 	//order
 	switch {
 	case fulltext && len(q.Qtitel) > 0:
-		// Relevance-based ordering via subquery
 		searchTerm := fmt.Sprintf("%s*", q.Qtitel)
 		tx = tx.Order(fmt.Sprintf("(SELECT rank FROM fulltexts WHERE fulltexts.movie_id = movies.id AND fulltexts MATCH '%s')", searchTerm))
 
-	case q.Orderby == "name" || len(q.Qtitel) > 0:
+	case q.Orderby == "name":
 		tx = tx.Order("movies.title ASC")
 
 	case q.Orderby == "recent":
@@ -219,6 +223,67 @@ func (s *Service) getMovies(c *gin.Context) {
 	ml.Data = movies
 	ml.Meta.Total = count
 	c.JSON(http.StatusOK, ml)
+}
+
+// getSuggestions godoc
+// @Summary Get movie suggestions for search
+// @Description get movie suggestions based on query
+// @Tags movies
+// @Produce  json
+// @Param q query string true "Search query"
+// @Param limit query int false "Max results"
+// @Success 200 {array} map[string]interface{}
+// @Router /api/movie/suggestions [get]
+func (s *Service) getSuggestions(c *gin.Context) {
+	q := c.Query("q")
+	limit := 5
+	if l := c.Query("limit"); l != "" {
+		if parsed, err := strconv.Atoi(l); err == nil {
+			limit = parsed
+		}
+	}
+	if len(q) < 2 {
+		c.JSON(http.StatusOK, []interface{}{})
+		return
+	}
+
+	db := s.DB
+	var movies []models.Movie
+
+	tx := db.Model(&models.Movie{}).
+		Joins("LEFT JOIN tmdb_movies ON tmdb_movies.id = movies.tmdb_movie_id").
+		Where("movies.is_tv = false").
+		Select("movies.id, movies.title, tmdb_movies.poster_path").
+		Limit(limit)
+
+	re := regexp.MustCompile(`[+\-():*"']`)
+	escapedQ := re.ReplaceAllString(q, " ")
+	escapedQ = strings.Join(strings.Fields(escapedQ), " ")
+
+	if escapedQ != "" {
+		tx = tx.Where("movies.title LIKE ?", fmt.Sprintf("%%%s%%", escapedQ))
+	}
+
+	if err := tx.Find(&movies).Error; err != nil {
+		log.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var results []map[string]interface{}
+	for _, m := range movies {
+		var posterPath string
+		if m.Meta != nil {
+			posterPath = m.Meta.PosterPath
+		}
+		results = append(results, map[string]interface{}{
+			"id":          m.ID,
+			"title":       m.Title,
+			"poster_path": posterPath,
+		})
+	}
+
+	c.JSON(http.StatusOK, results)
 }
 
 // deleteMovie godoc

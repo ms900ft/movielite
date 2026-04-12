@@ -53,6 +53,8 @@ func (a *Service) initializeRoutes() {
 	api.DELETE("/movie/:id", a.deleteMovie)
 	api.PUT("/movie/:id/play", a.playMovie)
 
+	api.GET("/movie/suggestions", a.getSuggestions)
+
 	api.GET("/user", a.getUsers)
 	api.GET("/user/:id", a.getUser)
 	api.PUT("/user/:id", a.IsAdmin, a.updateUser)

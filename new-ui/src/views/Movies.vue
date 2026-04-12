@@ -108,6 +108,7 @@ const hasMore = ref(true);
 const loadingMore = ref(false);
 const limit = 21;
 const searchQuery = ref(route.query.q || '');
+const selectedId = ref(route.query.id || null);
 const currentSearch = ref('');
 
 // Menu related
@@ -231,6 +232,10 @@ const fetchMovies = async (offset = 0) => {
     if (route.query.orderby) {
       params.orderby = route.query.orderby;
     }
+    // Check for id parameter (from suggestion click)
+    if (route.query.id) {
+      params.id = route.query.id;
+    }
   }
 
   // Update search display text
@@ -249,6 +254,8 @@ const fetchMovies = async (offset = 0) => {
     currentSearch.value = 'Watchlist';
   } else if (route.query.show === 'duplicate') {
     currentSearch.value = 'Duplicates';
+  } else if (route.query.id) {
+    currentSearch.value = `ID: ${route.query.id}`;
   } else if (route.query.q) {
     currentSearch.value = `Search: "${route.query.q}"`;
   } else {
@@ -307,6 +314,11 @@ watch(() => route.query.q, async (newQuery) => {
     searchQuery.value = newQuery || '';
     fetchMovies(0);
   }
+});
+
+watch(() => route.query.id, async (newId) => {
+  selectedId.value = newId || null;
+  fetchMovies(0);
 });
 
 watch(() => route.query.genre, async () => {

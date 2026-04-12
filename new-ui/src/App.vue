@@ -1,6 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from './services/auth.js';
 import { moviesService } from './services/movies.js';
@@ -18,6 +18,9 @@ const genres = ref([]);
 const countries = ref([]);
 const currentUser = ref(null);
 const searchDebounceTimer = ref(null);
+const suggestionDebounceTimer = ref(null);
+const searchSuggestions = ref([]);
+const showSuggestions = ref(false);
 const keyboardVisible = ref(false);
 const shiftActive = ref(false);
 const searchInput = ref();
@@ -156,6 +159,25 @@ const onSearchInput = () => {
       router.push({ path: '/', query: { q: searchQuery.value } });
     }
   }, 500);
+
+  // Fetch suggestions with shorter debounce
+  if (suggestionDebounceTimer.value) {
+    clearTimeout(suggestionDebounceTimer.value);
+  }
+  suggestionDebounceTimer.value = setTimeout(async () => {
+    if (searchQuery.value.length >= 2) {
+      searchSuggestions.value = await moviesService.getSuggestions(searchQuery.value);
+      showSuggestions.value = searchSuggestions.value.length > 0;
+    } else {
+      searchSuggestions.value = [];
+      showSuggestions.value = false;
+    }
+  }, 200);
+};
+
+const selectSuggestion = (movie) => {
+  showSuggestions.value = false;
+  router.push({ path: '/', query: { id: movie.id } });
 };
 
 const onSearchKeyup = (event) => {
@@ -209,10 +231,22 @@ const clearSearch = () => {
   router.push({ path: '/', query: { q: '' } });
 };
 
+const handleClickOutside = (event) => {
+  const searchContainer = document.querySelector('.search-container');
+  if (searchContainer && !searchContainer.contains(event.target)) {
+    showSuggestions.value = false;
+  }
+};
+
 onMounted(() => {
   checkAuth();
   fetchGenres();
   fetchCountries();
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
 });
 </script>
 
@@ -224,15 +258,23 @@ onMounted(() => {
         <template #end>
           <div class="end-slot">
           <div class="search-wrapper">
-            <IconField>
-              <InputIcon>
-                <i class="pi pi-search" />
-              </InputIcon>
-              <InputText ref="searchInput" v-model="searchQuery" placeholder="Search movies..." @input="onSearchInput" @keyup="onSearchKeyup" @focus="onSearchFocus" />
-              <InputIcon class="keyboard-toggle" @click="toggleKeyboard">
-                <i class="pi pi-desktop" />
-              </InputIcon>
-            </IconField>
+            <div class="search-input-wrapper search-container">
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-search" />
+                </InputIcon>
+                <InputText ref="searchInput" v-model="searchQuery" placeholder="Search movies..." @input="onSearchInput" @keyup="onSearchKeyup" @focus="onSearchFocus" />
+                <InputIcon class="keyboard-toggle" @click="toggleKeyboard">
+                  <i class="pi pi-desktop" />
+                </InputIcon>
+              </IconField>
+              <div v-if="showSuggestions" class="search-suggestions">
+                <div v-for="s in searchSuggestions" :key="s.id" class="suggestion-item" @click="selectSuggestion(s)">
+                  <img v-if="s.poster_path" :src="`/images/w92${s.poster_path}`" class="suggestion-poster" />
+                  <span class="suggestion-title">{{ s.title }}</span>
+                </div>
+              </div>
+            </div>
             <button v-if="searchQuery" class="clear-search-btn" @click="clearSearch" title="Clear search">
               <i class="pi pi-times"></i>
             </button>
@@ -395,6 +437,50 @@ main {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.search-input-wrapper {
+  position: relative;
+}
+
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.suggestion-item:hover {
+  background: #f1f5f9;
+}
+
+.suggestion-poster {
+  width: 40px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.suggestion-title {
+  font-size: 14px;
+  color: #334155;
 }
 
 .clear-search-btn {

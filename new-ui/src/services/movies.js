@@ -11,6 +11,16 @@ export const moviesService = {
     }
   },
 
+  async getSuggestions(query) {
+    try {
+      const response = await api.get('/movie/suggestions', { params: { q: query } });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+      return [];
+    }
+  },
+
   async getMovie(id) {
     try {
       const response = await api.get(`/movie/${id}`);
