@@ -100,7 +100,7 @@ const router = useRouter();
 const route = useRoute();
 const movieStore = useMovieStore();
 
-const movies = shallowRef([]);
+const movies = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const currentOffset = ref(0);
@@ -375,10 +375,17 @@ const toggleWatchlist = async (movie) => {
   try {
     const updatedMovie = { ...movie, watchlist: !movie.watchlist };
     await moviesService.updateMovie(movie.id, updatedMovie);
-    movie.watchlist = !movie.watchlist;
     // Remove from view if removed from watchlist and on watchlist page
     if (wasInWatchlist && route.query.show === 'watchlist') {
       movies.value = [...movies.value].filter(m => m.id !== movie.id);
+    } else {
+      // Update the movie in the array properly
+      const newMovies = [...movies.value];
+      const idx = newMovies.findIndex(m => m.id === movie.id);
+      if (idx !== -1) {
+        newMovies[idx] = { ...movie, watchlist: !movie.watchlist };
+        movies.value = newMovies;
+      }
     }
   } catch (err) {
     console.error('Error toggling watchlist:', err);
