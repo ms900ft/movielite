@@ -187,7 +187,9 @@ const updateMenuItems = () => {
 const fetchTargets = async () => {
   try {
     const response = await moviesService.getTargets();
-    targets.value = response.data || response || [];
+    targets.value = (response.data || response || []).sort((a, b) => 
+      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+    );
   } catch (error) {
     console.error('Error fetching targets:', error);
   }
@@ -387,7 +389,15 @@ const moveMovie = async (movie, targetDir) => {
   try {
     await moviesService.moveFile(movie.file_id, targetDir);
     alert(`Movie moved to ${targetDir}`);
-    movies.value = [...movies.value].filter(m => m.id !== movie.id);
+    // Refresh movie data to show new path
+    const response = await moviesService.getMovie(movie.id);
+    const updatedMovie = response;
+    const newMovies = [...movies.value];
+    const idx = newMovies.findIndex(m => m.id === movie.id);
+    if (idx !== -1) {
+      newMovies[idx] = updatedMovie;
+      movies.value = newMovies;
+    }
     moveDialogVisible.value = false;
   } catch (err) {
     console.error('Error moving movie:', err);
