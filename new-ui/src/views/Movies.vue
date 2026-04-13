@@ -457,8 +457,11 @@ const showMultipleChoice = (movie) => {
 
 const selectMultipleChoice = async (result) => {
   try {
-    await moviesService.rescanMovie(selectedMovie.value.id, result.ID);
-    fetchMovies(0);
+    const updatedMovie = await moviesService.rescanMovie(selectedMovie.value.id, result.ID);
+    const idx = movies.value.findIndex(m => m.id === updatedMovie.id);
+    if (idx !== -1) {
+      movies.value[idx] = updatedMovie;
+    }
     multipleChoiceVisible.value = false;
   } catch (err) {
     console.error('Error selecting movie:', err);
