@@ -197,6 +197,7 @@ const checkAuth = () => {
 const toggleKeyboard = () => {
   keyboardVisible.value = !keyboardVisible.value;
   if (keyboardVisible.value) {
+    showSuggestions.value = false;
     searchInput.value?.$el?.focus();
   }
 };
@@ -550,8 +551,9 @@ main {
 
 .keyboard-overlay {
   position: fixed;
-  top: 60px;
-  right: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   padding: 8px;
   z-index: 10000;
 }
