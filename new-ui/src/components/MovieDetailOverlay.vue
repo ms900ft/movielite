@@ -122,7 +122,14 @@
     <!-- Image Modal -->
     <div v-if="modalVisible" class="image-modal" @click="closeModal">
       <div class="modal-content" @click.stop>
+        <button class="modal-close" @click="closeModal">&times;</button>
+        <button class="modal-nav prev-btn" @click="prevImage">&#10094;</button>
         <img :src="modalImage" :alt="modalImage" class="modal-image" @click="closeModal" />
+        <button class="modal-nav next-btn" @click="nextImage">&#10095;</button>
+        <div class="modal-counter">
+          {{ modalImageIndex + 1 }} / {{ personImages.length }}
+          <span v-if="currentPersonName" class="modal-person-name">{{ currentPersonName }}</span>
+        </div>
       </div>
     </div>
 
@@ -157,6 +164,9 @@ const loading = ref(true);
 const error = ref(null);
 const modalVisible = ref(false);
 const modalImage = ref('');
+const modalImageIndex = ref(0);
+const personImages = ref([]);
+const currentPersonName = ref('');
 const targets = ref([]);
 const moveDialogVisible = ref(false);
 const editingTmdbId = ref(false);
@@ -239,9 +249,52 @@ const searchPersonMovies = (personId) => {
   emit('searchPerson', personId);
 };
 
+const getPersonImages = () => {
+  const images = [];
+  if (movie.value?.meta?.Credits?.Cast) {
+    movie.value.meta.Credits.Cast.forEach(actor => {
+      if (actor.profile_path) {
+        images.push({ src: `/images/w500${actor.profile_path}`, name: actor.Name, role: actor.Character });
+      }
+    });
+  }
+  if (movie.value?.meta?.Credits?.Crew) {
+    movie.value.meta.Credits.Crew.forEach(crew => {
+      if (crew.profile_path && !images.some(i => i.src === `/images/w500${crew.profile_path}`)) {
+        images.push({ src: `/images/w500${crew.profile_path}`, name: crew.Name, role: crew.Job });
+      }
+    });
+  }
+  if (movie.value?.meta?.poster_path) {
+    images.unshift({ src: `/images/original${movie.value.meta.poster_path}`, name: movie.value.title, role: 'Poster' });
+  }
+  return images;
+};
+
 const openModal = (imageSrc) => {
+  personImages.value = getPersonImages();
+  const idx = personImages.value.findIndex(p => p.src === imageSrc);
+  modalImageIndex.value = idx >= 0 ? idx : 0;
+  const img = personImages.value[modalImageIndex.value];
+  currentPersonName.value = img?.name || '';
   modalImage.value = imageSrc;
   modalVisible.value = true;
+};
+
+const nextImage = () => {
+  if (personImages.value.length === 0) return;
+  modalImageIndex.value = (modalImageIndex.value + 1) % personImages.value.length;
+  const img = personImages.value[modalImageIndex.value];
+  modalImage.value = img.src;
+  currentPersonName.value = img.name ? `${img.name} ${img.role ? '(' + img.role + ')' : ''}` : '';
+};
+
+const prevImage = () => {
+  if (personImages.value.length === 0) return;
+  modalImageIndex.value = (modalImageIndex.value - 1 + personImages.value.length) % personImages.value.length;
+  const img = personImages.value[modalImageIndex.value];
+  modalImage.value = img.src;
+  currentPersonName.value = img.name ? `${img.name} ${img.role ? '(' + img.role + ')' : ''}` : '';
 };
 
 const closeModal = () => {
@@ -653,6 +706,71 @@ onMounted(() => {
   max-height: 90vh;
   object-fit: contain;
   cursor: pointer;
+}
+
+.modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 30px;
+  padding: 15px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.modal-nav:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.prev-btn {
+  left: 20px;
+}
+
+.next-btn {
+  right: 20px;
+}
+
+.modal-counter {
+  position: absolute;
+  bottom: 20px;
+  color: white;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.modal-person-name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 30px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 @media (max-width: 768px) {
