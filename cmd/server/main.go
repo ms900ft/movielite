@@ -1,15 +1,15 @@
+//go:build !wails
+
 package main
 
 import (
 	"os"
 
-	"github.com/prometheus/common/log"
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 
 	"github.com/ms900ft/movielite/commands"
 )
-
-var configPath string
 
 func main() {
 	app := cli.NewApp()
@@ -22,8 +22,6 @@ func main() {
 		&cli.StringFlag{
 			Name:  "config, c",
 			Usage: "path to config file",
-			//Destination: &configPath,
-			Required: false,
 		},
 	}
 	if err := app.Run(os.Args); err != nil {

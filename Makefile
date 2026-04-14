@@ -14,6 +14,11 @@ run:
 build:
 	go build -o ${APP}  --tags "fts5" ./cmd/server
 
+wails:
+	cd new-ui && node node_modules/vite/bin/vite.js build
+	cp -r new-ui/dist cmd/wails/frontend
+	go build -o ${APP}-desktop --tags "fts5,wails" ./cmd/wails
+
 helper:
 	go build -o ${HELPER}   ./cmd/helper
 

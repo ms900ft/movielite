@@ -26,6 +26,7 @@ type Config struct {
 	UseAuthentication    bool
 	Secret               string
 	InitialAdminPassword string
+	WebHost              string // "127.0.0.1" for localhost, "0.0.0.0" for external access
 }
 
 func GetConfig(path string) *Config {

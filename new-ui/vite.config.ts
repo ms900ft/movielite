@@ -4,9 +4,10 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
+// For Wails embedded mode, use relative paths
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/movie2/',
+  base: './',
   plugins: [
     vue(),
     vueDevTools(),
