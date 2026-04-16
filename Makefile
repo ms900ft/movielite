@@ -19,6 +19,15 @@ wails:
 	cp -r new-ui/dist cmd/wails/frontend
 	go build -o ${APP}-desktop --tags "fts5,wails" ./cmd/wails
 
+app: wails
+	mkdir -p Movielite.app/Contents/MacOS
+	mkdir -p Movielite.app/Contents/Resources
+	cp ${APP}-desktop Movielite.app/Contents/MacOS/Movielite
+	chmod +x Movielite.app/Contents/MacOS/Movielite
+	cp cmd/wails/icon.png Movielite.app/Contents/Resources/icon.png
+	@echo '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>CFBundleExecutable</key><string>Movielite</string><key>CFBundleIdentifier</key><string>com.movielite.app</string><key>CFBundleName</key><string>Movielite</string><key>CFBundleDisplayName</key><string>Movielite</string><key>CFBundleVersion</key><string>1.0</string><key>CFBundleShortVersionString</key><string>1.0</string><key>CFBundlePackageType</key><string>APPL</string><key>CFBundleSignature</key><string>????</string><key>CFBundleInfoDictionaryVersion</key><string>6.0</string><key>LSMinimumSystemVersion</key><string>10.13</string><key>LSApplicationCategoryType</key><string>public.app-category.entertainment</string><key>CFBundleIconFile</key><string>icon.png</string><key>NSHighResolutionCapable</key><true/><key>NSSupportsAutomaticTermination</key><true/><key>NSSupportsSuddenTermination</key><true/><key>NSHumanReadableCopyright</key><string>Copyright © 2026. All rights reserved.</string></dict></plist>' > Movielite.app/Contents/Info.plist
+	@echo "App bundle created: Movielite.app"
+
 helper:
 	go build -o ${HELPER}   ./cmd/helper
 
