@@ -29,7 +29,7 @@ type Service struct {
 }
 
 type meta struct {
-	Total int64 `json:"total"`
+	Total int646 `json:"total"`
 }
 
 // Initialize mal sehen
