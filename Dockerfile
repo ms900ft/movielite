@@ -1,14 +1,18 @@
 FROM node:20-alpine AS frontend-builder
 
-WORKDIR /app/new-ui
+WORKDIR /app
 
-COPY package*.json ./
+COPY new-ui/package*.json ./new-ui/
+
+WORKDIR /app/new-ui
 
 RUN npm install
 
+WORKDIR /app
+
 COPY . .
 
-RUN npm run build || true
+RUN cd new-ui && npm run build || true
 
 FROM golang:1.26-alpine AS builder
 
@@ -25,6 +29,7 @@ COPY . .
 # Copy already-built frontend
 COPY --from=frontend-builder /app/new-ui/dist ./new-ui/dist
 
+RUN go install github.com/rakyll/statik@latest || true
 RUN statik -src=./new-ui/dist -dest=./statik -f || true
 
 # Build with CGO enabled for SQLite FTS5 support
