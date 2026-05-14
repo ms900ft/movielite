@@ -473,16 +473,22 @@ func (s *Service) playMovie(c *gin.Context) {
 				c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to open stream"})
 				return
 				}
-			} else {
+		} else {
 			fileURL := "file://" + strings.Replace(movie.File.FullPath, " ", "%20", -1)
-			log.Infof("opening file via vlc: %s -> %s", movie.File.FullPath, fileURL)
+			log.Infof("attempting to open file: %s", movie.File.FullPath)
 			err := open.Run(fileURL)
 			if err != nil {
-				log.Errorf("failed to open file via vlc: %v", err)
-				c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to play video file"})
-				return
+				log.Infof("file:// protocol failed, trying direct path: %v", err)
+				err2 := open.RunWith(movie.File.FullPath, "vlc")
+				if err2 != nil {
+					log.Errorf("failed to open file via vlc: %v", err2)
+					c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to play video file"})
+					return
+						}
+					} else {
+					log.Infof("successfully opened file: %s", fileURL)
+						}
 				}
-			}
 
 	recently := models.Recently{MovieID: movie.ID, UserID: s.Token.UserID, LastPlayed: time.Now()}
 	if err := db.Save(&recently).Error; err != nil {
