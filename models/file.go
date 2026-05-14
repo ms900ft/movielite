@@ -11,6 +11,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/text/unicode/norm"
 	// _ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
@@ -40,9 +41,11 @@ var defaultRegexes = map[string]string{
 }
 
 func (f *File) BeforeSave() (err error) {
+	f.FullPath = norm.NFC.String(f.FullPath)
 	if f.FileName == "" {
 		f.FileName = path.Base(f.FullPath)
 	}
+	f.FileName = norm.NFC.String(f.FileName)
 	return
 }
 func (f *File) Create(db *gorm.DB, tmdb TMDBClients) error {
