@@ -1,0 +1,15 @@
+[Unit]
+Description=MovieLite Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/Users/marcschaake/go/movielite
+ExecStart=/Users/marcschaake/go/movielite/movielite start
+Restart=on-failure
+RestartSec=5
+Environment=DISPLAY=:0
+Environment=GDMSESSION=gnome
+
+[Install]
+WantedBy=default.target
