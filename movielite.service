@@ -6,6 +6,7 @@ After=network.target
 Type=simple
 User=marcschaake
 WorkingDirectory=/Users/marcschaake/go/movielite
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/usr/games"
 ExecStart=/Users/marcschaake/go/movielite/movielite start
 Restart=on-failure
 RestartSec=5
