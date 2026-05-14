@@ -1,0 +1,16 @@
+[Unit]
+Description=MovieLite Service
+After=network.target
+
+[Service]
+Type=simple
+User=marcschaake
+WorkingDirectory=/Users/marcschaake/go/movielite
+ExecStart=/Users/marcschaake/go/movielite/movielite start
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
