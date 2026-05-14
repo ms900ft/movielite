@@ -465,30 +465,25 @@ func (s *Service) playMovie(c *gin.Context) {
 		return
 	}
 
-		if strings.HasPrefix(movie.File.FullPath, "http") || strings.HasPrefix(movie.File.FullPath, "https") {
-			log.Infof("opening stream: %s", movie.File.FullPath)
-			err := open.Run(movie.File.FullPath)
-			if err != nil {
-				log.Errorf("failed to open stream: %v", err)
-				c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to open stream"})
-				return
-				}
-		} else {
-			fileURL := "file://" + strings.Replace(movie.File.FullPath, " ", "%20", -1)
-			log.Infof("attempting to open file: %s", movie.File.FullPath)
-			err := open.Run(fileURL)
-			if err != nil {
-				log.Infof("file:// protocol failed, trying direct path: %v", err)
-				err2 := open.RunWith(movie.File.FullPath, "vlc")
-				if err2 != nil {
-					log.Errorf("failed to open file via vlc: %v", err2)
-					c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to play video file"})
-					return
-						}
-					} else {
-					log.Infof("successfully opened file: %s", fileURL)
-						}
-				}
+	if strings.HasPrefix(movie.File.FullPath, "http") || strings.HasPrefix(movie.File.FullPath, "https") {
+		log.Infof("opening stream: %s", movie.File.FullPath)
+		err := open.Run(movie.File.FullPath)
+		if err != nil {
+			log.Errorf("failed to open stream: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to open stream"})
+			return
+		}
+	} else {
+		log.Infof("attempting to open local file: %s", movie.File.FullPath)
+		fileURL := "file://" + strings.Replace(movie.File.FullPath, " ", "%20", -1)
+		err := open.Run(fileURL)
+		if err != nil {
+			log.Infof("file:// protocol failed: %v, redirecting to stream", err)
+			c.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf("/api/movie/%s/stream", id))
+			return
+		}
+		log.Infof("successfully opened file: %s", fileURL)
+	}
 
 	recently := models.Recently{MovieID: movie.ID, UserID: s.Token.UserID, LastPlayed: time.Now()}
 	if err := db.Save(&recently).Error; err != nil {
