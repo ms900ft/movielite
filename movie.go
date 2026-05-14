@@ -465,22 +465,24 @@ func (s *Service) playMovie(c *gin.Context) {
 		return
 	}
 
-	if strings.HasPrefix(movie.File.FullPath, "http") || strings.HasPrefix(movie.File.FullPath, "https") {
-		err := open.Run(movie.File.FullPath)
-		if err != nil {
-			log.Errorf("failed to open stream: %s", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to open stream"})
-			return
+		if strings.HasPrefix(movie.File.FullPath, "http") || strings.HasPrefix(movie.File.FullPath, "https") {
+			log.Infof("opening stream: %s", movie.File.FullPath)
+			err := open.Run(movie.File.FullPath)
+			if err != nil {
+				log.Errorf("failed to open stream: %v", err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to open stream"})
+				return
+				}
+			} else {
+			fileURL := "file://" + strings.Replace(movie.File.FullPath, " ", "%20", -1)
+			log.Infof("opening file via vlc: %s -> %s", movie.File.FullPath, fileURL)
+			err := open.Run(fileURL)
+			if err != nil {
+				log.Errorf("failed to open file via vlc: %v", err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to play video file"})
+				return
+				}
 			}
-		} else {
-		fileURL := "file://" + strings.Replace(movie.File.FullPath, " ", "%20", -1)
-		err := open.Run(fileURL)
-		if err != nil {
-			log.Errorf("failed to open file: %s", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to play video file"})
-			return
-			}
-		}
 
 	recently := models.Recently{MovieID: movie.ID, UserID: s.Token.UserID, LastPlayed: time.Now()}
 	if err := db.Save(&recently).Error; err != nil {
