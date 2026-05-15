@@ -48,6 +48,23 @@ func (f *File) BeforeSave() (err error) {
 	f.FileName = norm.NFC.String(f.FileName)
 	return
 }
+
+func FindFile(filePath string) string {
+	if _, err := os.Stat(filePath); err == nil {
+		return filePath
+	}
+	nfd := norm.NFD.String(filePath)
+	if _, err := os.Stat(nfd); err == nil {
+		return nfd
+	}
+	nfc := norm.NFC.String(filePath)
+	if nfc != filePath {
+		if _, err := os.Stat(nfc); err == nil {
+			return nfc
+		}
+	}
+	return filePath
+}
 func (f *File) Create(db *gorm.DB, tmdb TMDBClients) error {
 	if err := db.Create(&f).Error; err != nil {
 		log.Error(err)

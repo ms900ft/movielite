@@ -499,6 +499,8 @@ func (s *Service) streamMovie(c *gin.Context) {
 	}
 
 	filePath := movie.File.FullPath
+	filePath = models.FindFile(filePath)
+	log.Infof("streaming: %s (resolved: %s)", movie.File.FullPath, filePath)
 	videoFile, err := os.Open(filePath)
 	if err != nil {
 		log.Errorf("Failed to open video file: %s", err)
