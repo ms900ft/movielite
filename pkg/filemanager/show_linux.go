@@ -4,6 +4,7 @@
 package filemanager
 
 import (
+	"os"
 	"os/exec"
 	"strings"
 
