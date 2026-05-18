@@ -453,14 +453,14 @@ func (s *Service) playMovie(c *gin.Context) {
 	}
 
 	dir := c.Query("showdir")
-	//works only on  macos
 	if dir != "" {
-		err := filemanager.ShowDir(movie.File.FullPath)
+		dirPath := filepath.Dir(movie.File.FullPath)
+		err := filemanager.ShowDir(dirPath)
 		if err != nil {
 			log.Error(err)
 			c.JSON(http.StatusBadRequest, nil)
 			return
-		}
+			}
 		c.JSON(http.StatusNoContent, nil)
 		return
 	}
