@@ -11,7 +11,7 @@ import (
 )
 
 func detectFileManager() string {
-	desktop := strings.ToLower(strings.Getenv("XDG_CURRENT_DESKTOP"))
+	desktop := strings.ToLower(os.Getenv("XDG_CURRENT_DESKTOP"))
 
 	managerMap := map[string]string{
 		"gnome":      "gio",
@@ -36,8 +36,8 @@ func detectFileManager() string {
 	return "xdg-open"
 }
 
-func showViaCMD(cmd, dir string) error {
-	fullCmd := exec.Command(cmd, dir)
+func showViaCMD(args ...string) error {
+	fullCmd := exec.Command(args[0], args[1:]...)
 	return fullCmd.Start()
 }
 
