@@ -9,15 +9,14 @@ services:
     ports:
       - "8001:8001"
     volumes:
-      # Movies directory for scanning
-      - ./movies:/movies
-      # Configuration and database
-      - ./data:/data
+      - ./movies:/movies:rw
+      - ./data:/data:rw
     environment:
       - TZ=UTC
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8001/api/user", "--no-check-certificate"]
+      test: ["CMD", "curl", "-f", "-u", "admin:password", "http://localhost:8001/api/user"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 60s
