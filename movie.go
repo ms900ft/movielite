@@ -463,7 +463,7 @@ func (s *Service) playMovie(c *gin.Context) {
 			log.Error(err)
 			c.JSON(http.StatusBadRequest, nil)
 			return
-			}
+		}
 		c.JSON(http.StatusNoContent, nil)
 		return
 	}
@@ -602,6 +602,7 @@ func checkFFmpeg(ffmpegPath string) bool {
 }
 
 func streamWithFFmpeg(c *gin.Context, ffmpegPath string, inputPath string) {
+	log.Info("start encoding")
 	rangeHeader := c.GetHeader("Range")
 	start := int64(0)
 
