@@ -1,9 +1,12 @@
 package movielite
 
 import (
+	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -501,6 +504,21 @@ func (s *Service) streamMovie(c *gin.Context) {
 	filePath := movie.File.FullPath
 	filePath = models.FindFile(filePath)
 	log.Infof("streaming: %s (resolved: %s)", movie.File.FullPath, filePath)
+
+	if isMP4File(filePath) {
+		s.streamMP4Direct(c, filePath, movie)
+		return
+	}
+
+	if s.Config.TranscodingEnabled && checkFFmpeg(s.Config.FFmpegPath) {
+		streamWithFFmpeg(c, s.Config.FFmpegPath, filePath)
+		return
+	}
+
+	s.streamMP4Direct(c, filePath, movie)
+}
+
+func (s *Service) streamMP4Direct(c *gin.Context, filePath string, movie models.Movie) {
 	videoFile, err := os.Open(filePath)
 	if err != nil {
 		log.Errorf("Failed to open video file: %s", err)
@@ -570,6 +588,111 @@ func getContentType(filePath string) string {
 	}
 }
 
+func isMP4File(filePath string) bool {
+	ext := strings.ToLower(filepath.Ext(filePath))
+	return ext == ".mp4"
+}
+
+func checkFFmpeg(ffmpegPath string) bool {
+	if _, err := exec.LookPath(ffmpegPath); err != nil {
+		log.Warnf("FFmpeg not found at %s: %v", ffmpegPath, err)
+		return false
+	}
+	return true
+}
+
+func streamWithFFmpeg(c *gin.Context, ffmpegPath string, inputPath string) {
+	rangeHeader := c.GetHeader("Range")
+	start := int64(0)
+
+	if rangeHeader != "" {
+		rangePart := strings.TrimPrefix(rangeHeader, "bytes=")
+		parts := strings.Split(rangePart, "-")
+		start, _ = strconv.ParseInt(parts[0], 10, 64)
+		c.Header("Accept-Ranges", "bytes")
+	}
+
+	fileStat, err := os.Stat(inputPath)
+	if err != nil {
+		log.Errorf("Failed to stat file for FFmpeg: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot access file"})
+		return
+	}
+	fileSize := fileStat.Size()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	args := []string{
+		"-y",
+		"-ss", fmt.Sprintf("%.6f", float64(start)/float64(fileSize)),
+		"-i", inputPath,
+		"-c:v", "libx264",
+		"-c:a", "aac",
+		"-b:v", "2000k",
+		"-b:a", "128k",
+		"-movflags", "+faststart",
+		"-f", "mp4",
+		"-",
+	}
+
+	cmd := exec.CommandContext(ctx, ffmpegPath, args...)
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Errorf("Failed to create FFmpeg stdout pipe: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot start transcoding"})
+		return
+	}
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		log.Errorf("Failed to create FFmpeg stderr pipe: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot start transcoding"})
+		return
+	}
+
+	if err := cmd.Start(); err != nil {
+		log.Errorf("Failed to start FFmpeg: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot start transcoding"})
+		return
+	}
+
+	done := make(chan error, 1)
+	go func() {
+		done <- cmd.Wait()
+	}()
+
+	go func() {
+		io.Copy(io.Discard, stderr)
+	}()
+
+	c.Header("Content-Type", "video/mp4")
+	c.Header("Accept-Ranges", "bytes")
+	c.Header("Content-Disposition", "inline; filename="+filepath.Base(inputPath))
+	c.Status(http.StatusOK)
+
+	buf := make([]byte, 32*1024)
+	for {
+		n, err := stdout.Read(buf)
+		if n > 0 {
+			if _, writeErr := c.Writer.Write(buf[:n]); writeErr != nil {
+				log.Errorf("Failed to write stream: %v", writeErr)
+				cancel()
+				return
+			}
+			c.Writer.Flush()
+		}
+		if err != nil {
+			if err != io.EOF {
+				log.Errorf("FFmpeg read error: %v", err)
+			}
+			break
+		}
+	}
+
+	<-done
+}
+
 // addMeta godoc
 // @Summary Add/Update metadata for a movie
 // @Description Associates TMDB metadata with a movie
@@ -600,7 +723,7 @@ func (s *Service) addMeta(c *gin.Context) {
 	// Clear multiplechoice and its MovieShort records before updating meta
 	if movie.Multiplechoice != nil && len(movie.Multiplechoice.Results) > 0 {
 		if err := db.Model(&old).Association("Multiplechoice").Clear(); err != nil {
-			log.Errorf("clear multiplechoice error: %s", err)
+			log.Errorf("clear multiplechoice error: %v", err)
 		}
 		// Delete the orphaned MovieShort records
 		for _, ms := range movie.Multiplechoice.Results {

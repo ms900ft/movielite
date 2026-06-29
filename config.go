@@ -26,6 +26,8 @@ type Config struct {
 	UseAuthentication    bool
 	Secret               string
 	InitialAdminPassword string
+	FFmpegPath           string
+	TranscodingEnabled   bool
 }
 
 func GetConfig(path string) *Config {
@@ -45,6 +47,8 @@ func GetConfig(path string) *Config {
 	viper.SetDefault("Player", "vlc")
 	viper.SetDefault("UseAuthentication", true)
 	viper.SetDefault("InitialAdminPassword", "password")
+	viper.SetDefault("FFmpeg.Path", "ffmpeg")
+	viper.SetDefault("FFmpeg.Enabled", false)
 	if path != "" {
 		file, err := os.Open(path)
 		if err != nil {
@@ -80,6 +84,8 @@ func GetConfig(path string) *Config {
 	c.Secret = "tetstet" //sviper.GetString("Secret")
 	c.UseAuthentication = viper.GetBool("UseAuthentication")
 	c.InitialAdminPassword = viper.GetString("InitialAdminPassword")
+	c.FFmpegPath = viper.GetString("FFmpeg.Path")
+	c.TranscodingEnabled = viper.GetBool("FFmpeg.Enabled")
 
 	return &c
 }

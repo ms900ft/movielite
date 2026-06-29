@@ -86,3 +86,6 @@ watch_lint:
 
 watch_metalint:
 	if command -v entr > /dev/null; then ${WATCH_FILES} | entr -rc $(MAKE) metalint; else $(MAKE) metalint entr_warn; fi
+
+ffmpeg:
+	if command -v ffmpeg > /dev/null; then echo "FFmpeg found: $$(ffmpeg -version | head -1)"; else echo "FFmpeg not found. Install from https://ffmpeg.org"; fi
