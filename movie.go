@@ -505,7 +505,7 @@ func (s *Service) streamMovie(c *gin.Context) {
 	filePath = models.FindFile(filePath)
 	log.Infof("streaming: %s (resolved: %s)", movie.File.FullPath, filePath)
 
-	if isMP4File(filePath) {
+	if isMP4File(filePath) && !needsTranscoding(filePath) {
 		s.streamMP4Direct(c, filePath, movie)
 		return
 	}
@@ -593,6 +593,17 @@ func isMP4File(filePath string) bool {
 	return ext == ".mp4"
 }
 
+func needsTranscoding(filePath string) bool {
+	lower := strings.ToLower(filePath)
+	patterns := []string{".mpg", ".mpeg", ".flv", ".wmv", ".avi", ".mkv", ".webm"}
+	for _, p := range patterns {
+		if strings.Contains(lower, p) {
+			return true
+		}
+	}
+	return false
+}
+
 func checkFFmpeg(ffmpegPath string) bool {
 	if _, err := exec.LookPath(ffmpegPath); err != nil {
 		log.Warnf("FFmpeg not found at %s: %v", ffmpegPath, err)
@@ -659,7 +670,7 @@ func streamWithFFmpeg(c *gin.Context, ffmpegPath string, inputPath string) {
 
 	c.Header("Content-Type", "video/mp4")
 	c.Header("Accept-Ranges", "bytes")
-	c.Header("Content-Disposition", "inline; filename="+filepath.Base(inputPath))
+	c.Header("Content-Disposition", "inline; filename="+filepath.Base(inputPath)+".mp4")
 	c.Status(http.StatusOK)
 
 	buf := make([]byte, 32*1024)
