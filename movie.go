@@ -510,7 +510,7 @@ func (s *Service) streamMovie(c *gin.Context) {
 		return
 	}
 
-	if s.Config.TranscodingEnabled && checkFFmpeg(s.Config.FFmpegPath) {
+	if checkFFmpeg(s.Config.FFmpegPath) {
 		streamWithFFmpeg(c, s.Config.FFmpegPath, filePath)
 		return
 	}
@@ -603,15 +603,6 @@ func checkFFmpeg(ffmpegPath string) bool {
 
 func streamWithFFmpeg(c *gin.Context, ffmpegPath string, inputPath string) {
 	log.Info("start encoding")
-	rangeHeader := c.GetHeader("Range")
-	start := int64(0)
-
-	if rangeHeader != "" {
-		rangePart := strings.TrimPrefix(rangeHeader, "bytes=")
-		parts := strings.Split(rangePart, "-")
-		start, _ = strconv.ParseInt(parts[0], 10, 64)
-		c.Header("Accept-Ranges", "bytes")
-	}
 
 	fileStat, err := os.Stat(inputPath)
 	if err != nil {
@@ -619,14 +610,13 @@ func streamWithFFmpeg(c *gin.Context, ffmpegPath string, inputPath string) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot access file"})
 		return
 	}
-	fileSize := fileStat.Size()
+	_ = fileStat
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	args := []string{
 		"-y",
-		"-ss", fmt.Sprintf("%.6f", float64(start)/float64(fileSize)),
 		"-i", inputPath,
 		"-c:v", "libx264",
 		"-c:a", "aac",
