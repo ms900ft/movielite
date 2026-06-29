@@ -506,15 +506,18 @@ func (s *Service) streamMovie(c *gin.Context) {
 	log.Infof("streaming: %s (resolved: %s)", movie.File.FullPath, filePath)
 
 	if isMP4File(filePath) && !needsTranscoding(filePath) {
+		log.Infof("Direct stream: %s", filePath)
 		s.streamMP4Direct(c, filePath, movie)
 		return
 	}
 
 	if checkFFmpeg(s.Config.FFmpegPath) {
+		log.Infof("FFmpeg transcode: %s", filePath)
 		streamWithFFmpeg(c, s.Config.FFmpegPath, filePath)
 		return
 	}
 
+	log.Warnf("No FFmpeg available, direct streaming non-playable file: %s", filePath)
 	s.streamMP4Direct(c, filePath, movie)
 }
 
@@ -595,7 +598,7 @@ func isMP4File(filePath string) bool {
 
 func needsTranscoding(filePath string) bool {
 	lower := strings.ToLower(filePath)
-	patterns := []string{".mpg", ".mpeg", ".flv", ".wmv", ".avi", ".mkv", ".webm"}
+	patterns := []string{".mpg", ".mpeg", ".flv", ".wmv", ".avi", ".mkv", ".webm", ".mov", ".m4v"}
 	for _, p := range patterns {
 		if strings.Contains(lower, p) {
 			return true
