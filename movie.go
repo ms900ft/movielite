@@ -1,6 +1,7 @@
 package movielite
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"io"
@@ -631,6 +632,7 @@ func streamWithFFmpeg(c *gin.Context, ffmpegPath string, codec string, inputPath
 
 	args := []string{
 		"-y",
+		"-re",
 		"-i", inputPath,
 		"-c:v", codec,
 		"-profile:v", "high",
@@ -640,7 +642,7 @@ func streamWithFFmpeg(c *gin.Context, ffmpegPath string, codec string, inputPath
 		"-bufsize", "4000k",
 		"-c:a", "aac",
 		"-b:a", "128k",
-		"-movflags", "empty_moov+faststart",
+		"-movflags", "frag_keyframe+empty_moov+faststart",
 		"-f", "mp4",
 		"-",
 	}
@@ -672,7 +674,10 @@ func streamWithFFmpeg(c *gin.Context, ffmpegPath string, codec string, inputPath
 	}()
 
 	go func() {
-		io.Copy(io.Discard, stderr)
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			log.Info(scanner.Text())
+		}
 	}()
 
 	c.Header("Content-Type", "video/mp4")
