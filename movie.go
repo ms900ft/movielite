@@ -636,7 +636,7 @@ func streamWithFFmpeg(c *gin.Context, ffmpegPath string, inputPath string) {
 		"-c:a", "aac",
 		"-b:v", "2000k",
 		"-b:a", "128k",
-		"-movflags", "+faststart",
+		"-movflags", "empty_moov+faststart",
 		"-f", "mp4",
 		"-",
 	}
