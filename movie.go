@@ -633,7 +633,29 @@ func streamWithFFmpeg(c *gin.Context, ffmpegPath string, codec string, inputPath
 	args := []string{
 		"-y",
 		"-re",
+	}
+	
+	// Add hwaccel flags for VAAPI codecs
+	if strings.Contains(codec, "vaapi") {
+		args = append(args,
+			"-hwaccel", "vaapi",
+			"-hwaccel_device", "0",
+			"-hwaccel_output_format", "vaapi",
+		)
+	}
+	
+	args = append(args,
 		"-i", inputPath,
+	)
+	
+	// Add VAAPI upload filter
+	if strings.Contains(codec, "vaapi") {
+		args = append(args,
+			"-vf", "format=nv12,hwupload",
+		)
+	}
+	
+	args = append(args,
 		"-c:v", codec,
 		"-profile:v", "high",
 		"-level", "4.1",
@@ -645,7 +667,7 @@ func streamWithFFmpeg(c *gin.Context, ffmpegPath string, codec string, inputPath
 		"-movflags", "frag_keyframe+empty_moov+faststart",
 		"-f", "mp4",
 		"-",
-	}
+	)
 
 	cmd := exec.CommandContext(ctx, ffmpegPath, args...)
 	stdout, err := cmd.StdoutPipe()
