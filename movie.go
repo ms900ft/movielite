@@ -513,7 +513,7 @@ func (s *Service) streamMovie(c *gin.Context) {
 
 	if checkFFmpeg(s.Config.FFmpegPath) {
 		log.Infof("FFmpeg transcode: %s", filePath)
-		streamWithFFmpeg(c, s.Config.FFmpegPath, filePath)
+		streamWithFFmpeg(c, s.Config.FFmpegPath, s.Config.Codec, filePath)
 		return
 	}
 
@@ -615,7 +615,7 @@ func checkFFmpeg(ffmpegPath string) bool {
 	return true
 }
 
-func streamWithFFmpeg(c *gin.Context, ffmpegPath string, inputPath string) {
+func streamWithFFmpeg(c *gin.Context, ffmpegPath string, codec string, inputPath string) {
 	log.Info("start encoding")
 
 	fileStat, err := os.Stat(inputPath)
@@ -632,9 +632,13 @@ func streamWithFFmpeg(c *gin.Context, ffmpegPath string, inputPath string) {
 	args := []string{
 		"-y",
 		"-i", inputPath,
-		"-c:v", "libx264",
-		"-c:a", "aac",
+		"-c:v", codec,
+		"-profile:v", "high",
+		"-level", "4.1",
 		"-b:v", "2000k",
+		"-maxrate", "2000k",
+		"-bufsize", "4000k",
+		"-c:a", "aac",
 		"-b:a", "128k",
 		"-movflags", "empty_moov+faststart",
 		"-f", "mp4",

@@ -27,6 +27,7 @@ type Config struct {
 	Secret               string
 	InitialAdminPassword string
 	FFmpegPath           string
+	Codec                string
 	TranscodingEnabled   bool
 }
 
@@ -49,6 +50,7 @@ func GetConfig(path string) *Config {
 	viper.SetDefault("InitialAdminPassword", "password")
 	viper.SetDefault("FFmpeg.Path", "ffmpeg")
 	viper.SetDefault("FFmpeg.Enabled", false)
+	viper.SetDefault("FFmpeg.Codec", "libx264")
 	if path != "" {
 		file, err := os.Open(path)
 		if err != nil {
@@ -85,6 +87,7 @@ func GetConfig(path string) *Config {
 	c.UseAuthentication = viper.GetBool("UseAuthentication")
 	c.InitialAdminPassword = viper.GetString("InitialAdminPassword")
 	c.FFmpegPath = viper.GetString("FFmpeg.Path")
+	c.Codec = viper.GetString("FFmpeg.Codec")
 	c.TranscodingEnabled = viper.GetBool("FFmpeg.Enabled")
 
 	return &c
