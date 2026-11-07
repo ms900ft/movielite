@@ -131,7 +131,7 @@ func TestMovieFile(t *testing.T) {
 func TestDownloadFiles(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Get("/api/file/1/download").
+			Get("/file/1/download").
 			Expect(t).
 		//Assert(jsonpath.GreaterThan(`$`, 1)).
 		Header("Content-Description", "File Transfer").
@@ -145,7 +145,7 @@ func TestDownloadFiles(t *testing.T) {
 func TestDownloadFilesWithName(t *testing.T) {
 	apitest.New(). // configuration
 			Handler(S.Router).
-			Get("/api/file/1/download/testfile").
+			Get("/file/1/download/testfile").
 			Expect(t).
 		//Assert(jsonpath.GreaterThan(`$`, 1)).
 		Header("Content-Description", "File Transfer").

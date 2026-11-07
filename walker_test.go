@@ -55,7 +55,7 @@ func TestWalker_update(t *testing.T) {
 		var file models.File
 		err = json.Unmarshal(body, &file)
 		assert.NoError(t, err)
-		assert.Equal(t, 123, file.ID)
+		assert.Equal(t, uint(123), file.ID)
 		assert.Equal(t, "/path/to/file", file.FullPath)
 
 		w.WriteHeader(http.StatusOK)
@@ -70,9 +70,9 @@ func TestWalker_update(t *testing.T) {
 		Token: "test-token",
 	}
 	file := models.File{
-		// ID:       123,
 		FullPath: "/path/to/file",
 	}
+	file.ID = 123
 
 	err := walker.update(file)
 	assert.NoError(t, err)

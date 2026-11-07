@@ -51,11 +51,13 @@ type MovieSearchResults struct {
 }
 
 type MovieShort struct {
-	gorm.Model
+	ID                   int `gorm:"primary_key" json:"id"`
+	CreatedAt            time.Time
+	UpdatedAt            time.Time
+	DeletedAt            *time.Time `sql:"index"`
 	MovieSearchResultsID uint
 	Adult                bool   `json:"adult"`
 	BackdropPath         string `json:"backdrop_path"`
-	ID                   int    `json:"id"`
 	OriginalTitle        string `json:"original_title"`
 	//GenreIDs             []int32 `json:"genre_ids"`
 	Popularity  float32 `json:"popularity"`
@@ -544,7 +546,7 @@ func preFetchImages(movie *tmdb.Movie, wp *workerpool.WorkerPool) error {
 					//return err
 				}
 				if response.StatusCode != http.StatusOK {
-					log.Errorf(fmt.Sprintf("Can't get %s: %s Status %d", url, err, response.StatusCode))
+					log.Errorf("Can't get %s: %v Status %d", url, err, response.StatusCode)
 					//return err
 				}
 				defer response.Body.Close()

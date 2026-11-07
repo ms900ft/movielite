@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/ms900ft/movielite/models"
 	"github.com/ryanbradynd05/go-tmdb"
@@ -28,7 +29,7 @@ var (
 
 func (m *MockTMDBClient) SearchMovie(s string, opts map[string]string) (*tmdb.MovieSearchResults, error) {
 	log.Debug("search movie")
-	filename := fmt.Sprintf("testdata/search_%s.json", s)
+	filename := fmt.Sprintf("testdata/search_%s.json", strings.ToLower(s))
 	jsonFile, err := os.Open(filename)
 	var search tmdb.MovieSearchResults
 	// if we os.Open returns an error then handle it
