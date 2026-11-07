@@ -71,8 +71,6 @@ Mode: prod
 Port: 8000
 # Enable sql debugging
 SQLDebug: false
-# Language to get Metadata
-Language: "en-US"
 # Location of the sqlite database
 Database:
   Dbname: "./movielite.db"
@@ -84,6 +82,8 @@ InitialAdminPassword: "password"
 # Player: "QuickTime Player"
 
 TMDB:
+  # Language to get metadata
+  Language: "de-DE"
   # Your API key. Without API key you can't get metadata from tmdb
   ApiKey: #add your api key
   # Directory for the image cache.

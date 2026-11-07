@@ -39,7 +39,7 @@ func (s *Service) getPerson(c *gin.Context) {
 	}
 
 	// Not in DB, try to fetch from TMDB
-	lang := "en-US"
+	lang := s.Config.Language
 	tmdbURL := "https://api.themoviedb.org/3/person/" + idStr + "?api_key=" + s.Config.TMDBApiKey + "&language=" + lang
 
 	resp, err := http.Get(tmdbURL)

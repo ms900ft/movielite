@@ -201,7 +201,7 @@ func (m *Movie) GetMeta(t TMDBClients) (err error) {
 	// 		err = errors.New("can't get metadata for " + m.Title)
 	// 	}
 	//	}()
-	lang := viper.GetString("language")
+	lang := viper.GetString("TMDB.Language")
 	//apikey := viper.GetString("TMDB.ApiKey")
 	//conf := tmdb.Config{APIKey: apikey}
 	//TMDb := tmdb.Init(conf)
@@ -266,7 +266,7 @@ func (m *Movie) GetMeta(t TMDBClients) (err error) {
 
 func getTMDBMeta(t TMDBClients, wp *workerpool.WorkerPool, id int) (TMDBMovie, error) {
 	//apikey := viper.GetString("TMDB.ApiKey")
-	lang := viper.GetString("language")
+	lang := viper.GetString("TMDB.Language")
 	//conf := tmdb.Config{APIKey: apikey}
 	//TMDb := tmdb.Init(conf)
 	var options = make(map[string]string)

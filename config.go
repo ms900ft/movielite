@@ -12,6 +12,7 @@ import (
 type Config struct {
 	Port                 int
 	Mode                 string
+	Language             string
 	TMDBImageDir         string
 	TMDBImageURL         string
 	TMDBApiKey           string
@@ -39,7 +40,7 @@ func GetConfig(path string) *Config {
 	// xxx todo
 	viper.SetDefault("MovieServerUrl", "http://localhost:8000")
 	viper.SetDefault("Rescan.Delay", 10)
-	viper.SetDefault("language", "de-DE")
+	viper.SetDefault("TMDB.Language", "de-DE")
 	viper.SetDefault("Port", 8000)
 	viper.SetDefault("TMDB.ImageURL", "https://image.tmdb.org/t/p")
 	viper.SetDefault("Mode", "prod")
@@ -64,6 +65,12 @@ func GetConfig(path string) *Config {
 			log.Fatalf("error reading config file: %s", err)
 		}
 	}
+	// Support the legacy top-level "language" key without letting the POSIX
+	// LANGUAGE environment variable override the TMDB language setting.
+	legacyLanguage := viper.GetString("language")
+	if legacyLanguage != "" && !viper.InConfig("TMDB.Language") {
+		viper.SetDefault("TMDB.Language", legacyLanguage)
+	}
 	viper.AutomaticEnv()
 	replacer := strings.NewReplacer(".", "_")
 	viper.SetEnvKeyReplacer(replacer)
@@ -72,6 +79,7 @@ func GetConfig(path string) *Config {
 	c := Config{}
 	c.Port = viper.GetInt("Port")
 	c.Mode = viper.GetString("Mode")
+	c.Language = viper.GetString("TMDB.Language")
 	c.TMDBImageURL = viper.GetString("TMDB.ImageUrl")
 	c.TMDBImageDir = viper.GetString("TMDB.ImageDir")
 	c.TMDBApiKey = viper.GetString("TMDB.ApiKey")
